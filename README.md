@@ -1,9 +1,9 @@
 # LogVisualization
 
-##Description
-This is a project trying to corelate the trace of microservices with the logs of the microservices. It is based on kubernetes and istio.And elasticsearch is used to store the log and zipkin to gather the trace and span information.
+##Description   
+This is a project trying to corelate the trace of microservices with the logs of the microservices. It is based on kubernetes and istio.And elasticsearch is used to store the log and zipkin to gather the trace and span information.</p>
 
-##Deployment
+##Deployment     
 Before you begin, you need to install istio in your kubernetes cluster. Just execute the following command:
 * kubectl apply -f istio-demo.yaml
 
