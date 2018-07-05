@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/logparser/logparser.iml" filepath="$PROJECT_DIR$/logparser/logparser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/logvisualization.iml" filepath="$PROJECT_DIR$/logvisualization.iml" />
+    </modules>
+  </component>
+</project>

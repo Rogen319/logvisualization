@@ -1,0 +1,15 @@
+version: '3'
+services:
+
+  logvisualization-logparser:
+      build: logparser
+      image: logvisualization/logparser
+      restart: always
+      ports:
+        - 16319:16319
+      networks:
+        - my-network
+
+networks:
+    my-network:
+      driver: bridge

@@ -1,0 +1,6 @@
+server:
+  port: 16319
+
+spring:
+  application:
+    name: logvisualization-logparser
