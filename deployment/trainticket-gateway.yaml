@@ -1,0 +1,415 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: trainticket-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: trainticket
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trainticket-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        exact: /voucher.html
+    - uri:
+        exact: /adminlogin.html
+    - uri:
+        exact: /admin_user.html
+    - uri:
+        exact: /admin_travel.html
+    - uri:
+        exact: /admin_train.html
+    - uri:
+        exact: /admin_station.html
+    - uri:
+        exact: /admin_route.html
+    - uri:
+        exact: /admin_price.html
+    - uri:
+        exact: /admin_contacts.html
+    - uri:
+        exact: /admin_config.html
+    - uri:
+        exact: /admin.html
+    - uri:
+        exact: /add&delete.html
+    - uri:
+        prefix: /js/
+    - uri:
+        prefix: /css/
+    - uri:
+        prefix: /assets/
+    route:
+    - destination:
+        host: ts-ui-dashboard
+        port:
+          number: 8080
+  - match:
+    - uri:
+        prefix: /account/
+    route:
+    - destination:
+        host: ts-sso-service
+        port:
+          number: 12349
+  - match:
+    - uri:
+        exact: /register
+    route:
+    - destination:
+        host: ts-register-service
+        port:
+          number: 12344
+  - match:
+    - uri:
+        exact: /login
+    route:
+    - destination:
+        host: ts-login-service
+        port:
+          number: 12342
+  - match:
+    - uri:
+        exact: /logout
+    route:
+    - destination:
+        host: ts-login-service
+        port:
+          number: 12342
+  - match:
+    - uri:
+        prefix: /verification/
+    route:
+    - destination:
+        host: ts-verification-code-service
+        port:
+          number: 15678
+  - match:
+    - uri:
+        prefix: /station/
+    route:
+    - destination:
+        host: ts-station-service
+        port:
+          number: 12345
+  - match:
+    - uri:
+        prefix: /train/
+    route:
+    - destination:
+        host: ts-train-service
+        port:
+          number: 14567
+  - match:
+    - uri:
+        prefix: /config/
+    route:
+    - destination:
+        host: ts-config-service
+        port:
+          number: 15679
+  - match:
+    - uri:
+        prefix: /securityConfig/
+    route:
+    - destination:
+        host: ts-security-service
+        port:
+          number: 11188
+  - match:
+    - uri:
+        prefix: /security/
+    route:
+    - destination:
+        host: ts-security-service
+        port:
+          number: 11188
+  - match:
+    - uri:
+        prefix: /execute/
+    route:
+    - destination:
+        host: ts-execute-service
+        port:
+          number: 12386
+  - match:
+    - uri:
+        prefix: /contacts/
+    route:
+    - destination:
+        host: ts-contacts-service
+        port:
+          number: 12347
+  - match:
+    - uri:
+        prefix: /order/
+    route:
+    - destination:
+        host: ts-order-service
+        port:
+          number: 12031
+  - match:
+    - uri:
+        prefix: /orderOther/
+    route:
+    - destination:
+        host: ts-order-other-service
+        port:
+          number: 12032
+  - match:
+    - uri:
+        prefix: /travel/
+    route:
+    - destination:
+        host: ts-travel-service
+        port:
+          number: 12346
+  - match:
+    - uri:
+        prefix: /travel2/
+    route:
+    - destination:
+        host: ts-travel2-service
+        port:
+          number: 16346
+  - match:
+    - uri:
+        prefix: /preserve/
+    route:
+    - destination:
+        host: ts-preserve-service
+        port:
+          number: 14568
+  - match:
+    - uri:
+        prefix: /preserveOther/
+    route:
+    - destination:
+        host: ts-preserve-other-service
+        port:
+          number: 14569
+  - match:
+    - uri:
+        exact: /preserve
+    route:
+    - destination:
+        host: ts-preserve-service
+        port:
+          number: 14568
+  - match:
+    - uri:
+        exact: /preserveOther
+    route:
+    - destination:
+        host: ts-preserve-other-service
+        port:
+          number: 14569
+  - match:
+    - uri:
+        prefix: /price/
+    route:
+    - destination:
+        host: ts-price-service
+        port:
+          number: 16579
+  - match:
+    - uri:
+        prefix: /basic/
+    route:
+    - destination:
+        host: ts-basic-service
+        port:
+          number: 15680
+  - match:
+    - uri:
+        prefix: /ticketinfo/
+    route:
+    - destination:
+        host: ts-ticketinfo-service
+        port:
+          number: 15681
+  - match:
+    - uri:
+        prefix: /notification/
+    route:
+    - destination:
+        host: ts-notification-service
+        port:
+          number: 17853
+  - match:
+    - uri:
+        prefix: /inside_payment/
+    route:
+    - destination:
+        host: ts-inside-payment-service
+        port:
+          number: 18673
+  - match:
+    - uri:
+        prefix: /payment/
+    route:
+    - destination:
+        host: ts-payment-service
+        port:
+          number: 19001
+  - match:
+    - uri:
+        prefix: /rebook/
+    route:
+    - destination:
+        host: ts-rebook-service
+        port:
+          number: 18886
+  - match:
+    - uri:
+        exact: /cancelOrder
+    route:
+    - destination:
+        host: ts-cancel-service
+        port:
+          number: 18885
+  - match:
+    - uri:
+        exact: /cancelCalculateRefund
+    route:
+    - destination:
+        host: ts-cancel-service
+        port:
+          number: 18885
+  - match:
+    - uri:
+        prefix: /route/
+    route:
+    - destination:
+        host: ts-route-service
+        port:
+          number: 11178
+  - match:
+    - uri:
+        prefix: /assurance/
+    route:
+    - destination:
+        host: ts-assurance-service
+        port:
+          number: 18888
+  - match:
+    - uri:
+        prefix: /office/
+    route:
+    - destination:
+        host: ts-ticket-office-service
+        port:
+          number: 16108
+  - match:
+    - uri:
+        prefix: /travelPlan/
+    route:
+    - destination:
+        host: ts-travel-plan-service
+        port:
+          number: 14322
+  - match:
+    - uri:
+        prefix: /consign/
+    route:
+    - destination:
+        host: ts-consign-service
+        port:
+          number: 16111
+  - match:
+    - uri:
+        prefix: /consignPrice/
+    route:
+    - destination:
+        host: ts-consign-price-service
+        port:
+          number: 16110
+  - match:
+    - uri:
+        exact: /getVoucher
+    route:
+    - destination:
+        host: ts-voucher-service
+        port:
+          number: 16101
+  - match:
+    - uri:
+        prefix: /routePlan/
+    route:
+    - destination:
+        host: ts-route-plan-service
+        port:
+          number: 14578
+  - match:
+    - uri:
+        prefix: /food/
+    route:
+    - destination:
+        host: ts-food-service
+        port:
+          number: 18856
+  - match:
+    - uri:
+        prefix: /news-service/
+    route:
+    - destination:
+        host: ts-news-service
+        port:
+          number: 12862
+  - match:
+    - uri:
+        prefix: /adminbasic/
+    route:
+    - destination:
+        host: ts-admin-basic-info-service
+        port:
+          number: 18767
+  - match:
+    - uri:
+        prefix: /adminorder/
+    route:
+    - destination:
+        host: ts-admin-order-service
+        port:
+          number: 16112
+  - match:
+    - uri:
+        prefix: /adminroute/
+    route:
+    - destination:
+        host: ts-admin-route-service
+        port:
+          number: 16113
+  - match:
+    - uri:
+        prefix: /admintravel/
+    route:
+    - destination:
+        host: ts-admin-travel-service
+        port:
+          number: 16114
+  - match:
+    - uri:
+        prefix: /adminuser/
+    route:
+    - destination:
+        host: ts-admin-user-service
+        port:
+          number: 16115
