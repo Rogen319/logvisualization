@@ -12,6 +12,7 @@
     <modules>
         <module>logparser</module>
         <module>escore</module>
+        <module>k8sapi</module>
     </modules>
 
     <parent>

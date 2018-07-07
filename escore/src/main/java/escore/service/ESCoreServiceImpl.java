@@ -18,7 +18,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         StringBuilder sb = new StringBuilder();
 
         MatchQueryBuilder builder = QueryBuilders.matchQuery("kubernetes.container.name","ts-login-service");
-        SearchResponse response = client.prepareSearch("filebeat-*").setTypes("doc").setQuery(builder).get();
+        SearchResponse response = client.prepareSearch("filebeat-*").setTypes("doc").setQuery(builder).setSize(10000).get();
 
         SearchHit[] hits = response.getHits().getHits();
         System.out.println(String.format("The length of hits is [%d]", hits.length));

@@ -19,6 +19,15 @@ services:
       networks:
         - my-network
 
+  logvisualization-k8sapi:
+      build: k8sapi
+      image: logvisualization/k8sapi
+      restart: always
+      ports:
+        - 18319:18319
+      networks:
+        - my-network
+
 networks:
     my-network:
       driver: bridge
