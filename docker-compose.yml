@@ -10,6 +10,15 @@ services:
       networks:
         - my-network
 
+  logvisualization-escore:
+      build: escore
+      image: logvisualization/escore
+      restart: always
+      ports:
+        - 17319:17319
+      networks:
+        - my-network
+
 networks:
     my-network:
       driver: bridge

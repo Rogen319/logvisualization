@@ -18,7 +18,13 @@ spec:
   - port: 9200
     protocol: TCP
     targetPort: db
+    name: dbsvc
     nodePort: 30002
+  - port: 9300
+    protocol: TCP
+    targetPort: transport
+    name: transportsvc
+    nodePort: 30003
   selector:
     app: elasticsearch
 ---
@@ -39,7 +45,7 @@ spec:
         app: elasticsearch
     spec:
       containers:
-      - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.1
+      - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.3.1
         name: elasticsearch
         resources:
           # need more cpu upon initialization, therefore burstable class
@@ -100,7 +106,7 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.1.1
+        image: docker.elastic.co/kibana/kibana-oss:6.3.1
         resources:
           # need more cpu upon initialization, therefore burstable class
           limits:

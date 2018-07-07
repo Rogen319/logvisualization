@@ -1,0 +1,11 @@
+server:
+  port: 17319
+
+spring:
+  application:
+    name: escore
+
+es-config:
+  host: 10.141.211.163
+  port: 30003
+
