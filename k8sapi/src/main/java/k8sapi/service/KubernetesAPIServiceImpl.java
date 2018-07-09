@@ -31,7 +31,7 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
         List<NodeInfo> nodeInfos = new ArrayList<NodeInfo>();
         for(V1Node node : nodeList.getItems()){
             NodeInfo nodeInfo = new NodeInfo();
-            System.out.println(String.format("The node name is %s and the role is %s",node.getMetadata().getName(),node.getSpec().getTaints() == null?"Minion":"Master"));
+//            System.out.println(String.format("The node name is %s and the role is %s",node.getMetadata().getName(),node.getSpec().getTaints() == null?"Minion":"Master"));
             //Set the role
             if(node.getSpec().getTaints() != null)
                 nodeInfo.setRole("Master");

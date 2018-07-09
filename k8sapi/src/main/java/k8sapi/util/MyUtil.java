@@ -36,9 +36,9 @@ public class MyUtil {
         try {
             File file = new File(filePath);
             if (file.delete()) {
-                System.out.println(file.getName() + " is deleted");
+//                System.out.println(file.getName() + " is deleted");
             } else {
-                System.out.println("Delete failed.");
+                System.out.println(String.format("Delete file [%s] failed!", file.getName()));
             }
         } catch (Exception e) {
             System.out.println("Exception occured when delete file");

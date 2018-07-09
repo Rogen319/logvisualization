@@ -1,5 +1,7 @@
 package escore.bean;
 
+import javax.xml.soap.Node;
+
 public class NodeInfo {
     private String role;
     private String name;
@@ -85,5 +87,24 @@ public class NodeInfo {
 
     public void setContainerRuntimeVersion(String containerRuntimeVersion) {
         this.containerRuntimeVersion = containerRuntimeVersion;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj instanceof NodeInfo){
+            NodeInfo other = (NodeInfo)obj;
+            if(this.getName().equals(other.getName()) && this.getIp().equals(other.getIp()))
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String id = this.name + this.ip;
+        return id.hashCode();
     }
 }

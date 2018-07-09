@@ -70,4 +70,23 @@ public class PodInfo {
     public void setContainers(List<PodContainer> containers) {
         this.containers = containers;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj instanceof PodInfo){
+            PodInfo other = (PodInfo)obj;
+            if(this.getName().equals(other.getName()) && this.getPodIP().equals(other.getPodIP()))
+                return true;
+            else
+                return false;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String id = this.name + this.podIP;
+        return id.hashCode();
+    }
 }

@@ -26,8 +26,8 @@ public class InitIndexAndType implements CommandLineRunner {
     @Autowired
     private TransportClient client;
 
-    private static final String K8S_INDEX_POD = "k8s_pod";
-    private static final String K8S_INDEX_NODE = "k8s_node";
+    public static final String K8S_INDEX_POD = "k8s_pod";
+    public static final String K8S_INDEX_NODE = "k8s_node";
 
     @Override
     public void run(String... strings) throws Exception {
