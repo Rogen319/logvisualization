@@ -1,5 +1,7 @@
 package escore.bean;
 
+import java.util.List;
+
 public class PodInfo {
     private String name;
     private String nodeName;
@@ -7,6 +9,7 @@ public class PodInfo {
     private String nodeIP;
     private String podIP;
     private String startTime;
+    private List<PodContainer> containers;
 
     public PodInfo(){
 
@@ -58,5 +61,13 @@ public class PodInfo {
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public List<PodContainer> getContainers() {
+        return containers;
+    }
+
+    public void setContainers(List<PodContainer> containers) {
+        this.containers = containers;
     }
 }

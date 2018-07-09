@@ -1,14 +1,15 @@
 package escore.init;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.NodeInfo;
 import escore.bean.PodInfo;
 import escore.response.GetNodesListResponse;
 import escore.response.GetPodsListResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -32,6 +33,8 @@ public class InitIndexAndType implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
 
+//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE,K8S_INDEX_POD).execute().actionGet();
+
         //Judge if the k8s indices already exists
         IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD,K8S_INDEX_NODE).
                 execute().actionGet();
@@ -48,7 +51,6 @@ public class InitIndexAndType implements CommandLineRunner {
                 //Add pod type and insert pod information
                 addPodType();
                 insertPodData();
-
             } else {
                 System.out.println(String.format("Fail to create index [%s]!", K8S_INDEX_POD));
             }
@@ -65,9 +67,6 @@ public class InitIndexAndType implements CommandLineRunner {
             } else {
                 System.out.println(String.format("Fail to create index [%s]!", K8S_INDEX_NODE));
             }
-        }
-        else{
-            indicesAdminClient.prepareDelete(K8S_INDEX_NODE,K8S_INDEX_POD).execute().actionGet();
         }
     }
 
@@ -111,19 +110,10 @@ public class InitIndexAndType implements CommandLineRunner {
                 "http://logvisualization-k8sapi:18319/api/getNodesList",
                 GetNodesListResponse.class);
         if(result.isStatus()){
-            XContentBuilder builder;
+            ObjectMapper mapper = new ObjectMapper();
             for(NodeInfo nodeInfo : result.getNodes()){
-                builder = XContentFactory.jsonBuilder().startObject()
-                        .field("name", nodeInfo.getName())
-                        .field("ip",nodeInfo.getIp())
-                        .field("status",nodeInfo.getStatus())
-                        .field("kubeProxyVersion",nodeInfo.getKubeProxyVersion())
-                        .field("kubeletVersion",nodeInfo.getKubeletVersion())
-                        .field("operatingSystem",nodeInfo.getOperatingSystem())
-                        .field("osImage",nodeInfo.getOsImage())
-                        .field("containerRuntimeVersion",nodeInfo.getContainerRuntimeVersion())
-                        .endObject();
-                client.prepareIndex(K8S_INDEX_NODE,"node").setSource(builder).get();
+                byte[] json = mapper.writeValueAsBytes(nodeInfo);
+                client.prepareIndex(K8S_INDEX_NODE,"node").setSource(json, XContentType.JSON).get();
             }
         }else{
             System.out.println("Fail to get the node list information!");
@@ -152,6 +142,29 @@ public class InitIndexAndType implements CommandLineRunner {
                         "    },\n" +
                         "    \"startTime\": {\n" +
                         "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"containers\": {\n" +
+                            "  \"properties\": {\n" +
+                            "    \"name\": {\n" +
+                            "      \"type\": \"text\"\n" +
+                            "    },\n" +
+                            "    \"imageName\": {\n" +
+                            "      \"type\": \"text\"\n" +
+                            "    },\n" +
+                            "    \"imageVersion\": {\n" +
+                            "      \"type\": \"text\"\n" +
+                            "    },\n" +
+                            "    \"ports\": {\n" +
+                                "  \"properties\": {\n" +
+                                "    \"containerPort\": {\n" +
+                                "      \"type\": \"float\"\n" +
+                                "    },\n" +
+                                "    \"protocol\": {\n" +
+                                "      \"type\": \"text\"\n" +
+                                "    }\n" +
+                                "  }\n" +
+                            "    }\n" +
+                            "  }\n" +
                         "    }\n" +
                         "  }\n" +
                         "}", XContentType.JSON)
@@ -164,17 +177,10 @@ public class InitIndexAndType implements CommandLineRunner {
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
         if(result.isStatus()){
-            XContentBuilder builder;
+            ObjectMapper mapper = new ObjectMapper();
             for(PodInfo podInfo : result.getPods()){
-                builder = XContentFactory.jsonBuilder().startObject()
-                        .field("name", podInfo.getName())
-                        .field("nodeName",podInfo.getNodeName())
-                        .field("status",podInfo.getStatus())
-                        .field("nodeIP",podInfo.getNodeIP())
-                        .field("podIP",podInfo.getPodIP())
-                        .field("startTime",podInfo.getStartTime())
-                        .endObject();
-                client.prepareIndex(K8S_INDEX_POD,"pod").setSource(builder).get();
+                byte[] json = mapper.writeValueAsBytes(podInfo);
+                client.prepareIndex(K8S_INDEX_POD,"pod").setSource(json, XContentType.JSON).get();
             }
         }else{
             System.out.println("Fail to get the pod list information!");

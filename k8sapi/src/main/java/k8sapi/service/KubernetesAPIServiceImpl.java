@@ -90,6 +90,7 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
         }
         //Construct the podinfo list
         List<PodInfo> podInfos = new ArrayList<PodInfo>();
+        List<V1Container> containers;
         for(V1Pod pod : podList.getItems()){
             PodInfo podInfo = new PodInfo();
             podInfo.setName(pod.getMetadata().getName());
@@ -98,6 +99,33 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
             podInfo.setNodeIP(pod.getStatus().getHostIP());
             podInfo.setPodIP(pod.getStatus().getPodIP());
             podInfo.setStartTime(pod.getStatus().getStartTime());
+            containers = pod.getSpec().getContainers();
+            //Add the containers information
+            List<PodContainer> podContainers = new ArrayList<>();
+            for(V1Container container : containers){
+                PodContainer podContainer = new PodContainer();
+                podContainer.setName(container.getName());
+                String image = container.getImage();
+                String[] temps = image.split(":");
+                podContainer.setImageName(temps[0]);
+                if(temps.length > 1){
+                    podContainer.setImageVersion(temps[1]);
+                }else{
+                    podContainer.setImageVersion("latest");
+                }
+                List<ContainerPort> containerPorts = new ArrayList<>();
+                if(container.getPorts() != null){
+                    for(V1ContainerPort port : container.getPorts()){
+                        ContainerPort containerPort = new ContainerPort();
+                        containerPort.setContainerPort(port.getContainerPort());
+                        containerPort.setProtocol(port.getProtocol());
+                        containerPorts.add(containerPort);
+                    }
+                }
+                podContainer.setPorts(containerPorts);
+                podContainers.add(podContainer);
+            }
+            podInfo.setContainers(podContainers);
             podInfos.add(podInfo);
         }
         response.setStatus(true);

@@ -1,4 +1,4 @@
-package k8sapi.bean;
+package escore.bean;
 
 import java.util.List;
 
