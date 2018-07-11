@@ -7,6 +7,8 @@ import escore.bean.RTRelation;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Component
 public class ESUtil {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private TransportClient client;
 
@@ -25,12 +29,12 @@ public class ESUtil {
         SearchResponse response = client.prepareSearch("k8s_*").setTypes("pod").setSize(10000).get();
 
         SearchHit[] hits = response.getHits().getHits();
-        System.out.println(String.format("The length of pod search hits is [%d]", hits.length));
+        log.info(String.format("The length of pod search hits is [%d]", hits.length));
 
         ObjectMapper mapper = new ObjectMapper();
         try{
             for (SearchHit hit : hits) {
-//                System.out.println(hit.getSourceAsString());
+//                log.info(hit.getSourceAsString());
                 PodInfo pod = mapper.readValue(hit.getSourceAsString(), PodInfo.class);
                 pods.add(pod);
             }
@@ -47,12 +51,12 @@ public class ESUtil {
         SearchResponse response = client.prepareSearch("k8s_*").setTypes("node").setSize(10000).get();
 
         SearchHit[] hits = response.getHits().getHits();
-        System.out.println(String.format("The length of node search hits is [%d]", hits.length));
+        log.info(String.format("The length of node search hits is [%d]", hits.length));
 
         ObjectMapper mapper = new ObjectMapper();
         try{
             for (SearchHit hit : hits) {
-//                System.out.println(hit.getSourceAsString());
+//                log.info(hit.getSourceAsString());
                 NodeInfo node = mapper.readValue(hit.getSourceAsString(), NodeInfo.class);
                 nodes.add(node);
             }
@@ -69,12 +73,12 @@ public class ESUtil {
         SearchResponse response = client.prepareSearch("rt_relation").setTypes("relation").setSize(10000).get();
 
         SearchHit[] hits = response.getHits().getHits();
-        System.out.println(String.format("The length of relation search hits is [%d]", hits.length));
+        log.info(String.format("The length of relation search hits is [%d]", hits.length));
 
         ObjectMapper mapper = new ObjectMapper();
         try{
             for (SearchHit hit : hits) {
-//                System.out.println(hit.getSourceAsString());
+//                log.info(hit.getSourceAsString());
                 RTRelation relation = mapper.readValue(hit.getSourceAsString(), RTRelation.class);
                 relations.add(relation);
             }

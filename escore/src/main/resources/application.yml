@@ -9,3 +9,7 @@ es-config:
   host: 10.141.211.163
   port: 30003
 
+logback:
+  logdir: /opt/log
+  appname: escore
+
