@@ -83,34 +83,37 @@ data:
     }
 
     filter {
+         if [kubernetes][namespace] != "default" or [kubernetes][container][name] == "istio-proxy"{
+              drop{}
+         } else {
+              if "Response" in [log]{
+                  grok{
+                    patterns_dir => "/usr/share/logstash/config/patterns"
+                    match => ["log","%{RESPONSELOG}"]
+                  }
+              }
 
-        if "Response" in [log]{
-            grok{
-              patterns_dir => "/usr/share/logstash/config/patterns"
-              match => ["log","%{RESPONSELOG}"]
-            }
-        }
+              else if "Content" in [log]{
+                  grok{
+                    patterns_dir => "/usr/share/logstash/config/patterns"
+                    match => ["log","%{INTERNALMETHODLOG}"]
+                  }
+              }
 
-        else if "Content" in [log]{
-            grok{
-              patterns_dir => "/usr/share/logstash/config/patterns"
-              match => ["log","%{INTERNALMETHODLOG}"]
-            }
-        }
+              else if "Request" in [log]{
+                  grok{
+                    patterns_dir => "/usr/share/logstash/config/patterns"
+                    match => ["log","%{REQUESTLOG}"]
+                  }
+              }
 
-        else if "Request" in [log]{
-            grok{
-              patterns_dir => "/usr/share/logstash/config/patterns"
-              match => ["log","%{REQUESTLOG}"]
-            }
-        }
-
-         else if "Exception" in [log]{
-            grok{
-              patterns_dir => "/usr/share/logstash/config/patterns"
-              match => ["log","%{EXCEPTIONLOG}"]
-            }
-        }
+               else if "Exception" in [log]{
+                  grok{
+                    patterns_dir => "/usr/share/logstash/config/patterns"
+                    match => ["log","%{EXCEPTIONLOG}"]
+                  }
+              }
+         }
     }
 
     output {

@@ -41,6 +41,10 @@ data:
         - /var/lib/docker/containers/*/*.log
       json.message_key: log
       json.keys_under_root: true
+      multiline.pattern: '^[[:space:]]+(at|\.{3})\b|^Caused by:'
+      multiline.negate: false
+      multiline.match: after
+      multiline.timeout: 10s
       processors:
         - add_kubernetes_metadata:
             in_cluster: true
