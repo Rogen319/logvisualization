@@ -28,6 +28,7 @@ public class InitIndexAndType implements CommandLineRunner {
 
     public static final String K8S_INDEX_POD = "k8s_pod";
     public static final String K8S_INDEX_NODE = "k8s_node";
+    public static final String REQUEST_TRACE_RELATION_INDEX = "rt_relation";
 
     @Override
     public void run(String... strings) throws Exception {
@@ -35,10 +36,10 @@ public class InitIndexAndType implements CommandLineRunner {
 
 //        indicesAdminClient.prepareDelete(K8S_INDEX_NODE,K8S_INDEX_POD).execute().actionGet();
 
-        //Judge if the k8s indices already exists
-        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD,K8S_INDEX_NODE).
+        //Judge if the k8s and rt indices already exists
+        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).
                 execute().actionGet();
-        System.out.println(String.format("Indices [%s, %s] exists? %b", K8S_INDEX_POD, K8S_INDEX_NODE, indicesExistsResponse.isExists()));
+        System.out.println(String.format("Indices [%s, %s, %s] exists? %b", K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX, indicesExistsResponse.isExists()));
 
         //If not, create the two indices
         if(!indicesExistsResponse.isExists()){
@@ -67,9 +68,22 @@ public class InitIndexAndType implements CommandLineRunner {
             } else {
                 System.out.println(String.format("Fail to create index [%s]!", K8S_INDEX_NODE));
             }
+
+            //Request-Trace index
+            createIndexResponse = indicesAdminClient.prepareCreate(REQUEST_TRACE_RELATION_INDEX)
+                    .execute().actionGet();
+            if (createIndexResponse.isAcknowledged()) {
+                System.out.println(String.format("Index [%s] has been created successfully!", REQUEST_TRACE_RELATION_INDEX));
+
+                //Add request trace relation type
+                addRelationType();
+            } else {
+                System.out.println(String.format("Fail to create index [%s]!", REQUEST_TRACE_RELATION_INDEX));
+            }
         }
     }
 
+    //Add node type in the node index
     private void addNodeType(){
         client.admin().indices().preparePutMapping(K8S_INDEX_NODE)
                 .setType("node")
@@ -104,6 +118,24 @@ public class InitIndexAndType implements CommandLineRunner {
                 .get();
     }
 
+    //Add relation type in the rt_relation index
+    private void addRelationType(){
+        client.admin().indices().preparePutMapping(REQUEST_TRACE_RELATION_INDEX)
+                .setType("relation")
+                .setSource("{\n" +
+                        "  \"properties\": {\n" +
+                        "    \"requestType\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"traceId\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}", XContentType.JSON)
+                .get();
+    }
+
+    //Insert node data in the node index
     private void insertNodeData() throws Exception{
         //Get and add nodes information
         GetNodesListResponse result = restTemplate.getForObject(
@@ -120,6 +152,7 @@ public class InitIndexAndType implements CommandLineRunner {
         }
     }
 
+    //Add pod type in the pod index
     private void addPodType(){
         client.admin().indices().preparePutMapping(K8S_INDEX_POD)
                 .setType("pod")
@@ -171,6 +204,7 @@ public class InitIndexAndType implements CommandLineRunner {
                 .get();
     }
 
+    //Insert pod data in the pod index
     private void insertPodData() throws Exception{
         //Get and add pods information
         GetPodsListResponse result = restTemplate.getForObject(

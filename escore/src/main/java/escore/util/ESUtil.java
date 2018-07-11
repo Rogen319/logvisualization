@@ -3,6 +3,7 @@ package escore.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.NodeInfo;
 import escore.bean.PodInfo;
+import escore.bean.RTRelation;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.search.SearchHit;
@@ -59,5 +60,27 @@ public class ESUtil {
             e.printStackTrace();
         }
         return nodes;
+    }
+
+    //Get the stored relation information
+    public List<RTRelation> getStoredRelations(){
+        List<RTRelation> relations = new ArrayList<>();
+
+        SearchResponse response = client.prepareSearch("rt_relation").setTypes("relation").setSize(10000).get();
+
+        SearchHit[] hits = response.getHits().getHits();
+        System.out.println(String.format("The length of relation search hits is [%d]", hits.length));
+
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            for (SearchHit hit : hits) {
+//                System.out.println(hit.getSourceAsString());
+                RTRelation relation = mapper.readValue(hit.getSourceAsString(), RTRelation.class);
+                relations.add(relation);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return relations;
     }
 }
