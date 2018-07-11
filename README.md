@@ -14,11 +14,13 @@ Before you begin, you need to install istio in your kubernetes cluster. Just exe
     * istioctl create -f trainticket-gateway.yaml
 2. Then, deploy the elasticsearch and filebeat by the following commands:
     * kubectl create -f logging-stack.yaml
+    * kubectl create -f logstash.yaml
     * kubectl create -f filebeat-kubernetes.yaml
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:
    *  kubectl delete -f filebeat-kubernetes.yaml
+   *  kubectl delete -f logstash.yaml
    *  kubectl delete -f logging-stack.yaml
    *  istioctl delete -f trainticket-gateway.yaml
    *  kubectl delete -f ts-deployment-part3.yml
