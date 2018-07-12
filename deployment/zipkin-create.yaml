@@ -1,0 +1,81 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin
+  namespace: istio-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zipkin
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: zipkin
+        image: docker.io/openzipkin/zipkin:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9411
+        env:
+        - name: STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_HOSTS
+          value: elasticsearch.logging:9200
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: zipkin-dependencies
+  namespace: istio-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zipkin-dependencies
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin-dependencies:1.9.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_HOSTS
+          value: elasticsearch.logging:9200
+        - name: ES_INDEX
+          value: zipkin
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+---
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: zipkin
+    namespace: istio-system
+  spec:
+    type: NodePort
+    ports:
+    - name: http
+      port: 9411
+      nodePort: 30005
+    selector:
+      app: zipkin
+---

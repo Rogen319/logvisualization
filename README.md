@@ -16,6 +16,9 @@ Before you begin, you need to install istio in your kubernetes cluster. Just exe
     * kubectl create -f logging-stack.yaml
     * kubectl create -f logstash.yaml
     * kubectl create -f filebeat-kubernetes.yaml
+3. To presist the zipkin data to elasticsearch
+    * kubectl delete -f zipkin-delete.yaml
+    * kubectl create -f zipkin-create.yaml
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:
