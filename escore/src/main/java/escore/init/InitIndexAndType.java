@@ -9,9 +9,6 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.ToXContent;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +35,7 @@ public class InitIndexAndType implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
 
-//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE,K8S_INDEX_POD).execute().actionGet();
+//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE, K8S_INDEX_POD, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
 
         //Judge if the k8s and rt indices already exists
         IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).

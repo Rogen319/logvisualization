@@ -12,7 +12,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -71,7 +71,7 @@ public class ESCoreScheduledTasks {
     }
 
     //Update node info every 1 hour 30000 3600000
-    @Scheduled(initialDelay = 27000, fixedDelay = 60000)
+    @Scheduled(initialDelay = 18000, fixedDelay = 60000)
     public void updateNodeInfo(){
         log.info("===Update the node information===");
         List<NodeInfo> originNodes = esUtil.getStoredNodes();
@@ -101,17 +101,17 @@ public class ESCoreScheduledTasks {
     }
 
     //Update request traceid relation every 5 seconds
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(initialDelay = 27000, fixedDelay = 9000)
     public void updateRelationInfo(){
         log.info("===Update the relation information===");
         List<RTRelation> originRelations = esUtil.getStoredRelations();
 
         //Search the log generated after the previous timestamp
-        MatchQueryBuilder qb = QueryBuilders.matchQuery("kubernetes.container.name","ts-login-service");
+//        MatchQueryBuilder qb = QueryBuilders.matchQuery("kubernetes.container.name","ts-login-service");
 
-//        QueryBuilder qb = QueryBuilders.existsQuery("kubernetes.container.name");
+        QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
 
-        SearchResponse scrollResp = client.prepareSearch("filebeat-*").setTypes("doc")
+        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
                 .addSort("@timestamp", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
@@ -119,23 +119,46 @@ public class ESCoreScheduledTasks {
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
         //Scroll until no hits are returned
         SearchHit[] hits = new SearchHit[0];
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-            hits = scrollResp.getHits().getHits();
-            log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
-            for (SearchHit hit : hits) {
-                //Handle the hit
-            }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-        }
+        Map<String, Object> map;
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
+                String requestType,traceId;
+                RTRelation relation;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    requestType = map.get("RequestType").toString();
+                    traceId = map.get("TraceId").toString();
+                    relation = new RTRelation();
+                    relation.setRequestType(requestType);
+                    relation.setTraceId(traceId);
+                    if(!existInOriginRelation(relation, originRelations)){
+                        log.info(String.format("Begin to add the relation RequestType:[%s]-TraceId:[%s]", relation.getRequestType(), relation.getTraceId()));
+                        byte[] json = mapper.writeValueAsBytes(relation);
+                        client.prepareIndex(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX,"relation").setSource(json, XContentType.JSON).get();
+                        originRelations.add(relation);
+                    }else{
+                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
+                    }
 
-        //Update the prevTimestamp according to the last record
-        if(hits.length > 0){
-            SearchHit last = hits[hits.length - 1];
+                }
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+            }
+
+            //Update the prevTimestamp according to the last record
+            if(hits.length > 0){
+                SearchHit last = hits[hits.length - 1];
 //            log.info(last.getSourceAsString());
-            Map<String, Object> map = last.getSourceAsMap();
+                map = last.getSourceAsMap();
 //            log.info(map);
-            prevTimestamp = map.get("@timestamp").toString();
-            log.info(String.format("Update the preTimestamp to [%s]",map.get("@timestamp").toString()));
+                prevTimestamp = map.get("@timestamp").toString();
+                log.info(String.format("Update the preTimestamp to [%s]",map.get("@timestamp").toString()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -152,6 +175,15 @@ public class ESCoreScheduledTasks {
     private boolean existInOrginNodes(NodeInfo node, List<NodeInfo> originNodes){
         for(NodeInfo originNode : originNodes){
             if(node.equals(originNode))
+                return true;
+        }
+        return false;
+    }
+
+    //Judge if the given relation exists in the original relation list
+    private boolean existInOriginRelation(RTRelation relation, List<RTRelation> originRelations){
+        for(RTRelation originRelation : originRelations){
+            if(relation.equals(originRelation))
                 return true;
         }
         return false;
