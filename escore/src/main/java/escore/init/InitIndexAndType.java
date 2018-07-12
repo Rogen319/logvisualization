@@ -38,7 +38,7 @@ public class InitIndexAndType implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
 
-//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE,K8S_INDEX_POD).execute().actionGet();
+//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE, K8S_INDEX_POD, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
 
         //Judge if the k8s and rt indices already exists
         IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).
