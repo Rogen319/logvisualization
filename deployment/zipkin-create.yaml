@@ -78,4 +78,15 @@ items:
       nodePort: 30005
     selector:
       app: zipkin
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: zipkin-dependencies
+    namespace: istio-system
+  spec:
+    ports:
+    - name: http
+      port: 9412
+    selector:
+      app: zipkin-dependencies
 ---
