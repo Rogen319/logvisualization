@@ -4,10 +4,10 @@
 This is a project trying to corelate the trace of microservices with the logs of the microservices. It is based on kubernetes and istio.And elasticsearch is used to store the log and zipkin to gather the trace and span information.</p>
 
 ## Deployment     
-Before you begin, you need to install istio in your kubernetes cluster. Just execute the following command:
-* kubectl apply -f istio-demo.yaml
+Before you begin, you need to install istio and customerized zipkin in your kubernetes cluster. Just execute the following command:
+* kubectl apply -f istio-demo-with-zipkin-to-es.yaml
 
-1. First, deployment the train ticket system by executing the following commands:
+1. First, deploy the train ticket system by executing the following commands:
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part1.yml)
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part2.yml)
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part3.yml)
@@ -16,9 +16,15 @@ Before you begin, you need to install istio in your kubernetes cluster. Just exe
     * kubectl create -f logging-stack.yaml
     * kubectl create -f logstash.yaml
     * kubectl create -f filebeat-kubernetes.yaml
-3. To presist the zipkin data to elasticsearch
-    * kubectl delete -f zipkin-delete.yaml
-    * kubectl create -f zipkin-create.yaml
+3. To use the zipkin dependency service, execute the following commands:
+    * kubectl create -f zipkin-dependency.yaml
+    
+## Access 
+After all of the pods are in running states, you can access the system by the following ip and port:
+   *  trainticket：http://10.141.211.163:31380/
+   *  kibana：http://10.141.211.163:30001
+   *  elasticsearch：http://10.141.211.163:30002/
+   *  zipkin：http://10.141.211.163:30005
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:

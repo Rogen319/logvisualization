@@ -20,6 +20,10 @@ spec:
         ports:
         - containerPort: 9411
         env:
+        - name: STORAGE_TYPE
+          value: elasticsearch
+        - name: ES_HOSTS
+          value: elasticsearch.logging:9200
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
