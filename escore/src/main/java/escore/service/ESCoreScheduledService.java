@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.NodeInfo;
 import escore.bean.PodInfo;
 import escore.bean.RTRelation;
+import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
 import escore.response.GetNodesListResponse;
 import escore.response.GetPodsListResponse;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +37,17 @@ public class ESCoreScheduledService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String SPAN_INDEX = "zipkin:span-*";
     private static final String SPAN_TYPE = "span";
+//    private MyConfig myConfig = new MyConfig();//This way will say: nullpointer exception
+
+    @Autowired
+    private MyConfig myConfig;
 
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private TransportClient client;
+    //These tasks may execute at the same time. Only one client may have some problems
+//    @Autowired
+//    private TransportClient client;
 
     @Autowired
     private ESUtil esUtil;
@@ -49,6 +56,7 @@ public class ESCoreScheduledService {
 
     //Update pod info
     public void updatePodInfo(){
+        TransportClient client = myConfig.getESClient();
         log.info("===Update the pod info===");
         List<PodInfo> originPods = esUtil.getStoredPods();
         //Get current pods information
@@ -77,6 +85,7 @@ public class ESCoreScheduledService {
 
     //Update node info
     public void updateNodeInfo(){
+        TransportClient client = myConfig.getESClient();
         log.info("===Update the node information===");
         List<NodeInfo> originNodes = esUtil.getStoredNodes();
         //Get current pods information
@@ -105,6 +114,8 @@ public class ESCoreScheduledService {
 
     //Update request traceid relation
     public void updateRelationInfo(){
+        TransportClient client = myConfig.getESClient();
+
         log.info("===Update the relation information===");
         List<RTRelation> originRelations = esUtil.getStoredRelations();
 
@@ -166,6 +177,9 @@ public class ESCoreScheduledService {
 
     //Delete the useless span info
     public void deleteUselessSpanInfo(){
+        TransportClient client = myConfig.getESClient();
+        List<String> traceIDList = new ArrayList<>();
+
         DeleteByQueryRequestBuilder deleteBuilder = DeleteByQueryAction.INSTANCE.newRequestBuilder(client);
 
         //Delete the mixer span records with the same trace id of istio-telemetry
@@ -183,43 +197,32 @@ public class ESCoreScheduledService {
                 //Handle the hit
                 map = hit.getSourceAsMap();
                 //Delete the mixer span
-                String traceId = map.get("traceId").toString();
-                deleteBuilder
-                        .filter(QueryBuilders.matchQuery("traceId", traceId))
-                        .filter(QueryBuilders.matchQuery("localEndpoint.serviceName", "istio-mixer"))
-                        .source(SPAN_INDEX)
-                        .execute(new ActionListener<BulkByScrollResponse>() {
-                            @Override
-                            public void onResponse(BulkByScrollResponse response) {
-                                long deleted = response.getDeleted();
-                                log.info(String.format("Succeed to delete [%d] istio-mixer span record", deleted));
-                            }
-                            @Override
-                            public void onFailure(Exception e) {
-                                // Handle the exception
-                                log.info(String.format("Fail to delete useless istio-mixer span info. With excepton message: [%s]", e.getStackTrace()));
-                            }
-                        });
+                traceIDList.add(map.get("traceId").toString());
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
 
-        //Delete the istio-telemetry span records
-        deleteBuilder
-                .filter(QueryBuilders.matchQuery("localEndpoint.serviceName", "istio-telemetry"))
-                .source(SPAN_INDEX)
-                .execute(new ActionListener<BulkByScrollResponse>() {
-                    @Override
-                    public void onResponse(BulkByScrollResponse response) {
-                        long deleted = response.getDeleted();
-                        log.info(String.format("Succeed to delete [%d] istio-telemetry span record", deleted));
-                    }
-                    @Override
-                    public void onFailure(Exception e) {
-                        // Handle the exception
-                        log.info(String.format("Fail to delete useless istio-telemetry span info. With excepton message: [%s]", e.getStackTrace()));
-                    }
-                });
+        log.info(String.format("The length of useless trace id list is [%d].", traceIDList.size()));
+
+        //Delete the span records with the same trace id of istio-telemetry
+        for(String traceId : traceIDList){
+            deleteBuilder
+                    .filter(QueryBuilders.matchQuery("traceId", traceId))
+                    .source(SPAN_INDEX)
+                    .execute(new ActionListener<BulkByScrollResponse>() {
+                        @Override
+                        public void onResponse(BulkByScrollResponse response) {
+                            long deleted = response.getDeleted();
+                            log.info(String.format("Succeed to delete [%d] useless span record", deleted));
+                        }
+                        @Override
+                        public void onFailure(Exception e) {
+                            // Handle the exception
+                            log.info(String.format("Fail to delete useless span info. With excepton message: [%s]", e.getStackTrace()));
+                        }
+                    });
+        }
+
     }
 
     //Judge if the given pod exist in the origin pods list

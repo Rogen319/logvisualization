@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: zipkin
-        image: openzipkin/zipkin-dependencies:1.9.2
+        image: openzipkin/zipkin-dependencies:1.12
         imagePullPolicy: IfNotPresent
         env:
         - name: STORAGE_TYPE
