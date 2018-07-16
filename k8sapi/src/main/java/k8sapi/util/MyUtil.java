@@ -1,8 +1,13 @@
 package k8sapi.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public class MyUtil {
+    private static Logger log = LoggerFactory.getLogger(MyUtil.class);
+
     public static final String DEFAULT_NAMESPACE = "default";
 
     //Read the whole file(Delete after read completion)
@@ -23,7 +28,7 @@ public class MyUtil {
         try {
             return new String(filecontent, encoding);
         } catch (UnsupportedEncodingException e) {
-            System.err.println("The OS does not support " + encoding);
+            log.error("The OS does not support " + encoding);
             e.printStackTrace();
             return null;
         }finally {
@@ -36,12 +41,12 @@ public class MyUtil {
         try {
             File file = new File(filePath);
             if (file.delete()) {
-//                System.out.println(file.getName() + " is deleted");
+//                log.info(file.getName() + " is deleted");
             } else {
-                System.out.println(String.format("Delete file [%s] failed!", file.getName()));
+                log.info(String.format("Delete file [%s] failed!", file.getName()));
             }
         } catch (Exception e) {
-            System.out.println("Exception occured when delete file");
+            log.info("Exception occured when delete file");
             e.printStackTrace();
         }
     }

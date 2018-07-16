@@ -10,9 +10,10 @@
     <version>0.1.0</version>
 
     <modules>
-        <module>logparser</module>
         <module>escore</module>
         <module>k8sapi</module>
+        <module>zipkinapi</module>
+        <!--<module>logapi</module>-->
     </modules>
 
     <parent>

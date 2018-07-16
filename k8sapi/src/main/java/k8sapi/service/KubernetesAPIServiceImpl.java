@@ -3,6 +3,8 @@ package k8sapi.service;
 import k8sapi.bean.*;
 import k8sapi.response.GetNodesListResponse;
 import k8sapi.response.GetPodsListResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.List;
 
 @Service
 public class KubernetesAPIServiceImpl implements KubernetesAPIService {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     NodeService nodeService;
 
@@ -21,7 +25,7 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
     public GetNodesListResponse getNodesList() {
         GetNodesListResponse response = new GetNodesListResponse();
         V1NodeList nodeList = nodeService.getNodeList();
-        System.out.println(String.format("There are now %d nodes in the cluster now", nodeList.getItems().size()));
+        log.info(String.format("There are now %d nodes in the cluster now", nodeList.getItems().size()));
         if(nodeList.getItems().size() < 1){
             response.setStatus(false);
             response.setMessage("There is no nodes in the cluster!");
@@ -31,7 +35,7 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
         List<NodeInfo> nodeInfos = new ArrayList<NodeInfo>();
         for(V1Node node : nodeList.getItems()){
             NodeInfo nodeInfo = new NodeInfo();
-//            System.out.println(String.format("The node name is %s and the role is %s",node.getMetadata().getName(),node.getSpec().getTaints() == null?"Minion":"Master"));
+//            log.info(String.format("The node name is %s and the role is %s",node.getMetadata().getName(),node.getSpec().getTaints() == null?"Minion":"Master"));
             //Set the role
             if(node.getSpec().getTaints() != null)
                 nodeInfo.setRole("Master");
@@ -82,7 +86,7 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
     public GetPodsListResponse getPodsListAPI() {
         GetPodsListResponse response = new GetPodsListResponse();
         V1PodList podList = podService.getPodList();
-        System.out.println(String.format("There are now %d pods in the cluster now", podList.getItems().size()));
+        log.info(String.format("There are now %d pods in the cluster now", podList.getItems().size()));
         if(podList.getItems().size() < 1){
             response.setStatus(true);
             response.setMessage("No resource found!");

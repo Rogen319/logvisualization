@@ -1,6 +1,5 @@
 package escore.service;
 
-import escore.bean.RTRelation;
 import escore.bean.RequestWithTraceID;
 import escore.init.InitIndexAndType;
 import escore.response.GetRequestTypesRes;
@@ -8,7 +7,6 @@ import escore.response.GetRequestWithTraceIDRes;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;

@@ -1,0 +1,14 @@
+server:
+  port: 19319
+
+spring:
+  application:
+    name: logvisualization-zipkinapi
+
+es-config:
+  host: 10.141.211.163
+  port: 30003
+
+logback:
+  logdir: /opt/log/zipkinapi
+  appname: zipkinapi

@@ -1,21 +1,21 @@
 version: '3'
 services:
 
-  logvisualization-logparser:
-      build: logparser
-      image: logvisualization/logparser
-      restart: always
-      ports:
-        - 16319:16319
-      networks:
-        - my-network
+#  logvisualization-logapi:
+#      build: logapi
+#      image: logvisualization/logapi
+#      restart: always
+#      ports:
+#        - 16319:16319
+#      networks:
+#        - my-network
 
   logvisualization-escore:
       build: escore
       image: logvisualization/escore
       restart: always
       volumes:
-        - /opt/log:/opt/log
+        - /opt/log/escore:/opt/log/escore
       ports:
         - 17319:17319
       networks:
@@ -25,8 +25,21 @@ services:
       build: k8sapi
       image: logvisualization/k8sapi
       restart: always
+      volumes:
+        - /opt/log/k8sapi:/opt/log/k8sapi
       ports:
         - 18319:18319
+      networks:
+        - my-network
+
+  logvisualization-zipkinapi:
+      build: zipkinapi
+      image: logvisualization/zipkinapi
+      restart: always
+      volumes:
+        - /opt/log/zipkinapi:/opt/log/zipkinapi
+      ports:
+        - 19319:19319
       networks:
         - my-network
 

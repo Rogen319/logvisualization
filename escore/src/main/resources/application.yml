@@ -10,6 +10,6 @@ es-config:
   port: 30003
 
 logback:
-  logdir: /opt/log
+  logdir: /opt/log/escore
   appname: escore
 

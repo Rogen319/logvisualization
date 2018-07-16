@@ -1,7 +1,5 @@
 package escore.bean;
 
-import javax.xml.soap.Node;
-
 public class NodeInfo {
     private String role;
     private String name;
