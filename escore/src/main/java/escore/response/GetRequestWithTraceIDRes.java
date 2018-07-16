@@ -1,21 +1,21 @@
 package escore.response;
 
-import escore.bean.RequestWithTraceID;
+import escore.bean.RequestWithTraceInfo;
 
 import java.util.List;
 
 public class GetRequestWithTraceIDRes extends GeneralResponse{
-    private List<RequestWithTraceID> requestWithTraceIDList;
+    private List<RequestWithTraceInfo> requestWithTraceInfoList;
 
     public GetRequestWithTraceIDRes(){
         super();
     }
 
-    public List<RequestWithTraceID> getRequestWithTraceIDList() {
-        return requestWithTraceIDList;
+    public List<RequestWithTraceInfo> getRequestWithTraceInfoList() {
+        return requestWithTraceInfoList;
     }
 
-    public void setRequestWithTraceIDList(List<RequestWithTraceID> requestWithTraceIDList) {
-        this.requestWithTraceIDList = requestWithTraceIDList;
+    public void setRequestWithTraceInfoList(List<RequestWithTraceInfo> requestWithTraceInfoList) {
+        this.requestWithTraceInfoList = requestWithTraceInfoList;
     }
 }

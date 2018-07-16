@@ -2,12 +2,12 @@ package escore.bean;
 
 import java.util.List;
 
-public class RequestWithTraceID {
+public class RequestWithTraceInfo {
     private String requestType;
-    private List<String> traceIDs;
+    private List<TraceInfo> traceInfoList;
     private int count;
 
-    public RequestWithTraceID(){
+    public RequestWithTraceInfo(){
 
     }
 
@@ -19,12 +19,12 @@ public class RequestWithTraceID {
         this.requestType = requestType;
     }
 
-    public List<String> getTraceIDs() {
-        return traceIDs;
+    public List<TraceInfo> getTraceInfoList() {
+        return traceInfoList;
     }
 
-    public void setTraceIDs(List<String> traceIDs) {
-        this.traceIDs = traceIDs;
+    public void setTraceInfoList(List<TraceInfo> traceInfoList) {
+        this.traceInfoList = traceInfoList;
     }
 
     public int getCount() {

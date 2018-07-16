@@ -4,10 +4,10 @@
     "requestTypes": [
         "QueryTravelInfo",
         "PreserveTicket",
-        "CancelRefund",
+        "Execute",
+        "Collect",
+        "Pay",
         "Login",
-        "GetFood",
-        "CancelOrder",
-        "QueryOrder"
+        "GetFood"
     ]
 }

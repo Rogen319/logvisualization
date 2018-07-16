@@ -1,150 +1,146 @@
 {
     "status": true,
     "message": "Succeed to get the request with trace ids. The size of request types is [7].",
-    "requestWithTraceIDList": [
+    "requestWithTraceInfoList": [
         {
             "requestType": "QueryTravelInfo",
-            "traceIDs": [
-                "aa988304a10c2a32",
-                "1d2fe49c3c46ce04",
-                "849acadf2a253e0d",
-                "92353c8ce7cd3688",
-                "4e77aeb245889099",
-                "940f2bc7d569fa1e",
-                "bfa054f7187b72e2",
-                "789131cefd7960d5",
-                "812d68f387557920",
-                "da75e0cab9a55a1a",
-                "f707e16b3b8b81cb",
-                "0e01b7bb04b867bd",
-                "34b68c732c8aacba",
-                "215b93b2edbaed4e",
-                "49a608aa6c6fa9b3",
-                "9290d1886f3a4a90",
-                "7db19a8015f4345b",
-                "9e60bcd606494aac",
-                "6e1de5168fc83f08",
-                "afb8ac2fb3558d99",
-                "585301362892d9ea",
-                "bdb02666c6a687dd",
-                "3355691a65179c34"
+            "traceInfoList": [
+                {
+                    "traceId": "7fbab20b14536253",
+                    "serviceName": [
+                        "ts-basic-service",
+                        "ts-config-service",
+                        "ts-price-service",
+                        "ts-travel-service",
+                        "ts-train-service",
+                        "ts-route-service",
+                        "ts-station-service",
+                        "ts-ticketinfo-service",
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-seat-service",
+                        "ts-order-service",
+                        "istio-ingressgateway"
+                    ]
+                }
             ],
-            "count": 23
+            "count": 1
         },
         {
             "requestType": "PreserveTicket",
-            "traceIDs": [
-                "dfe30f2a6b31f01d",
-                "9ef81529acbebd00",
-                "6467b2345c4a3023",
-                "dd92486f84f8313e",
-                "253dbdf0cb332cc1",
-                "ffdda65252a18149",
-                "b19128d605551e88",
-                "96a33874decaf331",
-                "121a029c16f226e6",
-                "36c9a2391f12a089",
-                "a0255afa7c11460c",
-                "5b2b6142a4066899",
-                "29968f4789f31a9a",
-                "599d8116c6ee82d1",
-                "7dbc346fb8da9a1c",
-                "692cc2c81a82e112",
-                "432648837bd0b108",
-                "9be4778d9fa8aadb",
-                "3a6836b29bd1eb72",
-                "63a9e22a823d1537",
-                "23ea536855de69d4"
+            "traceInfoList": [
+                {
+                    "traceId": "6964ee4b013c097e",
+                    "serviceName": [
+                        "ts-basic-service",
+                        "ts-config-service",
+                        "ts-price-service",
+                        "ts-travel-service",
+                        "ts-train-service",
+                        "ts-assurance-service",
+                        "ts-contacts-service",
+                        "ts-food-service",
+                        "ts-station-service",
+                        "ts-route-service",
+                        "ts-notification-service",
+                        "ts-security-service",
+                        "ts-ticketinfo-service",
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-seat-service",
+                        "ts-order-service",
+                        "ts-consign-service",
+                        "istio-ingressgateway",
+                        "ts-sso-service",
+                        "ts-preserve-service",
+                        "ts-consign-price-service",
+                        "ts-order-other-service"
+                    ]
+                }
             ],
-            "count": 21
+            "count": 1
         },
         {
-            "requestType": "CancelRefund",
-            "traceIDs": [
-                "73101262a184c096",
-                "97b56c480ece980b"
+            "requestType": "Execute",
+            "traceInfoList": [
+                {
+                    "traceId": "0849b08983c89b19",
+                    "serviceName": [
+                        "ts-execute-service",
+                        "ts-order-service",
+                        "istio-ingressgateway"
+                    ]
+                }
             ],
-            "count": 2
+            "count": 1
+        },
+        {
+            "requestType": "Collect",
+            "traceInfoList": [
+                {
+                    "traceId": "eff7a58f18f351c2",
+                    "serviceName": [
+                        "ts-execute-service",
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-order-service",
+                        "istio-ingressgateway"
+                    ]
+                }
+            ],
+            "count": 1
+        },
+        {
+            "requestType": "Pay",
+            "traceInfoList": [
+                {
+                    "traceId": "87736f2a2c92704c",
+                    "serviceName": [
+                        "ts-inside-payment-service",
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-order-service",
+                        "istio-ingressgateway"
+                    ]
+                }
+            ],
+            "count": 1
         },
         {
             "requestType": "Login",
-            "traceIDs": [
-                "b86ec7ccba379571",
-                "00e725ae17e832c3",
-                "4e430186aee46793",
-                "9e6d5870c16a4d09",
-                "587cb758948c2bd7",
-                "873888ebb7e5fa7b",
-                "c1ad9dc538b261ae",
-                "024ea81acd6c8a97",
-                "9f540f15c18e73d4",
-                "a6cfbf3bbe441cb4",
-                "88a7b3f9a4436db2",
-                "5e088f0e97e16763",
-                "5743f7de76bf7463",
-                "404ead27c5eaa845",
-                "3728cbd79c5baa4d",
-                "89e1a77eb0e34df1",
-                "f1aba42e95f708a7",
-                "75dd02cba7c6e55c",
-                "0d1b059b9b20cb31",
-                "2b98cb1b93527e57",
-                "3d65c88d7b2c2128",
-                "fecfbb57b5087430",
-                "10287b6c6c7e9a94",
-                "1342749646b00690",
-                "2eb6f99d97f0f949"
+            "traceInfoList": [
+                {
+                    "traceId": "23dff6605db17edd",
+                    "serviceName": [
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-login-service",
+                        "ts-verification-code-service",
+                        "istio-ingressgateway",
+                        "ts-sso-service"
+                    ]
+                }
             ],
-            "count": 25
+            "count": 1
         },
         {
             "requestType": "GetFood",
-            "traceIDs": [
-                "10ca98bb1caba83b",
-                "95d017a6f55f2bc7",
-                "9f5ed6e9f3836486",
-                "0a5671affd04eca4",
-                "a7cd85d29984c34a",
-                "a088eec7d58bd93f",
-                "28242b752b7ad89d",
-                "f80b314cc3ae2764",
-                "84fe152226441d99",
-                "91adfb452164a960",
-                "7ba7a131ce768d48",
-                "87687d5db9ecfc1a",
-                "0286a64d21274fc5",
-                "be95592dfadff672",
-                "6069c3d54dde18aa",
-                "c06b539ee12c3312",
-                "ca6ff3cc3bd07625",
-                "39940e164a45e928",
-                "ff9b9d3872a4272e",
-                "087ab328e9a3d036",
-                "e3fcbd7e38d9cc80"
+            "traceInfoList": [
+                {
+                    "traceId": "41e70c26dd7a96cf",
+                    "serviceName": [
+                        "ts-travel-service",
+                        "istio-mixer",
+                        "istio-policy",
+                        "ts-food-service",
+                        "ts-station-service",
+                        "ts-food-map-service",
+                        "ts-route-service",
+                        "istio-ingressgateway"
+                    ]
+                }
             ],
-            "count": 21
-        },
-        {
-            "requestType": "CancelOrder",
-            "traceIDs": [
-                "5ad2b70085a40890",
-                "14c6f5245fea5e28",
-                "09fc0a943ec9f147",
-                "78c3fc6600cd5bbb"
-            ],
-            "count": 4
-        },
-        {
-            "requestType": "QueryOrder",
-            "traceIDs": [
-                "c2b4968e310e035f",
-                "53b2e2f309ec8c2a",
-                "91c7a96c651f2b1d",
-                "89464756c9d54923",
-                "c84f4d567f2045dd",
-                "02cc0bf34364f1dd"
-            ],
-            "count": 6
+            "count": 1
         }
     ]
 }

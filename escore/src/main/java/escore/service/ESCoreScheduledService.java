@@ -45,10 +45,6 @@ public class ESCoreScheduledService {
     @Autowired
     private RestTemplate restTemplate;
 
-    //These tasks may execute at the same time. Only one client may have some problems
-//    @Autowired
-//    private TransportClient client;
-
     @Autowired
     private ESUtil esUtil;
 
@@ -69,12 +65,12 @@ public class ESCoreScheduledService {
             try{
                 for(PodInfo pod : currentPods){
                     if(!existInOrginPods(pod, originPods)){
-                        log.info(String.format("Begin to add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
+//                        log.info(String.format("Begin to add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
                         byte[] json = mapper.writeValueAsBytes(pod);
                         client.prepareIndex(InitIndexAndType.K8S_INDEX_POD,"pod").setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
                     }else{
-                        log.info(String.format("The pod [%s] with ip address [%s] already exists!", pod.getName(), pod.getPodIP()));
+//                        log.info(String.format("The pod [%s] with ip address [%s] already exists!", pod.getName(), pod.getPodIP()));
                     }
                 }
             }catch (Exception e){
@@ -98,12 +94,12 @@ public class ESCoreScheduledService {
             try{
                 for(NodeInfo node : currentNodes){
                     if(!existInOrginNodes(node, originNodes)){
-                        log.info(String.format("Begin to add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
+//                        log.info(String.format("Begin to add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
                         byte[] json = mapper.writeValueAsBytes(node);
                         client.prepareIndex(InitIndexAndType.K8S_INDEX_NODE,"node").setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
                     }else{
-                        log.info(String.format("The node [%s] with ip address [%s] already exists!", node.getName(), node.getIp()));
+//                        log.info(String.format("The node [%s] with ip address [%s] already exists!", node.getName(), node.getIp()));
                     }
                 }
             }catch (Exception e){
@@ -120,7 +116,6 @@ public class ESCoreScheduledService {
         List<RTRelation> originRelations = esUtil.getStoredRelations();
 
         //Search the log generated after the previous timestamp
-//        MatchQueryBuilder qb = QueryBuilders.matchQuery("kubernetes.container.name","ts-login-service");
 
         QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
 
@@ -154,7 +149,7 @@ public class ESCoreScheduledService {
                         client.prepareIndex(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX,"relation").setSource(json, XContentType.JSON).get();
                         originRelations.add(relation);
                     }else{
-                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
+//                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
                     }
 
                 }
@@ -164,9 +159,7 @@ public class ESCoreScheduledService {
             //Update the prevTimestamp according to the last record
             if(hits.length > 0){
                 SearchHit last = hits[hits.length - 1];
-//            log.info(last.getSourceAsString());
                 map = last.getSourceAsMap();
-//            log.info(map);
                 prevTimestamp = map.get("@timestamp").toString();
                 log.info(String.format("Update the preTimestamp to [%s]",map.get("@timestamp").toString()));
             }
