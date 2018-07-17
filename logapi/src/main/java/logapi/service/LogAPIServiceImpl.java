@@ -30,6 +30,12 @@ public class LogAPIServiceImpl implements LogAPIService {
     @Autowired
     private TransportClient client;
 
+    @Autowired
+    private PodService podService;
+
+    @Autowired
+    private NodeService nodeService;
+
     @Override
     public GetLogByTraceIdRes getLogByTraceId(String traceId) {
         GetLogByTraceIdRes res = new GetLogByTraceIdRes();
@@ -44,6 +50,9 @@ public class LogAPIServiceImpl implements LogAPIService {
 
     //Get the LogItem list of the specified traceId
     private List<LogItem> getLogItemListByTraceId(String traceId){
+        List<PodInfo> currentPods = podService.getCurrentPodInfo();
+        List<NodeInfo> currentNodes = nodeService.getCurrentNodeInfo();
+
         List<LogItem> logItemList = new ArrayList<>();
 
         QueryBuilder qb = QueryBuilders.matchQuery("TraceId",traceId);
@@ -60,8 +69,8 @@ public class LogAPIServiceImpl implements LogAPIService {
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
-                log.info("++++++======The hit is " + hit.getSourceAsString() + "======++++++");
-                LogItem logItem = composeLogItemFromHit(hit);
+//                log.info("++++++======The hit is " + hit.getSourceAsString() + "======++++++");
+                LogItem logItem = composeLogItemFromHit(hit, currentPods, currentNodes);
                 logItemList.add(logItem);
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
@@ -71,7 +80,7 @@ public class LogAPIServiceImpl implements LogAPIService {
     }
 
     //Compose the LogItem from the SearchHit
-    private LogItem composeLogItemFromHit(SearchHit hit){
+    private LogItem composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods, List<NodeInfo> currentNodes){
         LogItem logItem = new LogItem();
 
         Map<String, Object> map = hit.getSourceAsMap();
@@ -106,8 +115,18 @@ public class LogAPIServiceImpl implements LogAPIService {
             InstanceInfo instanceInfo = new InstanceInfo();
             String podName = logBean.getKubernetes().getPod().getName();
             instanceInfo.setInstanceName(podName);
+            PodContainer container = new PodContainer();
+            container.setName(logBean.getKubernetes().getContainer().getName());
+            instanceInfo.setContainer(container);
+            NodeInfo nodeInfo = podService.setInstanceInfo(instanceInfo, podName, currentPods);
 
             serviceInfo.setInstanceInfo(instanceInfo);
+
+            //Node information
+            if(nodeInfo != null){
+                nodeService.setNodeInfo(nodeInfo,currentNodes);
+                serviceInfo.setNode(nodeInfo);
+            }
 
             logItem.setServiceInfo(serviceInfo);
         }catch (Exception e){

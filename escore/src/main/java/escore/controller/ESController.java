@@ -1,13 +1,13 @@
 package escore.controller;
 
+import escore.bean.NodeInfo;
+import escore.bean.QueryNodeInfoRes;
 import escore.response.GetRequestTypesRes;
 import escore.response.GetRequestWithTraceIDRes;
+import escore.response.QueryPodInfoRes;
 import escore.service.ESCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ESController {
@@ -31,5 +31,17 @@ public class ESController {
     @RequestMapping(value = "/getRequestWithTraceID", method ={RequestMethod.GET})
     public GetRequestWithTraceIDRes getRequestWithTraceID(){
         return service.getRequestWithTraceID();
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/queryPodInfo/{podName}", method ={RequestMethod.GET})
+    public QueryPodInfoRes queryPodInfo(@PathVariable String podName){
+        return service.queryPodInfo(podName);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value="/queryNodeInfo", method= RequestMethod.POST)
+    public QueryNodeInfoRes queryNodeInfo(@RequestBody NodeInfo nodeInfo){
+        return service.queryNodeInfo(nodeInfo);
     }
 }

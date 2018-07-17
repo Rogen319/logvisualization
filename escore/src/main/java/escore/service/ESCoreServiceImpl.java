@@ -1,11 +1,12 @@
 package escore.service;
 
-import escore.bean.RequestWithTraceInfo;
-import escore.bean.TraceInfo;
+import escore.bean.*;
 import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
 import escore.response.GetRequestTypesRes;
 import escore.response.GetRequestWithTraceIDRes;
+import escore.response.QueryPodInfoRes;
+import escore.util.ESUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
@@ -30,6 +31,9 @@ public class ESCoreServiceImpl implements ESCoreService {
 
     @Autowired
     private MyConfig myConfig;
+
+    @Autowired
+    private ESUtil esUtil;
 
     //Just for demo
     @Override
@@ -133,6 +137,44 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
         res.setRequestWithTraceInfoList(requestWithTraceInfoList);
 
+        return res;
+    }
+
+    @Override
+    public QueryPodInfoRes queryPodInfo(String podName) {
+        QueryPodInfoRes res = new QueryPodInfoRes();
+        res.setStatus(false);
+        res.setMessage(String.format("No pod named [%s]", podName));
+        res.setPodInfo(null);
+
+        List<PodInfo> storedPods = esUtil.getStoredPods();
+        for(PodInfo podInfo : storedPods){
+            if(podInfo.getName().equals(podName)){
+                res.setPodInfo(podInfo);
+                res.setStatus(true);
+                res.setMessage("Succeed to get pod information in the stored list(es)");
+                return res;
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo) {
+        QueryNodeInfoRes res = new QueryNodeInfoRes();
+        res.setStatus(false);
+        res.setMessage(String.format("No node named [%s] with ip:[%s]", nodeInfo.getName(), nodeInfo.getIp()));
+        res.setNodeInfo(null);
+
+        List<NodeInfo> storedNodes = esUtil.getStoredNodes();
+        for(NodeInfo node : storedNodes){
+            if(node.equals(nodeInfo)){
+                res.setStatus(true);
+                res.setMessage("Succeed to get node information in the stored list(es)");
+                res.setNodeInfo(node);
+                return res;
+            }
+        }
         return res;
     }
 
