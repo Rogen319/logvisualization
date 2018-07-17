@@ -1,14 +1,16 @@
 version: '3'
 services:
 
-#  logvisualization-logapi:
-#      build: logapi
-#      image: logvisualization/logapi
-#      restart: always
-#      ports:
-#        - 16319:16319
-#      networks:
-#        - my-network
+  logvisualization-logapi:
+      build: logapi
+      image: logvisualization/logapi
+      restart: always
+      volumes:
+        - /opt/log/logapi:/opt/log/logapi
+      ports:
+        - 16319:16319
+      networks:
+        - my-network
 
   logvisualization-escore:
       build: escore

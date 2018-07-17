@@ -13,7 +13,7 @@
         <module>escore</module>
         <module>k8sapi</module>
         <module>zipkinapi</module>
-        <!--<module>logapi</module>-->
+        <module>logapi</module>
     </modules>
 
     <parent>
