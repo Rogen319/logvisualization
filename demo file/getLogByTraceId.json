@@ -1,3 +1,5 @@
+// URL: 10.141.212.24:16319/getLogByTraceId/23dff6605db17edd
+
 {
   "status": true,
   "message": "Succeed to get the trace log. Size is [16].",
@@ -13,7 +15,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -53,7 +55,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -93,7 +95,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -133,7 +135,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -173,7 +175,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -213,7 +215,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -253,7 +255,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-verification-code-service",
         "instanceInfo": {
           "instanceName": "ts-verification-code-service-646446cd45-pz8zv",
           "status": "Running",
@@ -293,7 +295,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-verification-code-service",
         "instanceInfo": {
           "instanceName": "ts-verification-code-service-646446cd45-pz8zv",
           "status": "Running",
@@ -333,7 +335,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -373,7 +375,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -413,7 +415,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -453,7 +455,7 @@
         "parentSpanId": ""
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-login-service",
         "instanceInfo": {
           "instanceName": "ts-login-service-85489cdfbc-pshhw",
           "status": "Running",
@@ -493,7 +495,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -533,7 +535,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -573,7 +575,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
@@ -613,7 +615,7 @@
         "parentSpanId": "23dff6605db17edd"
       },
       "serviceInfo": {
-        "serviceName": null,
+        "serviceName": "ts-sso-service",
         "instanceInfo": {
           "instanceName": "ts-sso-service-7dd47cb797-xmflh",
           "status": "Running",
