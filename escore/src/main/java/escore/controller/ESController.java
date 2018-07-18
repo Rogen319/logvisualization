@@ -1,9 +1,9 @@
 package escore.controller;
 
 import escore.bean.NodeInfo;
-import escore.bean.QueryNodeInfoRes;
 import escore.response.GetRequestTypesRes;
 import escore.response.GetRequestWithTraceIDRes;
+import escore.response.QueryNodeInfoRes;
 import escore.response.QueryPodInfoRes;
 import escore.service.ESCoreService;
 import org.springframework.beans.factory.annotation.Autowired;

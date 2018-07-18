@@ -1,15 +1,15 @@
-package escore.bean;
+package k8sapi.bean;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class V1PodList {
-    private String apiVersion = null;
-    private List<V1Pod> items = new ArrayList<V1Pod>();
-    private String kind = null;
-    private V1ListMeta metadata = null;
+public class V1ServiceList {
+    private String apiVersion;
+    private List<V1Service> items = new ArrayList<V1Service>();
+    private String kind;
+    private V1ListMeta metadata;
 
-    public V1PodList(){
+    public V1ServiceList(){
 
     }
 
@@ -21,11 +21,11 @@ public class V1PodList {
         this.apiVersion = apiVersion;
     }
 
-    public List<V1Pod> getItems() {
+    public List<V1Service> getItems() {
         return items;
     }
 
-    public void setItems(List<V1Pod> items) {
+    public void setItems(List<V1Service> items) {
         this.items = items;
     }
 

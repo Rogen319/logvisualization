@@ -108,17 +108,15 @@ public class LogAPIServiceImpl implements LogAPIService {
              * Set service information
              */
             ServiceInfo serviceInfo = new ServiceInfo();
-            //TODO: Get the service name by pod name
-            //serviceInfo.setServiceName();
 
-            //Instance information: name, container and version
+            //Service name and instance information: name, container and version
             InstanceInfo instanceInfo = new InstanceInfo();
             String podName = logBean.getKubernetes().getPod().getName();
             instanceInfo.setInstanceName(podName);
             PodContainer container = new PodContainer();
             container.setName(logBean.getKubernetes().getContainer().getName());
             instanceInfo.setContainer(container);
-            NodeInfo nodeInfo = podService.setInstanceInfo(instanceInfo, podName, currentPods);
+            NodeInfo nodeInfo = podService.setInstanceInfo(serviceInfo, instanceInfo, podName, currentPods);
 
             serviceInfo.setInstanceInfo(instanceInfo);
 

@@ -1,6 +1,6 @@
-package escore.bean;
+package escore.response;
 
-import escore.response.GeneralResponse;
+import escore.bean.NodeInfo;
 
 public class QueryNodeInfoRes extends GeneralResponse {
     private NodeInfo nodeInfo;

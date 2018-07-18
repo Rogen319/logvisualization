@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class KubernetesAPIServiceImpl implements KubernetesAPIService {
@@ -20,6 +21,9 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
 
     @Autowired
     PodService podService;
+
+    @Autowired
+    SvcService svcService;
 
     @Override
     public GetNodesListResponse getNodesList() {
@@ -91,8 +95,12 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
             response.setStatus(true);
             response.setMessage("No resource found!");
             response.setPods(null);
+            return response;
         }
+
         //Construct the podinfo list
+        V1ServiceList serviceList = svcService.getServiceList();
+
         List<PodInfo> podInfos = new ArrayList<PodInfo>();
         List<V1Container> containers;
         for(V1Pod pod : podList.getItems()){
@@ -103,6 +111,11 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
             podInfo.setNodeIP(pod.getStatus().getHostIP());
             podInfo.setPodIP(pod.getStatus().getPodIP());
             podInfo.setStartTime(pod.getStatus().getStartTime());
+
+            //Set the service name and labels
+            podInfo.setLabels(pod.getMetadata().getLabels());
+            podInfo.setServiceName(getServiceName(podInfo.getLabels(),serviceList));
+
             containers = pod.getSpec().getContainers();
             //Add the containers information
             List<PodContainer> podContainers = new ArrayList<>();
@@ -136,5 +149,25 @@ public class KubernetesAPIServiceImpl implements KubernetesAPIService {
         response.setMessage("Successfully get the pod info list!");
         response.setPods(podInfos);
         return response;
+    }
+
+    //Return the corresponding service name of pod
+    private String getServiceName(Map<String, String> labels, V1ServiceList serviceList){
+        Map<String, String> selector;
+
+        //Find the service with the corresponding label selector
+        for(V1Service service : serviceList.getItems()){
+            selector = service.getSpec().getSelector();
+            if(selector != null){
+                for(String key : selector.keySet()){
+                    if(labels.get(key) != null && labels.get(key).equals(selector.get(key))){
+//                        log.info(String.format("The label:[%s] is the same with value:[%s]", key, labels.get(key)));
+                        return service.getMetadata().getName();
+                    }
+                }
+            }
+        }
+
+        return "";
     }
 }

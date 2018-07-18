@@ -1,5 +1,7 @@
 package k8sapi.bean;
 
+import java.util.Map;
+
 public class V1ObjectMeta {
     private String name;
     private String namespace;
@@ -7,6 +9,7 @@ public class V1ObjectMeta {
     private String uid;
     private String resourceVersion;
     private String creationTimestamp;
+    private Map<String, String> labels;
 
     public V1ObjectMeta(){
 
@@ -58,5 +61,13 @@ public class V1ObjectMeta {
 
     public void setCreationTimestamp(String creationTimestamp) {
         this.creationTimestamp = creationTimestamp;
+    }
+
+    public Map<String, String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Map<String, String> labels) {
+        this.labels = labels;
     }
 }

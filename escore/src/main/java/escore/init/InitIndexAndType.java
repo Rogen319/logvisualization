@@ -35,7 +35,7 @@ public class InitIndexAndType implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
 
-//        indicesAdminClient.prepareDelete(K8S_INDEX_NODE, K8S_INDEX_POD, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
+//        indicesAdminClient.prepareDelete(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
 
         //Judge if the k8s and rt indices already exists
         IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).
@@ -165,6 +165,9 @@ public class InitIndexAndType implements CommandLineRunner {
                         "    \"nodeName\": {\n" +
                         "      \"type\": \"text\"\n" +
                         "    },\n" +
+                        "    \"serviceName\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
                         "    \"status\": {\n" +
                         "      \"type\": \"text\"\n" +
                         "    },\n" +
@@ -176,6 +179,10 @@ public class InitIndexAndType implements CommandLineRunner {
                         "    },\n" +
                         "    \"startTime\": {\n" +
                         "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"labels\": {\n" +
+                        "      \"type\": \"object\",\n" +
+                        "      \"dynamic\": true\n" +
                         "    },\n" +
                         "    \"containers\": {\n" +
                             "  \"properties\": {\n" +

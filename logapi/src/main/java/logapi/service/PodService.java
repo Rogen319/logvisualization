@@ -1,9 +1,6 @@
 package logapi.service;
 
-import logapi.bean.InstanceInfo;
-import logapi.bean.NodeInfo;
-import logapi.bean.PodContainer;
-import logapi.bean.PodInfo;
+import logapi.bean.*;
 import logapi.response.GetPodsListResponse;
 import logapi.response.QueryPodInfoRes;
 import org.slf4j.Logger;
@@ -34,7 +31,7 @@ public class PodService {
     }
 
     //Set the instance information
-    public NodeInfo setInstanceInfo(InstanceInfo instanceInfo, String podName, List<PodInfo> currentPods){
+    public NodeInfo setInstanceInfo(ServiceInfo serviceInfo, InstanceInfo instanceInfo, String podName, List<PodInfo> currentPods){
         String containerName = instanceInfo.getContainer().getName();
         NodeInfo nodeInfo = new NodeInfo();
 
@@ -43,6 +40,9 @@ public class PodService {
             if(podInfo.getName().equals(podName)){
                 nodeInfo.setName(podInfo.getNodeName());
                 nodeInfo.setIp(podInfo.getNodeIP());
+
+                serviceInfo.setServiceName(podInfo.getServiceName());
+
                 log.info(String.format("Find [%s] in current pod list", podName));
                 instanceInfo.setStatus(podInfo.getStatus());
                 List<PodContainer> containers = podInfo.getContainers();

@@ -1,14 +1,17 @@
 package escore.bean;
 
 import java.util.List;
+import java.util.Map;
 
 public class PodInfo {
     private String name;
     private String nodeName;
+    private String serviceName;
     private String status;
     private String nodeIP;
     private String podIP;
     private String startTime;
+    private Map<String, String> labels;
     private List<PodContainer> containers;
 
     public PodInfo(){
@@ -29,6 +32,14 @@ public class PodInfo {
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public String getStatus() {
@@ -61,6 +72,14 @@ public class PodInfo {
 
     public void setStartTime(String startTime) {
         this.startTime = startTime;
+    }
+
+    public Map<String, String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Map<String, String> labels) {
+        this.labels = labels;
     }
 
     public List<PodContainer> getContainers() {
