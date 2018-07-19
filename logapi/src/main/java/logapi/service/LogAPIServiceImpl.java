@@ -2,6 +2,8 @@ package logapi.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import logapi.bean.*;
+import logapi.request.GetLogByInstanceNameAndTraceIdReq;
+import logapi.response.GetLogByInstanceNameAndTraceIdRes;
 import logapi.response.LogResponse;
 import logapi.util.MyUtil;
 import org.elasticsearch.action.search.SearchResponse;
@@ -58,6 +60,57 @@ public class LogAPIServiceImpl implements LogAPIService {
         res.setLogs(logs);
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the instance log. Size is [%d].", logs.size()));
+
+        return res;
+    }
+
+    @Override
+    public GetLogByInstanceNameAndTraceIdRes getLogByInstanceNameAndTraceId(GetLogByInstanceNameAndTraceIdReq request) {
+        GetLogByInstanceNameAndTraceIdRes res = new GetLogByInstanceNameAndTraceIdRes();
+
+        QueryBuilder qb = QueryBuilders.boolQuery()
+                .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword",request.getInstanceName()))
+                .must(QueryBuilders.termQuery("TraceId",request.getTraceId()));
+
+        List<LogItemOfInstanceNameAndTraceId> logs = new ArrayList<>();
+        SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
+                .addSort("@timestamp", SortOrder.ASC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+        SearchHit[] hits;
+        Map<String, Object> map;
+
+        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                map = hit.getSourceAsMap();
+                LogItemOfInstanceNameAndTraceId log = new LogItemOfInstanceNameAndTraceId();
+                if(map.get("@timestamp") != null){
+                    String timestamp = map.get("@timestamp").toString();
+                    log.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
+                }
+                if(map.get("LogType") != null){
+                    log.setLogType(map.get("LogType").toString());
+                }
+                if(map.get("RequestType") != null){
+                    log.setRequestType(map.get("RequestType").toString());
+                }
+                if(map.get("log") != null){
+                    log.setLogInfo(map.get("log").toString());
+                }
+                logs.add(log);
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+        log.info(String.format("The length of corresponding logitem list is [%d]", logs.size()));
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the logs of instance:[%s] with traceid:[%s]. Size is [%d]",
+                request.getInstanceName(),request.getTraceId(),logs.size()));
+        res.setLogs(logs);
 
         return res;
     }
