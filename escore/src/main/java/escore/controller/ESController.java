@@ -1,6 +1,7 @@
 package escore.controller;
 
 import escore.bean.NodeInfo;
+import escore.request.GetRequestWithTraceIDByTimeRangeReq;
 import escore.response.GetRequestTypesRes;
 import escore.response.GetRequestWithTraceIDRes;
 import escore.response.QueryNodeInfoRes;
@@ -21,16 +22,22 @@ public class ESController {
         return service.demo();
     }
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getRequestTypes", method ={RequestMethod.GET})
-    public GetRequestTypesRes getRequestTypes(){
-        return service.getRequestTypes();
-    }
+//    @CrossOrigin(origins = "*")
+//    @RequestMapping(value = "/getRequestTypes", method ={RequestMethod.GET})
+//    public GetRequestTypesRes getRequestTypes(){
+//        return service.getRequestTypes();
+//    }
 
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/getRequestWithTraceID", method ={RequestMethod.GET})
     public GetRequestWithTraceIDRes getRequestWithTraceID(){
         return service.getRequestWithTraceID();
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getRequestWithTraceIDByTimeRange", method ={RequestMethod.POST})
+    public GetRequestWithTraceIDRes getRequestWithTraceIDByTimeRange(@RequestBody GetRequestWithTraceIDByTimeRangeReq request){
+        return service.getRequestWithTraceIDByTimeRange(request);
     }
 
     @CrossOrigin(origins = "*")

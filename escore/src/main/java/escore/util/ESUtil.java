@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -86,5 +88,12 @@ public class ESUtil {
             e.printStackTrace();
         }
         return relations;
+    }
+
+    //Convert the time from milliseconds to specified format
+    public String convertTime(long milliseconds){
+        Date date = new Date(milliseconds);
+        SimpleDateFormat formatter =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
     }
 }
