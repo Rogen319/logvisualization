@@ -4,10 +4,10 @@ import logapi.bean.LogItem;
 
 import java.util.List;
 
-public class GetLogByTraceIdRes extends GeneralResponse {
+public class LogResponse extends GeneralResponse {
     private List<LogItem> logs;
 
-    public GetLogByTraceIdRes(){
+    public LogResponse(){
 
     }
 

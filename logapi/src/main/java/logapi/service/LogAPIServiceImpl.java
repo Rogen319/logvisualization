@@ -2,7 +2,7 @@ package logapi.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import logapi.bean.*;
-import logapi.response.GetLogByTraceIdRes;
+import logapi.response.LogResponse;
 import logapi.util.MyUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -36,11 +36,12 @@ public class LogAPIServiceImpl implements LogAPIService {
     @Autowired
     private NodeService nodeService;
 
+    //Get log by trace id
     @Override
-    public GetLogByTraceIdRes getLogByTraceId(String traceId) {
-        GetLogByTraceIdRes res = new GetLogByTraceIdRes();
+    public LogResponse getLogByTraceId(String traceId) {
+        LogResponse res = new LogResponse();
 
-        List<LogItem> logs = getLogItemListByTraceId(traceId);
+        List<LogItem> logs = getLogItemListByCondition("TraceId", traceId);
         res.setLogs(logs);
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the trace log. Size is [%d].", logs.size()));
@@ -48,14 +49,27 @@ public class LogAPIServiceImpl implements LogAPIService {
         return res;
     }
 
+    //Get log by instance name
+    @Override
+    public LogResponse getLogByInstanceName(String instanceName) {
+        LogResponse res = new LogResponse();
+
+        List<LogItem> logs = getLogItemListByCondition("kubernetes.pod.name.keyword",instanceName);
+        res.setLogs(logs);
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the instance log. Size is [%d].", logs.size()));
+
+        return res;
+    }
+
     //Get the LogItem list of the specified traceId
-    private List<LogItem> getLogItemListByTraceId(String traceId){
+    private List<LogItem> getLogItemListByCondition(String termName, String termValue){
         List<PodInfo> currentPods = podService.getCurrentPodInfo();
         List<NodeInfo> currentNodes = nodeService.getCurrentNodeInfo();
 
         List<LogItem> logItemList = new ArrayList<>();
 
-        QueryBuilder qb = QueryBuilders.matchQuery("TraceId",traceId);
+        QueryBuilder qb = QueryBuilders.termQuery(termName,termValue);
 
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
                 .addSort("@timestamp", SortOrder.ASC)

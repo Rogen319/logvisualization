@@ -209,17 +209,17 @@ public class ESCoreServiceImpl implements ESCoreService {
             for (SearchHit hit : hits) {
                 //Handle the hit
                 map = hit.getSourceAsMap();
-                endpoint = map.get("localEndpoint").toString();
+                endpoint = map.get("localEndpoint") != null ? map.get("localEndpoint").toString() : "";
                 if(!endpoint.equals("")){
 //                    log.info(String.format("The localEndpoint is %s", endpoint));
                     matcher = pattern.matcher(endpoint);
                     if(matcher.find()){
-                        log.info(String.format("Matcher group 1 is %s", matcher.group(1)));
+//                        log.info(String.format("Matcher group 1 is %s", matcher.group(1)));
                         serviceList.add(matcher.group(1));
                     }else{
                         matcher = pattern2.matcher(endpoint);
                         if(matcher.find()){
-                            log.info(String.format("Matcher group 1 is %s", matcher.group(1)));
+//                            log.info(String.format("Matcher group 1 is %s", matcher.group(1)));
                             serviceList.add(matcher.group(1));
                         }
                     }

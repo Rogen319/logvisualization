@@ -1,6 +1,6 @@
 package logapi.controller;
 
-import logapi.response.GetLogByTraceIdRes;
+import logapi.response.LogResponse;
 import logapi.service.LogAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +10,17 @@ public class LogAPIController {
     @Autowired
     LogAPIService service;
 
-    //Get the dependencies from all of the stored record
+    //Get the log corresponding to the trace id
     @CrossOrigin(origins = "*")
     @RequestMapping(value = "/getLogByTraceId/{traceId}", method ={RequestMethod.GET})
-    public GetLogByTraceIdRes getLogByTraceId(@PathVariable String traceId){
+    public LogResponse getLogByTraceId(@PathVariable String traceId){
         return service.getLogByTraceId(traceId);
+    }
+
+    //Get the log corresponding to the instance name(pod)
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getLogByInstanceName/{instanceName}", method ={RequestMethod.GET})
+    public LogResponse getLogByInstanceName(@PathVariable String instanceName){
+        return service.getLogByInstanceName(instanceName);
     }
 }

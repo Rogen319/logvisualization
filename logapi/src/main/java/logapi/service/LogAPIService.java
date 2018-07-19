@@ -1,7 +1,8 @@
 package logapi.service;
 
-import logapi.response.GetLogByTraceIdRes;
+import logapi.response.LogResponse;
 
 public interface LogAPIService {
-    GetLogByTraceIdRes getLogByTraceId(String traceId);
+    LogResponse getLogByTraceId(String traceId);
+    LogResponse getLogByInstanceName(String instanceName);
 }
