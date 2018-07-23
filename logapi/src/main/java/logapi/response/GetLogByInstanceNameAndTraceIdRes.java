@@ -1,21 +1,21 @@
 package logapi.response;
 
-import logapi.bean.LogItemOfInstanceNameAndTraceId;
+import logapi.bean.BasicLogItem;
 
 import java.util.List;
 
 public class GetLogByInstanceNameAndTraceIdRes extends GeneralResponse {
-    private List<LogItemOfInstanceNameAndTraceId> logs;
+    private List<BasicLogItem> logs;
 
     public GetLogByInstanceNameAndTraceIdRes(){
 
     }
 
-    public List<LogItemOfInstanceNameAndTraceId> getLogs() {
+    public List<BasicLogItem> getLogs() {
         return logs;
     }
 
-    public void setLogs(List<LogItemOfInstanceNameAndTraceId> logs) {
+    public void setLogs(List<BasicLogItem> logs) {
         this.logs = logs;
     }
 }

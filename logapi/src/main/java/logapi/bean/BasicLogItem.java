@@ -1,12 +1,12 @@
 package logapi.bean;
 
-public class LogItemOfInstanceNameAndTraceId {
+public class BasicLogItem {
     private String timestamp;
     private String logType;
     private String requestType;
     private String logInfo;
 
-    public LogItemOfInstanceNameAndTraceId(){
+    public BasicLogItem(){
 
     }
 

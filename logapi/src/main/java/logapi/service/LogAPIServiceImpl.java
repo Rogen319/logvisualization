@@ -72,7 +72,7 @@ public class LogAPIServiceImpl implements LogAPIService {
                 .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword",request.getInstanceName()))
                 .must(QueryBuilders.termQuery("TraceId",request.getTraceId()));
 
-        List<LogItemOfInstanceNameAndTraceId> logs = new ArrayList<>();
+        List<BasicLogItem> logs = new ArrayList<>();
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
                 .addSort("@timestamp", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
@@ -87,20 +87,23 @@ public class LogAPIServiceImpl implements LogAPIService {
             for (SearchHit hit : hits) {
                 //Handle the hit
                 map = hit.getSourceAsMap();
-                LogItemOfInstanceNameAndTraceId log = new LogItemOfInstanceNameAndTraceId();
+                BasicLogItem log = new BasicLogItem();
                 if(map.get("@timestamp") != null){
                     String timestamp = map.get("@timestamp").toString();
                     log.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
                 }
                 if(map.get("LogType") != null){
-                    log.setLogType(map.get("LogType").toString());
+                    String logType = map.get("LogType").toString();
+                    log.setLogType(logType);
+                    //Set the log information according to the log type
+                    setLogInfo(log, logType, map);
                 }
                 if(map.get("RequestType") != null){
                     log.setRequestType(map.get("RequestType").toString());
                 }
-                if(map.get("log") != null){
-                    log.setLogInfo(map.get("log").toString());
-                }
+//                if(map.get("log") != null){
+//                    log.setLogInfo(map.get("log").toString());
+//                }
                 logs.add(log);
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
@@ -159,8 +162,11 @@ public class LogAPIServiceImpl implements LogAPIService {
 
         try{
             LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
-            logItem.setLogInfo(logBean.getLog());
-            logItem.setLogType(logBean.getLogType());
+//            logItem.setLogInfo(logBean.getLog());
+            String logType = logBean.getLogType();
+            logItem.setLogType(logType);
+            setLogInfo(logItem, logType, map);
+
             logItem.setRequestType(logBean.getRequestType());
             /**
              * Set trace information
@@ -199,5 +205,32 @@ public class LogAPIServiceImpl implements LogAPIService {
         }
 
         return logItem;
+    }
+
+    //Set the log information of log item
+    //Set the log information according to the log type
+    private void setLogInfo(BasicLogItem log, String logType, Map<String, Object> map) {
+        if(logType.equals("InvocationRequest")){
+            String request = "No parameter!";
+            if(map.get("Request") != null)
+                request = map.get("Request").toString();
+            log.setLogInfo(String.format("[Request Parameter: %s]", request));
+        }else if(logType.equals("InvocationResponse")){
+            String response = "No response!";
+            if(map.get("Response") != null)
+                response = map.get("Response").toString();
+            log.setLogInfo(String.format("[Response Value: %s]", response));
+        }else{
+            //InternalMethod: Normal and Message
+            if(map.get("Content") != null)
+                log.setLogInfo(map.get("Content").toString());
+            else{
+                String logInfo = String.format("[ExceptionMessage:%s][ExceptionCause:%s][ExceptionStack:%s]",
+                        map.get("ExceptionMessage") != null?map.get("ExceptionMessage").toString():"",
+                        map.get("ExceptionCause") != null?map.get("ExceptionCause").toString():"",
+                        map.get("ExceptionStack") != null?map.get("ExceptionStack").toString():"");
+                log.setLogInfo(logInfo);
+            }
+        }
     }
 }
