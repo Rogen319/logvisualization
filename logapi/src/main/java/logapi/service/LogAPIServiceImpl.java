@@ -220,7 +220,7 @@ public class LogAPIServiceImpl implements LogAPIService {
             if(map.get("Response") != null)
                 response = map.get("Response").toString();
             log.setLogInfo(String.format("[Response Value: %s]", response));
-        }else{
+        }else if(logType.equals("InternalMethod")){
             //InternalMethod: Normal and Message
             if(map.get("Content") != null)
                 log.setLogInfo(map.get("Content").toString());
@@ -231,6 +231,9 @@ public class LogAPIServiceImpl implements LogAPIService {
                         map.get("ExceptionStack") != null?map.get("ExceptionStack").toString():"");
                 log.setLogInfo(logInfo);
             }
+        }else{
+            log.setLogType("SystemLog");
+            log.setLogInfo(map.get("log") != null ? map.get("log").toString() : "");
         }
     }
 }

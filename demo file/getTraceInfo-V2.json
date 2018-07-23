@@ -1,0 +1,431 @@
+//URL: 10.141.211.163:30005/api/v2/trace/23dff6605db17edd
+
+[
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "92418f472550bf1c",
+    "id": "0c571f2795abdbb0",
+    "kind": "SERVER",
+    "name": "/istio.mixer.v1.mixer/check",
+    "timestamp": 1531730456433180,
+    "duration": 156,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "gRPC",
+      "hostname": "istio-policy-76c8896799-zh6vv",
+      "jaeger.version": "Go-2.12.0"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "bc6bbbe465b3a056",
+    "kind": "SERVER",
+    "name": "check",
+    "timestamp": 1531730456196680,
+    "duration": 742,
+    "localEndpoint": {
+      "serviceName": "istio-policy",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "6f8ca858-e5f4-9ced-9a02-5273ebdbff20",
+      "http.method": "POST",
+      "http.protocol": "HTTP/2",
+      "http.status_code": "200",
+      "http.url": "http://mixer/istio.mixer.v1.Mixer/Check",
+      "node_id": "sidecar~10.244.1.6~istio-policy-76c8896799-zh6vv.istio-system~istio-system.svc.cluster.local",
+      "request_size": "1239",
+      "response_flags": "-",
+      "response_size": "51",
+      "upstream_cluster": "in.9092",
+      "user_agent": "-"
+    },
+    "shared": true
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "e6247024ebbee0a3",
+    "kind": "CLIENT",
+    "name": "default-route",
+    "timestamp": 1531730456423196,
+    "duration": 46308,
+    "localEndpoint": {
+      "serviceName": "ts-login-service",
+      "ipv4": "10.244.2.144"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://ts-verification-code-service:15678/verification/verify",
+      "node_id": "sidecar~10.244.2.144~ts-login-service-85489cdfbc-pshhw.default~default.svc.cluster.local",
+      "request_size": "29",
+      "response_flags": "-",
+      "response_size": "4",
+      "upstream_cluster": "outbound|15678||ts-verification-code-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "bc6bbbe465b3a056",
+    "id": "5727a46300502aa5",
+    "kind": "SERVER",
+    "name": "/istio.mixer.v1.mixer/check",
+    "timestamp": 1531730456197028,
+    "duration": 141,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "gRPC",
+      "hostname": "istio-policy-76c8896799-zh6vv",
+      "jaeger.version": "Go-2.12.0"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "0c571f2795abdbb0",
+    "id": "51ca3ea7dd3cf85d",
+    "name": "kubernetes:handler.kubernetesenv.istio-system(kubernetesenv)",
+    "timestamp": 1531730456433243,
+    "duration": 57,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "annotations": [
+      {
+        "timestamp": 1531730456433300,
+        "value": "{\"adapter\":\"kubernetesenv\",\"error\":\"false\",\"handler\":\"handler.kubernetesenv.istio-system\",\"meshFunction\":\"kubernetes\",\"response_code\":\"OK\",\"response_message\":\"\"}"
+      }
+    ],
+    "tags": {
+      "lc": "istio-mixer"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "id": "23dff6605db17edd",
+    "kind": "SERVER",
+    "name": "trainticket",
+    "timestamp": 1531730456189412,
+    "duration": 622658,
+    "localEndpoint": {
+      "serviceName": "ts-login-service",
+      "ipv4": "10.244.2.144"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://10.141.211.163:31380/login",
+      "node_id": "sidecar~10.244.2.144~ts-login-service-85489cdfbc-pshhw.default~default.svc.cluster.local",
+      "request_size": "93",
+      "response_flags": "-",
+      "response_size": "277",
+      "upstream_cluster": "inbound|12342||ts-login-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    },
+    "shared": true
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "3ae4f56fe3436f31",
+    "kind": "CLIENT",
+    "name": "default-route",
+    "timestamp": 1531730456491124,
+    "duration": 301301,
+    "localEndpoint": {
+      "serviceName": "ts-login-service",
+      "ipv4": "10.244.2.144"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://ts-sso-service:12349/account/login",
+      "node_id": "sidecar~10.244.2.144~ts-login-service-85489cdfbc-pshhw.default~default.svc.cluster.local",
+      "request_size": "93",
+      "response_flags": "-",
+      "response_size": "277",
+      "upstream_cluster": "outbound|12349||ts-sso-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "e6247024ebbee0a3",
+    "id": "92418f472550bf1c",
+    "kind": "SERVER",
+    "name": "check",
+    "timestamp": 1531730456432845,
+    "duration": 743,
+    "localEndpoint": {
+      "serviceName": "istio-policy",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "2d4bbf0f-8f6a-97cf-ac92-1c32790f88e4",
+      "http.method": "POST",
+      "http.protocol": "HTTP/2",
+      "http.status_code": "200",
+      "http.url": "http://mixer/istio.mixer.v1.Mixer/Check",
+      "node_id": "sidecar~10.244.1.6~istio-policy-76c8896799-zh6vv.istio-system~istio-system.svc.cluster.local",
+      "request_size": "1342",
+      "response_flags": "-",
+      "response_size": "51",
+      "upstream_cluster": "in.9092",
+      "user_agent": "-"
+    },
+    "shared": true
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "bc6bbbe465b3a056",
+    "kind": "CLIENT",
+    "name": "async outbound|9091||istio-policy.istio-system.svc.cluster.local egress",
+    "timestamp": 1531730456189754,
+    "duration": 1492,
+    "localEndpoint": {
+      "serviceName": "ts-login-service",
+      "ipv4": "10.244.2.144"
+    },
+    "tags": {
+      "component": "proxy",
+      "grpc.status_code": "0",
+      "upstream_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "26e18395ef1a6d06",
+    "id": "679f59a54f3e6dc0",
+    "name": "kubernetes:handler.kubernetesenv.istio-system(kubernetesenv)",
+    "timestamp": 1531730456500179,
+    "duration": 55,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "annotations": [
+      {
+        "timestamp": 1531730456500233,
+        "value": "{\"adapter\":\"kubernetesenv\",\"error\":\"false\",\"handler\":\"handler.kubernetesenv.istio-system\",\"meshFunction\":\"kubernetes\",\"response_code\":\"OK\",\"response_message\":\"\"}"
+      }
+    ],
+    "tags": {
+      "lc": "istio-mixer"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "9fb2e29a8dc34ab3",
+    "id": "26e18395ef1a6d06",
+    "kind": "SERVER",
+    "name": "/istio.mixer.v1.mixer/check",
+    "timestamp": 1531730456500093,
+    "duration": 178,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "gRPC",
+      "hostname": "istio-policy-76c8896799-zh6vv",
+      "jaeger.version": "Go-2.12.0"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "5727a46300502aa5",
+    "id": "54b1188ad58c97f5",
+    "name": "kubernetes:handler.kubernetesenv.istio-system(kubernetesenv)",
+    "timestamp": 1531730456197092,
+    "duration": 43,
+    "localEndpoint": {
+      "serviceName": "istio-mixer",
+      "ipv4": "10.244.1.6"
+    },
+    "annotations": [
+      {
+        "timestamp": 1531730456197134,
+        "value": "{\"adapter\":\"kubernetesenv\",\"error\":\"false\",\"handler\":\"handler.kubernetesenv.istio-system\",\"meshFunction\":\"kubernetes\",\"response_code\":\"OK\",\"response_message\":\"\"}"
+      }
+    ],
+    "tags": {
+      "lc": "istio-mixer"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "e6247024ebbee0a3",
+    "id": "92418f472550bf1c",
+    "kind": "CLIENT",
+    "name": "async outbound|9091||istio-policy.istio-system.svc.cluster.local egress",
+    "timestamp": 1531730456432239,
+    "duration": 1641,
+    "localEndpoint": {
+      "serviceName": "ts-verification-code-service",
+      "ipv4": "10.244.1.136"
+    },
+    "tags": {
+      "component": "proxy",
+      "grpc.status_code": "0",
+      "upstream_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "id": "23dff6605db17edd",
+    "kind": "CLIENT",
+    "name": "trainticket",
+    "timestamp": 1531730456195076,
+    "duration": 623842,
+    "localEndpoint": {
+      "serviceName": "istio-ingressgateway",
+      "ipv4": "10.244.1.4"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://10.141.211.163:31380/login",
+      "node_id": "router~10.244.1.4~istio-ingressgateway-7d89dbf85f-6kcj6.istio-system~istio-system.svc.cluster.local",
+      "request_size": "93",
+      "response_flags": "-",
+      "response_size": "277",
+      "upstream_cluster": "outbound|12342||ts-login-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "e6247024ebbee0a3",
+    "kind": "SERVER",
+    "name": "default-route",
+    "timestamp": 1531730456432009,
+    "duration": 43679,
+    "localEndpoint": {
+      "serviceName": "ts-verification-code-service",
+      "ipv4": "10.244.1.136"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://ts-verification-code-service:15678/verification/verify",
+      "node_id": "sidecar~10.244.1.136~ts-verification-code-service-646446cd45-pz8zv.default~default.svc.cluster.local",
+      "request_size": "29",
+      "response_flags": "-",
+      "response_size": "4",
+      "upstream_cluster": "inbound|15678||ts-verification-code-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    },
+    "shared": true
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "3ae4f56fe3436f31",
+    "id": "9fb2e29a8dc34ab3",
+    "kind": "SERVER",
+    "name": "check",
+    "timestamp": 1531730456499652,
+    "duration": 1061,
+    "localEndpoint": {
+      "serviceName": "istio-policy",
+      "ipv4": "10.244.1.6"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "c94ce044-8ad4-9b10-b18a-c8bc4c661552",
+      "http.method": "POST",
+      "http.protocol": "HTTP/2",
+      "http.status_code": "200",
+      "http.url": "http://mixer/istio.mixer.v1.Mixer/Check",
+      "node_id": "sidecar~10.244.1.6~istio-policy-76c8896799-zh6vv.istio-system~istio-system.svc.cluster.local",
+      "request_size": "1273",
+      "response_flags": "-",
+      "response_size": "51",
+      "upstream_cluster": "in.9092",
+      "user_agent": "-"
+    },
+    "shared": true
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "3ae4f56fe3436f31",
+    "id": "9fb2e29a8dc34ab3",
+    "kind": "CLIENT",
+    "name": "async outbound|9091||istio-policy.istio-system.svc.cluster.local egress",
+    "timestamp": 1531730456499065,
+    "duration": 1830,
+    "localEndpoint": {
+      "serviceName": "ts-sso-service",
+      "ipv4": "10.244.1.132"
+    },
+    "tags": {
+      "component": "proxy",
+      "grpc.status_code": "0",
+      "upstream_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local"
+    }
+  },
+  {
+    "traceId": "23dff6605db17edd",
+    "parentId": "23dff6605db17edd",
+    "id": "3ae4f56fe3436f31",
+    "kind": "SERVER",
+    "name": "default-route",
+    "timestamp": 1531730456498685,
+    "duration": 301060,
+    "localEndpoint": {
+      "serviceName": "ts-sso-service",
+      "ipv4": "10.244.1.132"
+    },
+    "tags": {
+      "component": "proxy",
+      "downstream_cluster": "-",
+      "guid:x-request-id": "1bd0aa88-b2aa-99d2-82d0-edea7649fa27",
+      "http.method": "POST",
+      "http.protocol": "HTTP/1.1",
+      "http.status_code": "200",
+      "http.url": "http://ts-sso-service:12349/account/login",
+      "node_id": "sidecar~10.244.1.132~ts-sso-service-7dd47cb797-xmflh.default~default.svc.cluster.local",
+      "request_size": "93",
+      "response_flags": "-",
+      "response_size": "277",
+      "upstream_cluster": "inbound|12349||ts-sso-service.default.svc.cluster.local",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"
+    },
+    "shared": true
+  }
+]
