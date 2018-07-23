@@ -14,7 +14,8 @@ public class MyUtil {
         try {
             Date myDate = simpleDateFormat.parse(utcTime);
             simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            simpleDateFormat.setTimeZone(TimeZone.getDefault());
+//            simpleDateFormat.setTimeZone(TimeZone.getDefault()); //This will be 8 hours slower since the program is running on the docker
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
             String localTime = simpleDateFormat.format(myDate.getTime());
             return localTime;
         } catch (ParseException e) {
