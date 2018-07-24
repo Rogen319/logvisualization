@@ -155,54 +155,78 @@ public class ESCoreServiceImpl implements ESCoreService {
     public GetRequestWithTraceIDRes getRequestWithTraceIDByTimeRange(GetRequestWithTraceIDByTimeRangeReq request) {
         TransportClient client = myConfig.getESClient();
 
-        //Store the relation information in the time range
-        storeTheRelationTemp(request.getEndTime(), request.getLookback());
-
         GetRequestWithTraceIDRes res = new GetRequestWithTraceIDRes();
         res.setStatus(false);
         res.setMessage("This is the default message");
         List<RequestWithTraceInfo> requestWithTraceInfoList = new ArrayList<>();
+        Map<String, Set<String>> requestWithTraceIdsMap = new HashMap<>();
 
-        //Get request types first
-        GetRequestTypesRes getRequestTypesRes = this.getRequestTypes(TEMP_RELATION_INDEX, TEMP_RELATION_TYPE);
-        if(getRequestTypesRes.isStatus()){
-            MatchQueryBuilder qb;
-            SearchResponse scrollResp;
-            SearchHit[] hits;
-            Map<String, Object> map;
-            for(String requestType : getRequestTypesRes.getRequestTypes()){
-                //Create the object to store the information
-                RequestWithTraceInfo requestWithTraceInfo = new RequestWithTraceInfo();
-                requestWithTraceInfo.setRequestType(requestType);
-                List<TraceInfo> traceInfoList = new ArrayList<>();
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
 
-                qb = QueryBuilders.matchQuery("requestType",requestType);
-                scrollResp = client.prepareSearch(TEMP_RELATION_INDEX).setTypes(TEMP_RELATION_TYPE)
-                        .setScroll(new TimeValue(60000))
-                        .setQuery(qb)
-                        .setSize(100).get();
-                while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-                    hits = scrollResp.getHits().getHits();
-                    log.info(String.format("The length of scroll requestType:[%s] search hits is [%d]", requestType, hits.length));
-                    for (SearchHit hit : hits) {
-                        //Handle the hit
-                        map = hit.getSourceAsMap();
-                        TraceInfo traceInfo = getTraceInfoById(map.get("traceId").toString());
-                        traceInfoList.add(traceInfo);
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        log.info("===New method to get request with trace id by time range===");
+
+        QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
+
+        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
+                .addSort("@timestamp", SortOrder.ASC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setPostFilter(QueryBuilders.rangeQuery("@timestamp")
+                        .timeZone("+08:00")
+                        .format("yyyy-MM-dd HH:mm:ss")
+                        .from(beginTime,false)
+                        .to(endTime,false))
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+
+        //Construct the request type and its trace id set
+        SearchHit[] hits;
+        Map<String, Object> map;
+        try{
+            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                String requestType,traceId;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    requestType = map.get("RequestType").toString();
+                    traceId = map.get("TraceId").toString();
+                    if(requestWithTraceIdsMap.get(requestType) != null){
+                        requestWithTraceIdsMap.get(requestType).add(traceId);
+                    }else{
+                        Set<String> traceIds = new HashSet<>();
+                        traceIds.add(traceId);
+                        requestWithTraceIdsMap.put(requestType, traceIds);
                     }
-                    scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
                 }
-                requestWithTraceInfo.setTraceInfoList(traceInfoList);
-                requestWithTraceInfo.setCount(traceInfoList.size());
-                requestWithTraceInfoList.add(requestWithTraceInfo);
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
             }
-            res.setStatus(true);
-            res.setMessage(String.format("Succeed to get the request with trace ids of specified time range. " +
-                    "The size of request types is [%d].", getRequestTypesRes.getRequestTypes().size()));
-        }
-        res.setRequestWithTraceInfoList(requestWithTraceInfoList);
 
-        deleteTempIndex(client);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        //Construct the return data
+        for(String requestType : requestWithTraceIdsMap.keySet()){
+            RequestWithTraceInfo requestWithTraceInfo = new RequestWithTraceInfo();
+            requestWithTraceInfo.setRequestType(requestType);
+            List<TraceInfo> traceInfoList = new ArrayList<>();
+            for(String traceId : requestWithTraceIdsMap.get(requestType)){
+                TraceInfo traceInfo = getTraceInfoById(traceId);
+                traceInfoList.add(traceInfo);
+            }
+            requestWithTraceInfo.setTraceInfoList(traceInfoList);
+            requestWithTraceInfo.setCount(traceInfoList.size());
+            requestWithTraceInfoList.add(requestWithTraceInfo);
+        }
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the request with trace ids of specified time range. " +
+                    "The size of request types is [%d].", requestWithTraceIdsMap.keySet().size()));
+        res.setRequestWithTraceInfoList(requestWithTraceInfoList);
 
         return res;
     }
@@ -296,113 +320,4 @@ public class ESCoreServiceImpl implements ESCoreService {
         return res;
     }
 
-    //Store the relation information temporary
-    private void storeTheRelationTemp(long endTimeValue, long lookback){
-        TransportClient client = myConfig.getESClient();
-
-        createTempIndex(client);
-
-        String beginTime = esUtil.convertTime(endTimeValue - lookback);
-        String endTime = esUtil.convertTime(endTimeValue);
-
-        log.info("===Store the relation information temporary===");
-
-        QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
-
-        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("@timestamp", SortOrder.ASC)
-                .setScroll(new TimeValue(60000))
-                .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("@timestamp")
-                        .timeZone("+08:00")
-                        .format("yyyy-MM-dd HH:mm:ss")
-                        .from(beginTime,false)
-                        .to(endTime,false))
-                .setSize(100).get(); //max of 100 hits will be returned for each scroll
-        //Scroll until no hits are returned
-        List<RTRelation> existedRelations = new ArrayList<>();
-
-        SearchHit[] hits;
-        Map<String, Object> map;
-        ObjectMapper mapper = new ObjectMapper();
-        int count = 0;
-        try{
-            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-                hits = scrollResp.getHits().getHits();
-//                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
-                String requestType,traceId;
-                RTRelation relation;
-                for (SearchHit hit : hits) {
-                    //Handle the hit
-                    map = hit.getSourceAsMap();
-                    requestType = map.get("RequestType").toString();
-                    traceId = map.get("TraceId").toString();
-                    relation = new RTRelation();
-                    relation.setRequestType(requestType);
-                    relation.setTraceId(traceId);
-                    if(!existInExistedRelation(relation, existedRelations)){
-                        byte[] json = mapper.writeValueAsBytes(relation);
-                        //Set the mode to be synchronous
-                        client.prepareIndex(TEMP_RELATION_INDEX,TEMP_RELATION_TYPE)
-                                .setSource(json, XContentType.JSON)
-                                .setRefreshPolicy(WriteRequest.RefreshPolicy.WAIT_UNTIL)
-                                .get();
-                        count++;
-                        existedRelations.add(relation);
-                    }
-                }
-                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        log.info(String.format("Store [%d] relation records ", count));
-    }
-
-    private void createTempIndex(TransportClient client){
-        IndicesAdminClient indicesAdminClient = client.admin().indices();
-
-        CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(TEMP_RELATION_INDEX)
-                .execute().actionGet();
-        if (createIndexResponse.isAcknowledged()) {
-            log.info(String.format("Index [%s] has been created successfully!", TEMP_RELATION_INDEX));
-
-            //Add request trace relation type
-            addRelationType(indicesAdminClient);
-        } else {
-            log.info(String.format("Fail to create index [%s]!", TEMP_RELATION_INDEX));
-        }
-    }
-
-    private void deleteTempIndex(TransportClient client){
-        IndicesAdminClient indicesAdminClient = client.admin().indices();
-        indicesAdminClient.prepareDelete(TEMP_RELATION_INDEX).execute().actionGet();
-    }
-
-    //Add relation type in the rt_relation index
-    private void addRelationType(IndicesAdminClient indicesAdminClient){
-        indicesAdminClient.preparePutMapping(TEMP_RELATION_INDEX)
-                .setType("relation")
-                .setSource("{\n" +
-                        "  \"properties\": {\n" +
-                        "    \"requestType\": {\n" +
-                        "      \"type\": \"text\"\n" +
-                        "    },\n" +
-                        "    \"traceId\": {\n" +
-                        "      \"type\": \"text\"\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}", XContentType.JSON)
-                .get();
-    }
-
-    //Judge if the given relation exists in the original relation list
-    private boolean existInExistedRelation(RTRelation relation, List<RTRelation> originRelations){
-        for(RTRelation originRelation : originRelations){
-            if(relation.equals(originRelation))
-                return true;
-        }
-        return false;
-    }
 }

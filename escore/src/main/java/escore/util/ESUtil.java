@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Component
 public class ESUtil {
@@ -94,6 +95,7 @@ public class ESUtil {
     public String convertTime(long milliseconds){
         Date date = new Date(milliseconds);
         SimpleDateFormat formatter =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         return formatter.format(date);
     }
 }
