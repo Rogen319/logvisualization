@@ -7,15 +7,15 @@ This is a project trying to corelate the trace of microservices with the logs of
 Before you begin, you need to install istio and customerized zipkin in your kubernetes cluster. Just execute the following command:
 * kubectl apply -f istio-demo-with-zipkin-to-es.yaml
 
-1. First, deploy the train ticket system by executing the following commands:
+1. First, deploy the elasticsearch and filebeat by the following commands:
+    * kubectl create -f logging-stack.yaml
+    * kubectl create -f logstash.yaml
+    * kubectl create -f filebeat-kubernetes.yaml
+2. Second, deploy the train ticket system by executing the following commands:
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part1.yml)
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part2.yml)
     * kubectl create -f <(istioctl kube-inject -f ts-deployment-part3.yml)
     * istioctl create -f trainticket-gateway.yaml
-2. Then, deploy the elasticsearch and filebeat by the following commands:
-    * kubectl create -f logging-stack.yaml
-    * kubectl create -f logstash.yaml
-    * kubectl create -f filebeat-kubernetes.yaml
 3. To use the zipkin dependency service, execute the following commands:
     * kubectl create -f zipkin-dependency.yaml
     
@@ -28,6 +28,7 @@ After all of the pods are in running states, you can access the system by the fo
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:
+   *  kubectl delete -f zipkin-create.yaml
    *  kubectl delete -f filebeat-kubernetes.yaml
    *  kubectl delete -f logstash.yaml
    *  kubectl delete -f logging-stack.yaml

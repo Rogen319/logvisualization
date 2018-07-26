@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: ts-admin-basic-info-service
-        image: lwh319/istio-zipkin-ts-admin-basic-info-service
+        image: lwh319/istio-zipkin-ts-admin-basic-info-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18767
@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: ts-admin-order-service
-        image: lwh319/istio-zipkin-ts-admin-order-service
+        image: lwh319/istio-zipkin-ts-admin-order-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16112
@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
       - name: ts-admin-route-service
-        image: lwh319/istio-zipkin-ts-admin-route-service
+        image: lwh319/istio-zipkin-ts-admin-route-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16113
@@ -71,7 +71,7 @@ spec:
     spec:
       containers:
       - name: ts-admin-travel-service
-        image: lwh319/istio-zipkin-ts-admin-travel-service
+        image: lwh319/istio-zipkin-ts-admin-travel-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16114
@@ -91,7 +91,7 @@ spec:
     spec:
       containers:
       - name: ts-admin-user-service
-        image: lwh319/istio-zipkin-ts-admin-user-service
+        image: lwh319/istio-zipkin-ts-admin-user-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16115
@@ -111,7 +111,7 @@ spec:
     spec:
       containers:
       - name: ts-assurance-service
-        image: lwh319/istio-zipkin-ts-assurance-service
+        image: lwh319/istio-zipkin-ts-assurance-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18888
@@ -131,7 +131,7 @@ spec:
     spec:
       containers:
       - name: ts-basic-service
-        image: lwh319/istio-zipkin-ts-basic-service
+        image: lwh319/istio-zipkin-ts-basic-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 15680
@@ -151,7 +151,7 @@ spec:
     spec:
       containers:
       - name: ts-cancel-service
-        image: lwh319/istio-zipkin-ts-cancel-service
+        image: lwh319/istio-zipkin-ts-cancel-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18885
@@ -171,7 +171,7 @@ spec:
     spec:
       containers:
       - name: ts-config-service
-        image: lwh319/istio-zipkin-ts-config-service
+        image: lwh319/istio-zipkin-ts-config-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 15679
@@ -191,7 +191,7 @@ spec:
     spec:
       containers:
       - name: ts-consign-price-service
-        image: lwh319/istio-zipkin-ts-consign-price-service
+        image: lwh319/istio-zipkin-ts-consign-price-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16110
@@ -211,7 +211,7 @@ spec:
     spec:
       containers:
       - name: ts-consign-service
-        image: lwh319/istio-zipkin-ts-consign-service
+        image: lwh319/istio-zipkin-ts-consign-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16111
@@ -231,7 +231,7 @@ spec:
     spec:
       containers:
       - name: ts-contacts-service
-        image: lwh319/istio-zipkin-ts-contacts-service
+        image: lwh319/istio-zipkin-ts-contacts-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12347
@@ -251,7 +251,7 @@ spec:
     spec:
       containers:
       - name: ts-execute-service
-        image: lwh319/istio-zipkin-ts-execute-service
+        image: lwh319/istio-zipkin-ts-execute-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12386
@@ -271,7 +271,7 @@ spec:
     spec:
       containers:
       - name: ts-food-map-service
-        image: lwh319/istio-zipkin-ts-food-map-service
+        image: lwh319/istio-zipkin-ts-food-map-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18855
@@ -291,7 +291,7 @@ spec:
     spec:
       containers:
       - name: ts-food-service
-        image: lwh319/istio-zipkin-ts-food-service
+        image: lwh319/istio-zipkin-ts-food-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18856
@@ -311,7 +311,7 @@ spec:
     spec:
       containers:
       - name: ts-inside-payment-service
-        image: lwh319/istio-zipkin-ts-inside-payment-service
+        image: lwh319/istio-zipkin-ts-inside-payment-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18673
@@ -331,7 +331,7 @@ spec:
     spec:
       containers:
       - name: ts-login-service
-        image: lwh319/istio-zipkin-ts-login-service
+        image: lwh319/istio-zipkin-ts-login-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12342
@@ -351,7 +351,7 @@ spec:
     spec:
       containers:
       - name: ts-news-service
-        image: lwh319/istio-zipkin-ts-news-service
+        image: lwh319/istio-zipkin-ts-news-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12862
@@ -371,7 +371,7 @@ spec:
     spec:
       containers:
       - name: ts-notification-service
-        image: lwh319/istio-zipkin-ts-notification-service
+        image: lwh319/istio-zipkin-ts-notification-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 17853
@@ -391,7 +391,7 @@ spec:
     spec:
       containers:
       - name: ts-order-other-service
-        image: lwh319/istio-zipkin-ts-order-other-service
+        image: lwh319/istio-zipkin-ts-order-other-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12032
@@ -411,7 +411,7 @@ spec:
     spec:
       containers:
       - name: ts-order-service
-        image: lwh319/istio-zipkin-ts-order-service
+        image: lwh319/istio-zipkin-ts-order-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12031
@@ -431,7 +431,7 @@ spec:
     spec:
       containers:
       - name: ts-payment-service
-        image: lwh319/istio-zipkin-ts-payment-service
+        image: lwh319/istio-zipkin-ts-payment-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 19001
@@ -451,7 +451,7 @@ spec:
     spec:
       containers:
       - name: ts-preserve-other-service
-        image: lwh319/istio-zipkin-ts-preserve-other-service
+        image: lwh319/istio-zipkin-ts-preserve-other-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 14569
@@ -471,7 +471,7 @@ spec:
     spec:
       containers:
       - name: ts-preserve-service
-        image: lwh319/istio-zipkin-ts-preserve-service
+        image: lwh319/istio-zipkin-ts-preserve-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 14568
@@ -491,7 +491,7 @@ spec:
     spec:
       containers:
       - name: ts-price-service
-        image: lwh319/istio-zipkin-ts-price-service
+        image: lwh319/istio-zipkin-ts-price-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16579
@@ -511,7 +511,7 @@ spec:
     spec:
       containers:
       - name: ts-rebook-service
-        image: lwh319/istio-zipkin-ts-rebook-service
+        image: lwh319/istio-zipkin-ts-rebook-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18886
@@ -531,7 +531,7 @@ spec:
     spec:
       containers:
       - name: ts-register-service
-        image: lwh319/istio-zipkin-ts-register-service
+        image: lwh319/istio-zipkin-ts-register-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12344
@@ -551,7 +551,7 @@ spec:
     spec:
       containers:
       - name: ts-route-plan-service
-        image: lwh319/istio-zipkin-ts-route-plan-service
+        image: lwh319/istio-zipkin-ts-route-plan-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 14578
@@ -571,7 +571,7 @@ spec:
     spec:
       containers:
       - name: ts-route-service
-        image: lwh319/istio-zipkin-ts-route-service
+        image: lwh319/istio-zipkin-ts-route-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 11178
@@ -591,7 +591,7 @@ spec:
     spec:
       containers:
       - name: ts-seat-service
-        image: lwh319/istio-zipkin-ts-seat-service
+        image: lwh319/istio-zipkin-ts-seat-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 18898
@@ -611,7 +611,7 @@ spec:
     spec:
       containers:
       - name: ts-security-service
-        image: lwh319/istio-zipkin-ts-security-service
+        image: lwh319/istio-zipkin-ts-security-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 11188
@@ -631,7 +631,7 @@ spec:
     spec:
       containers:
       - name: ts-sso-service
-        image: lwh319/istio-zipkin-ts-sso-service
+        image: lwh319/istio-zipkin-ts-sso-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12349
@@ -651,7 +651,7 @@ spec:
     spec:
       containers:
       - name: ts-station-service
-        image: lwh319/istio-zipkin-ts-station-service
+        image: lwh319/istio-zipkin-ts-station-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12345
@@ -671,7 +671,7 @@ spec:
     spec:
       containers:
       - name: ts-ticket-office-service
-        image: lwh319/istio-zipkin-ts-ticket-office-service
+        image: lwh319/istio-zipkin-ts-ticket-office-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16108
@@ -691,7 +691,7 @@ spec:
     spec:
       containers:
       - name: ts-ticketinfo-service
-        image: lwh319/istio-zipkin-ts-ticketinfo-service
+        image: lwh319/istio-zipkin-ts-ticketinfo-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 15681
@@ -711,7 +711,7 @@ spec:
     spec:
       containers:
       - name: ts-train-service
-        image: lwh319/istio-zipkin-ts-train-service
+        image: lwh319/istio-zipkin-ts-train-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 14567
@@ -731,7 +731,7 @@ spec:
     spec:
       containers:
       - name: ts-travel2-service
-        image: lwh319/istio-zipkin-ts-travel2-service
+        image: lwh319/istio-zipkin-ts-travel2-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16346
@@ -751,7 +751,7 @@ spec:
     spec:
       containers:
       - name: ts-travel-plan-service
-        image: lwh319/istio-zipkin-ts-travel-plan-service
+        image: lwh319/istio-zipkin-ts-travel-plan-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 14322
@@ -771,7 +771,7 @@ spec:
     spec:
       containers:
       - name: ts-travel-service
-        image: lwh319/istio-zipkin-ts-travel-service
+        image: lwh319/istio-zipkin-ts-travel-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 12346
@@ -791,7 +791,7 @@ spec:
     spec:
       containers:
       - name: ts-verification-code-service
-        image: lwh319/istio-zipkin-ts-verification-code-service
+        image: lwh319/istio-zipkin-ts-verification-code-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 15678
@@ -811,7 +811,7 @@ spec:
     spec:
       containers:
       - name: ts-voucher-service
-        image: lwh319/istio-zipkin-ts-voucher-service
+        image: lwh319/istio-zipkin-ts-voucher-service:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 16101

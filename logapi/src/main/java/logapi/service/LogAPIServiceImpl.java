@@ -207,14 +207,16 @@ public class LogAPIServiceImpl implements LogAPIService {
         return logItem;
     }
 
-    //Set the log information of log item
     //Set the log information according to the log type
     private void setLogInfo(BasicLogItem log, String logType, Map<String, Object> map) {
         if(logType.equals("InvocationRequest")){
-            String request = "No parameter!";
+            String requestPara = "No parameter!";
+            String requestUri = "";
             if(map.get("Request") != null)
-                request = map.get("Request").toString();
-            log.setLogInfo(String.format("[Request Parameter: %s]", request));
+                requestPara = map.get("Request").toString();
+            if(map.get("URI") != null)
+                requestUri = map.get("URI").toString();
+            log.setLogInfo(String.format("[Request Parameter: %s][Request URI: %s]", requestPara,requestUri));
         }else if(logType.equals("InvocationResponse")){
             String response = "No response!";
             if(map.get("Response") != null)
