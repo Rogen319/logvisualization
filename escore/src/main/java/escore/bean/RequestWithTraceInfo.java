@@ -4,8 +4,7 @@ import java.util.List;
 
 public class RequestWithTraceInfo {
     private String requestType;
-    private List<TraceInfo> traceInfoList;
-    private int count;
+    private List<TraceType> traceTypeList;
 
     public RequestWithTraceInfo(){
 
@@ -19,19 +18,11 @@ public class RequestWithTraceInfo {
         this.requestType = requestType;
     }
 
-    public List<TraceInfo> getTraceInfoList() {
-        return traceInfoList;
+    public List<TraceType> getTraceTypeList() {
+        return traceTypeList;
     }
 
-    public void setTraceInfoList(List<TraceInfo> traceInfoList) {
-        this.traceInfoList = traceInfoList;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
+    public void setTraceTypeList(List<TraceType> traceTypeList) {
+        this.traceTypeList = traceTypeList;
     }
 }

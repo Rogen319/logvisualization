@@ -1,9 +1,6 @@
 package escore.service;
 
-import escore.bean.NodeInfo;
-import escore.bean.PodInfo;
-import escore.bean.RequestWithTraceInfo;
-import escore.bean.TraceInfo;
+import escore.bean.*;
 import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
@@ -135,8 +132,9 @@ public class ESCoreServiceImpl implements ESCoreService {
                     }
                     scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
                 }
-                requestWithTraceInfo.setTraceInfoList(traceInfoList);
-                requestWithTraceInfo.setCount(traceInfoList.size());
+                List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType,traceInfoList);
+
+                requestWithTraceInfo.setTraceTypeList(traceTypeList);
                 requestWithTraceInfoList.add(requestWithTraceInfo);
             }
             res.setStatus(true);
@@ -168,17 +166,17 @@ public class ESCoreServiceImpl implements ESCoreService {
         QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
 
         SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("@timestamp", SortOrder.ASC)
+                .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("@timestamp")
+                .setPostFilter(QueryBuilders.rangeQuery("time")
                         .timeZone("+08:00")
                         .format("yyyy-MM-dd HH:mm:ss")
                         .from(beginTime,false)
                         .to(endTime,false))
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
-        //Scroll until no hits are returned
 
+        //Scroll until no hits are returned
         //Construct the request type and its trace id set
         SearchHit[] hits;
         Map<String, Object> map;
@@ -215,18 +213,22 @@ public class ESCoreServiceImpl implements ESCoreService {
                 TraceInfo traceInfo = getTraceInfoById(traceId);
                 traceInfoList.add(traceInfo);
             }
-            requestWithTraceInfo.setTraceInfoList(traceInfoList);
-            requestWithTraceInfo.setCount(traceInfoList.size());
+            List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType,traceInfoList);
+
+            requestWithTraceInfo.setTraceTypeList(traceTypeList);
             requestWithTraceInfoList.add(requestWithTraceInfo);
         }
 
-        //Sort the request type
-        Collections.sort(requestWithTraceInfoList, new Comparator<RequestWithTraceInfo>() {
-            @Override
-            public int compare(RequestWithTraceInfo o1, RequestWithTraceInfo o2) {
-                return o1.getRequestType().compareTo(o2.getRequestType());
-            }
-        });
+        //@deprecated Sort the request type
+//        Collections.sort(requestWithTraceInfoList, new Comparator<RequestWithTraceInfo>() {
+//            @Override
+//            public int compare(RequestWithTraceInfo o1, RequestWithTraceInfo o2) {
+//                return o1.getRequestType().compareTo(o2.getRequestType());
+//            }
+//        });
+
+        //Sort the request type by lambda
+        requestWithTraceInfoList.sort(Comparator.comparing(RequestWithTraceInfo::getRequestType));
 
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the request with trace ids of specified time range. " +
@@ -234,6 +236,37 @@ public class ESCoreServiceImpl implements ESCoreService {
         res.setRequestWithTraceInfoList(requestWithTraceInfoList);
 
         return res;
+    }
+
+    //Retrive the trace types from the trace list
+    private List<TraceType> getTraceTypesFromTraceList(String requestType, List<TraceInfo> traceInfoList) {
+        Map<Set<String>, List<TraceInfo>> map = new HashMap<>();
+
+        List<TraceType> traceTypeList = new ArrayList<>();
+
+        int count = 1;
+
+        for(TraceInfo traceInfo : traceInfoList){
+            Set<String> serviceSet = traceInfo.getServiceName();
+            if(map.get(serviceSet) == null){
+                List<TraceInfo> traces = new ArrayList<>();
+                traces.add(traceInfo);
+                map.put(serviceSet, traces);
+            }else{
+                map.get(serviceSet).add(traceInfo);
+            }
+        }
+
+        for(Set<String> serviceSet : map.keySet()){
+            TraceType traceType = new TraceType();
+            traceType.setTypeName(requestType + "-Type" + count);
+            traceType.setTraceInfoList(map.get(serviceSet));
+            traceType.setCount(map.get(serviceSet).size());
+            count++;
+            traceTypeList.add(traceType);
+        }
+
+        return traceTypeList;
     }
 
     @Override
@@ -282,9 +315,12 @@ public class ESCoreServiceImpl implements ESCoreService {
         res.setTraceId(traceId);
 
         //Get the service name
-        Set<String> serviceList = new TreeSet<>();
+        Set<String> serviceList = new LinkedHashSet<>();
+        serviceList.add("istio-ingressgateway");
+
         QueryBuilder qb = QueryBuilders.matchQuery("traceId",traceId);
         SearchResponse scrollResp = client.prepareSearch(ZIPKIN_SPAN_INDEX).setTypes(ZIPKIN_SPAN_TYPE)
+                .addSort("timestamp_millis", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
                 .setSize(100).get();
@@ -320,6 +356,7 @@ public class ESCoreServiceImpl implements ESCoreService {
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
+
         res.setServiceName(serviceList);
 
         return res;

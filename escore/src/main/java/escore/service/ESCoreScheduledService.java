@@ -120,10 +120,10 @@ public class ESCoreScheduledService {
         QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
 
         SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("@timestamp", SortOrder.ASC)
+                .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("@timestamp").from(prevTimestamp,false))
+                .setPostFilter(QueryBuilders.rangeQuery("time").from(prevTimestamp,false))
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
         //Scroll until no hits are returned
         SearchHit[] hits = new SearchHit[0];
@@ -160,8 +160,8 @@ public class ESCoreScheduledService {
             if(hits.length > 0){
                 SearchHit last = hits[hits.length - 1];
                 map = last.getSourceAsMap();
-                prevTimestamp = map.get("@timestamp").toString();
-                log.info(String.format("Update the preTimestamp to [%s]",map.get("@timestamp").toString()));
+                prevTimestamp = map.get("time").toString();
+                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
             }
         }catch (Exception e){
             e.printStackTrace();
