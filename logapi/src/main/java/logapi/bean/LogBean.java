@@ -17,6 +17,9 @@ public class LogBean {
     @JsonProperty("LogType")
     private String logType = "";
 
+    @JsonProperty("URI")
+    private String uri = "";
+
     @JsonProperty("RequestType")
     private String requestType = "";
 
@@ -58,6 +61,14 @@ public class LogBean {
 
     public void setLogType(String logType) {
         this.logType = logType;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public String getRequestType() {

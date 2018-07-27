@@ -1,7 +1,9 @@
 package escore.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import escore.bean.*;
+import escore.bean.NodeInfo;
+import escore.bean.PodInfo;
+import escore.bean.RequestWithTraceInfo;
+import escore.bean.TraceInfo;
 import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
@@ -10,13 +12,9 @@ import escore.response.GetRequestWithTraceIDRes;
 import escore.response.QueryNodeInfoRes;
 import escore.response.QueryPodInfoRes;
 import escore.util.ESUtil;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.support.WriteRequest;
-import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -36,8 +34,6 @@ public class ESCoreServiceImpl implements ESCoreService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String ZIPKIN_SPAN_INDEX = "zipkin:span-*";
     private static final String ZIPKIN_SPAN_TYPE = "span";
-    private static final String TEMP_RELATION_INDEX = "temp_rt_relation";
-    private static final String TEMP_RELATION_TYPE = "relation";
 
     @Autowired
     private MyConfig myConfig;
@@ -223,6 +219,15 @@ public class ESCoreServiceImpl implements ESCoreService {
             requestWithTraceInfo.setCount(traceInfoList.size());
             requestWithTraceInfoList.add(requestWithTraceInfo);
         }
+
+        //Sort the request type
+        Collections.sort(requestWithTraceInfoList, new Comparator<RequestWithTraceInfo>() {
+            @Override
+            public int compare(RequestWithTraceInfo o1, RequestWithTraceInfo o2) {
+                return o1.getRequestType().compareTo(o2.getRequestType());
+            }
+        });
+
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the request with trace ids of specified time range. " +
                     "The size of request types is [%d].", requestWithTraceIdsMap.keySet().size()));
@@ -277,7 +282,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         res.setTraceId(traceId);
 
         //Get the service name
-        Set<String> serviceList = new HashSet<>();
+        Set<String> serviceList = new TreeSet<>();
         QueryBuilder qb = QueryBuilders.matchQuery("traceId",traceId);
         SearchResponse scrollResp = client.prepareSearch(ZIPKIN_SPAN_INDEX).setTypes(ZIPKIN_SPAN_TYPE)
                 .setScroll(new TimeValue(60000))

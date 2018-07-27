@@ -18,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class LogAPIServiceImpl implements LogAPIService {
@@ -44,6 +42,15 @@ public class LogAPIServiceImpl implements LogAPIService {
         LogResponse res = new LogResponse();
 
         List<LogItem> logs = getLogItemListByCondition("TraceId", traceId);
+
+        //Sort by uri
+        Collections.sort(logs, new Comparator<LogItem>() {
+            @Override
+            public int compare(LogItem o1, LogItem o2) {
+                return o1.getUri().compareTo(o2.getUri());
+            }
+        });
+
         res.setLogs(logs);
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the trace log. Size is [%d].", logs.size()));
@@ -101,9 +108,9 @@ public class LogAPIServiceImpl implements LogAPIService {
                 if(map.get("RequestType") != null){
                     log.setRequestType(map.get("RequestType").toString());
                 }
-//                if(map.get("log") != null){
-//                    log.setLogInfo(map.get("log").toString());
-//                }
+                if(map.get("URI") != null){
+                    log.setUri(map.get("URI").toString());
+                }
                 logs.add(log);
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
@@ -165,6 +172,9 @@ public class LogAPIServiceImpl implements LogAPIService {
 //            logItem.setLogInfo(logBean.getLog());
             String logType = logBean.getLogType();
             logItem.setLogType(logType);
+
+            logItem.setUri(logBean.getUri());
+
             setLogInfo(logItem, logType, map);
 
             logItem.setRequestType(logBean.getRequestType());
@@ -211,17 +221,20 @@ public class LogAPIServiceImpl implements LogAPIService {
     private void setLogInfo(BasicLogItem log, String logType, Map<String, Object> map) {
         if(logType.equals("InvocationRequest")){
             String requestPara = "No parameter!";
-            String requestUri = "";
             if(map.get("Request") != null)
                 requestPara = map.get("Request").toString();
-            if(map.get("URI") != null)
-                requestUri = map.get("URI").toString();
-            log.setLogInfo(String.format("[Request Parameter: %s][Request URI: %s]", requestPara,requestUri));
+            log.setLogInfo(String.format("[Request Parameter: %s]", requestPara));
         }else if(logType.equals("InvocationResponse")){
             String response = "No response!";
+            String responseCode = "";
+            String codeMessage = "";
             if(map.get("Response") != null)
                 response = map.get("Response").toString();
-            log.setLogInfo(String.format("[Response Value: %s]", response));
+            if(map.get("ResponseCode") != null)
+                responseCode = map.get("ResponseCode").toString();
+            if(map.get("CodeMessage") != null)
+                codeMessage = map.get("CodeMessage").toString();
+            log.setLogInfo(String.format("[Response Code: %s:%s][Response Value: %s]", responseCode, codeMessage, response));
         }else if(logType.equals("InternalMethod")){
             //InternalMethod: Normal and Message
             if(map.get("Content") != null)

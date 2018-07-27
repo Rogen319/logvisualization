@@ -5,6 +5,7 @@ public class BasicLogItem {
     private String logType;
     private String requestType;
     private String logInfo;
+    private String uri;
 
     public BasicLogItem(){
 
@@ -40,5 +41,13 @@ public class BasicLogItem {
 
     public void setLogInfo(String logInfo) {
         this.logInfo = logInfo;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }
