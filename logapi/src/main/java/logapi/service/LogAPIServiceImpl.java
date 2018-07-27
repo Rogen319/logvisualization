@@ -43,15 +43,51 @@ public class LogAPIServiceImpl implements LogAPIService {
 
         List<LogItem> logs = getLogItemListByCondition("TraceId", traceId);
 
-        //Sort by uri
+        //Sort by uri, then time and last type
         Collections.sort(logs, new Comparator<LogItem>() {
             @Override
             public int compare(LogItem o1, LogItem o2) {
+                if(o1.getUri().compareTo(o2.getUri()) == 0){
+                    String t1 = o1.getTimestamp();
+                    String t2 = o2.getTimestamp();
+                    if(t1.compareTo(t2) == 0){
+                        if(o1.getLogType().equals("InvocationRequest")){
+                            return -1;
+                        }else if(o1.getLogType().equals("InvocationResponse")){
+                            return 1;
+                        }else{
+                            if(o2.getLogType().equals("InvocationRequest"))
+                                return 1;
+                            else if(o2.getLogType().equals("InvocationResponse"))
+                                return -1;
+                            else
+                                return 0;
+                        }
+                    }
+                    return t1.compareTo(t2);
+                }
                 return o1.getUri().compareTo(o2.getUri());
             }
         });
 
+        //Set the error count
+        int normalCount = 0;
+        int errorCount = 0;
+        int exceptionCount = 0;
+        for(LogItem log : logs){
+            int flag = log.getIsError();
+            if(flag == 0)
+                normalCount++;
+            else if(flag == 1)
+                errorCount++;
+            else
+                exceptionCount++;
+        }
+
         res.setLogs(logs);
+        res.setNormalCount(normalCount);
+        res.setErrorCount(errorCount);
+        res.setExceptionCount(exceptionCount);
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the trace log. Size is [%d].", logs.size()));
 
@@ -64,7 +100,25 @@ public class LogAPIServiceImpl implements LogAPIService {
         LogResponse res = new LogResponse();
 
         List<LogItem> logs = getLogItemListByCondition("kubernetes.pod.name.keyword",instanceName);
+
+        //Set the error count
+        int normalCount = 0;
+        int errorCount = 0;
+        int exceptionCount = 0;
+        for(LogItem log : logs){
+            int flag = log.getIsError();
+            if(flag == 0)
+                normalCount++;
+            else if(flag == 1)
+                errorCount++;
+            else
+                exceptionCount++;
+        }
+
         res.setLogs(logs);
+        res.setNormalCount(normalCount);
+        res.setErrorCount(errorCount);
+        res.setExceptionCount(exceptionCount);
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the instance log. Size is [%d].", logs.size()));
 
@@ -81,7 +135,7 @@ public class LogAPIServiceImpl implements LogAPIService {
 
         List<BasicLogItem> logs = new ArrayList<>();
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
-                .addSort("@timestamp", SortOrder.ASC)
+                .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
@@ -95,8 +149,9 @@ public class LogAPIServiceImpl implements LogAPIService {
                 //Handle the hit
                 map = hit.getSourceAsMap();
                 BasicLogItem log = new BasicLogItem();
-                if(map.get("@timestamp") != null){
-                    String timestamp = map.get("@timestamp").toString();
+                if(map.get("time") != null){
+                    String timestamp = map.get("time").toString();
+                    timestamp = timestamp.substring(0,23) + "Z";
                     log.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
                 }
                 if(map.get("LogType") != null){
@@ -117,10 +172,27 @@ public class LogAPIServiceImpl implements LogAPIService {
         }
         log.info(String.format("The length of corresponding logitem list is [%d]", logs.size()));
 
+        //Set the error count
+        int normalCount = 0;
+        int errorCount = 0;
+        int exceptionCount = 0;
+        for(BasicLogItem log : logs){
+            int flag = log.getIsError();
+            if(flag == 0)
+                normalCount++;
+            else if(flag == 1)
+                errorCount++;
+            else
+                exceptionCount++;
+        }
+
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the logs of instance:[%s] with traceid:[%s]. Size is [%d]",
                 request.getInstanceName(),request.getTraceId(),logs.size()));
         res.setLogs(logs);
+        res.setNormalCount(normalCount);
+        res.setErrorCount(errorCount);
+        res.setExceptionCount(exceptionCount);
 
         return res;
     }
@@ -135,7 +207,7 @@ public class LogAPIServiceImpl implements LogAPIService {
         QueryBuilder qb = QueryBuilders.termQuery(termName,termValue);
 
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
-                .addSort("@timestamp", SortOrder.ASC)
+                .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
@@ -160,10 +232,14 @@ public class LogAPIServiceImpl implements LogAPIService {
     private LogItem composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods, List<NodeInfo> currentNodes){
         LogItem logItem = new LogItem();
 
+        //Default, it is not an error
+        logItem.setIsError(0);
+
         Map<String, Object> map = hit.getSourceAsMap();
         //Set timestamp
-        if(map.get("@timestamp") != null){
-            String timestamp = map.get("@timestamp").toString();
+        if(map.get("time") != null){
+            String timestamp = map.get("time").toString();
+            timestamp = timestamp.substring(0,23) + "Z";
             logItem.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
         }
 
@@ -245,6 +321,10 @@ public class LogAPIServiceImpl implements LogAPIService {
                         map.get("ExceptionCause") != null?map.get("ExceptionCause").toString():"",
                         map.get("ExceptionStack") != null?map.get("ExceptionStack").toString():"");
                 log.setLogInfo(logInfo);
+                log.setIsError(2);
+                if(logInfo.contains("error") || logInfo.contains("Error")){
+                    log.setIsError(1);
+                }
             }
         }else{
             log.setLogType("SystemLog");

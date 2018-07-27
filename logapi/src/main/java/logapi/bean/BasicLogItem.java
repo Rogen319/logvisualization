@@ -6,6 +6,7 @@ public class BasicLogItem {
     private String requestType;
     private String logInfo;
     private String uri;
+    private int isError;
 
     public BasicLogItem(){
 
@@ -49,5 +50,13 @@ public class BasicLogItem {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public int getIsError() {
+        return isError;
+    }
+
+    public void setIsError(int isError) {
+        this.isError = isError;
     }
 }
