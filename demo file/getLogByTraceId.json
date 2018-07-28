@@ -6,357 +6,21 @@
   "message": "Succeed to get the trace log. Size is [17].",
   "logs": [
     {
-      "timestamp": "2018-07-27 09:21:28.495",
+      "timestamp": "2018-07-27 20:18:39.420",
       "logType": "InvocationRequest",
       "requestType": "Login",
-      "logInfo": "[Request Parameter: {\"email\":\"fdse_microservices@163.com\",\"password\":\"DefaultPassword\",\"verificationCode\":\"abcd\"}]",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.501",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "The headers in sso service is {request-type=[Login], accept=[application/json, text/javascript, */*; q=0.01], x-requested-with=[XMLHttpRequest], user-agent=[Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36], content-type=[application/json], referer=[http://10.141.211.163:31380/], accept-encoding=[gzip, deflate], accept-language=[zh-CN,zh;q=0.9,en;q=0.8], cookie=[loginId=4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f; last-serviceName=all; loginToken=4e6e39e6-3012-4c7d-bce4-f2953232fac9; YsbCaptcha=01E179B9DE8E4928A120E8ED28B7159E; JSESSIONID=F8748A28AF503BB7AA6694F12F3939F7; YsbCaptcha=01E179B9DE8E4928A120E8ED28B7159E], x-forwarded-for=[10.244.0.0], x-forwarded-proto=[http], x-request-id=[acd0177e-a1e3-9bbb-9856-92850cc71e71], x-b3-traceid=[51967a3c534333e3], x-b3-spanid=[d15525d8ead7d7f9], x-b3-sampled=[1], x-envoy-expected-rq-timeout-ms=[15000], host=[ts-sso-service:12349], content-length=[93], x-b3-parentspanid=[51967a3c534333e3], x-envoy-internal=[true]}",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.509",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[SSO Service][Login] Success.",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.509",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[SSO Service][Login] Password Right. Put token to sso.",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.539",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[SSO Service][Login] Login Success. Id:4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f Token:34db9a86-3cb6-4a7d-b2aa-6a572e3aa57b",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.539",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[SSO Service][Login] Post to sso:34db9a86-3cb6-4a7d-b2aa-6a572e3aa57b",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.539",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[SSO Service] PutLoginResult Status: true",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.556",
-      "logType": "InvocationResponse",
-      "requestType": "",
-      "logInfo": "[Response Code: 200:OK][Response Value: {\"status\":true,\"message\":\"Success\",\"account\":{\"id\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"password\":\"\",\"gender\":1,\"name\":\"Default User\",\"documentType\":1,\"documentNum\":\"DefaultDocumentNumber\",\"email\":\"fdse_microservices@163.com\"},\"token\":\"34db9a86-3cb6-4a7d-b2aa-6a572e3aa57b\"}]",
-      "uri": "/account/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "d15525d8ead7d7f9",
-        "parentSpanId": "51967a3c534333e3"
-      },
-      "serviceInfo": {
-        "serviceName": "ts-sso-service",
-        "instanceInfo": {
-          "instanceName": "ts-sso-service-6cbf5dfd76-9h2nw",
-          "status": "Running",
-          "container": {
-            "name": "ts-sso-service",
-            "imageName": "lwh319/istio-zipkin-ts-sso-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12349,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:27.713",
-      "logType": "InvocationRequest",
-      "requestType": "Login",
-      "logInfo": "[Request Parameter: {\"email\":\"fdse_microservices@163.com\",\"password\":\"DefaultPassword\",\"verificationCode\":\"abcd\"}\"01E179B9DE8E4928A120E8ED28B7159E\"]",
+      "logInfo": "[Request Parameter: {\"email\":\"fdse_microservices@163.com\",\"password\":\"DefaultPassword\",\"verificationCode\":\"abcd\"}\"E6D0AA2419C84571AB7E7B25630D6085\"]",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -384,21 +48,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:27.718",
+      "timestamp": "2018-07-27 20:18:39.429",
       "logType": "InternalMethod",
       "requestType": "",
-      "logInfo": "The headers in login service is {host=[10.141.211.163:31380], content-length=[93], request-type=[Login], accept=[application/json, text/javascript, */*; q=0.01], origin=[http://10.141.211.163:31380], x-requested-with=[XMLHttpRequest], user-agent=[Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36], content-type=[application/json], referer=[http://10.141.211.163:31380/], accept-encoding=[gzip, deflate], accept-language=[zh-CN,zh;q=0.9,en;q=0.8], cookie=[loginId=4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f; last-serviceName=all; loginToken=4e6e39e6-3012-4c7d-bce4-f2953232fac9; YsbCaptcha=01E179B9DE8E4928A120E8ED28B7159E; JSESSIONID=F8748A28AF503BB7AA6694F12F3939F7], x-forwarded-for=[10.244.0.0], x-forwarded-proto=[http], x-request-id=[acd0177e-a1e3-9bbb-9856-92850cc71e71], x-b3-traceid=[51967a3c534333e3], x-b3-spanid=[51967a3c534333e3], x-b3-sampled=[1], x-envoy-expected-rq-timeout-ms=[15000], x-envoy-internal=[true]}",
+      "logInfo": "The headers in login service is {host=[10.141.211.163:31380], content-length=[93], request-type=[Login], accept=[application/json, text/javascript, */*; q=0.01], origin=[http://10.141.211.163:31380], x-requested-with=[XMLHttpRequest], user-agent=[Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36], content-type=[application/json], referer=[http://10.141.211.163:31380/], accept-encoding=[gzip, deflate], accept-language=[zh-CN,zh;q=0.9,en;q=0.8], cookie=[loginId=4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f; last-serviceName=all; loginToken=81a207ec-4cee-41c8-b6f2-da24cf6b068f; YsbCaptcha=E6D0AA2419C84571AB7E7B25630D6085; JSESSIONID=2425997C425724FD75794237B8E92A69], x-forwarded-for=[10.244.0.0], x-forwarded-proto=[http], x-request-id=[c93e8e8b-5a86-9f9b-bd3e-3dc2d27c5639], x-b3-traceid=[5a0e1b16fba67c48], x-b3-spanid=[5a0e1b16fba67c48], x-b3-sampled=[1], x-envoy-expected-rq-timeout-ms=[15000], x-envoy-internal=[true]}",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -426,21 +90,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:27.722",
+      "timestamp": "2018-07-27 20:18:39.433",
       "logType": "InternalMethod",
       "requestType": "",
-      "logInfo": "[Login Service][Login] Verification Code:abcd VerifyCookie:01E179B9DE8E4928A120E8ED28B7159E",
+      "logInfo": "[Login Service][Login] Verification Code:abcd VerifyCookie:E6D0AA2419C84571AB7E7B25630D6085",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -468,21 +132,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:27.879",
+      "timestamp": "2018-07-27 20:18:39.538",
       "logType": "InternalMethod",
       "requestType": "",
       "logInfo": "[Login Service][Login] Verification Result:true",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -510,63 +174,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:28.600",
-      "logType": "InternalMethod",
-      "requestType": "",
-      "logInfo": "[Login Service] Status:true",
-      "uri": "/login",
-      "isError": 0,
-      "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
-        "parentSpanId": ""
-      },
-      "serviceInfo": {
-        "serviceName": "ts-login-service",
-        "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
-          "status": "Running",
-          "container": {
-            "name": "ts-login-service",
-            "imageName": "lwh319/istio-zipkin-ts-login-service",
-            "imageVersion": "1.0",
-            "ports": [
-              {
-                "containerPort": 12342,
-                "protocol": "TCP"
-              }
-            ]
-          }
-        },
-        "node": {
-          "role": "Minion",
-          "name": "centos-minion-2",
-          "ip": "10.141.211.177",
-          "status": "Ready",
-          "kubeProxyVersion": "v1.10.3",
-          "kubeletVersion": "v1.10.3",
-          "operatingSystem": "linux",
-          "osImage": "CentOS Linux 7 (Core)",
-          "containerRuntimeVersion": "docker://17.3.2"
-        }
-      }
-    },
-    {
-      "timestamp": "2018-07-27 09:21:28.600",
+      "timestamp": "2018-07-27 20:18:39.829",
       "logType": "InternalMethod",
       "requestType": "",
       "logInfo": "[Login Service] Status: true. Put Cookie.",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -594,21 +216,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:28.604",
-      "logType": "InvocationResponse",
+      "timestamp": "2018-07-27 20:18:39.829",
+      "logType": "InternalMethod",
       "requestType": "",
-      "logInfo": "[Response Code: 200:OK][Response Value: {\"status\":true,\"message\":\"Success\",\"account\":{\"id\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"password\":\"\",\"gender\":1,\"name\":\"Default User\",\"documentType\":1,\"documentNum\":\"DefaultDocumentNumber\",\"email\":\"fdse_microservices@163.com\"},\"token\":\"34db9a86-3cb6-4a7d-b2aa-6a572e3aa57b\"}]",
+      "logInfo": "[Login Service] Status:true",
       "uri": "/login",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "51967a3c534333e3",
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
         "parentSpanId": ""
       },
       "serviceInfo": {
         "serviceName": "ts-login-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-7j2b8",
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
           "status": "Running",
           "container": {
             "name": "ts-login-service",
@@ -636,21 +258,63 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:27.776",
+      "timestamp": "2018-07-27 20:18:39.831",
+      "logType": "InvocationResponse",
+      "requestType": "",
+      "logInfo": "[Response Code: 200:OK][Response Value: {\"status\":true,\"message\":\"Success\",\"account\":{\"id\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"password\":\"\",\"gender\":1,\"name\":\"Default User\",\"documentType\":1,\"documentNum\":\"DefaultDocumentNumber\",\"email\":\"fdse_microservices@163.com\"},\"token\":\"2ebe2dc0-4929-4367-9155-cde1e74c88fe\"}]",
+      "uri": "/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "5a0e1b16fba67c48",
+        "parentSpanId": ""
+      },
+      "serviceInfo": {
+        "serviceName": "ts-login-service",
+        "instanceInfo": {
+          "instanceName": "ts-login-service-6d7c445b86-fpn2h",
+          "status": "Running",
+          "container": {
+            "name": "ts-login-service",
+            "imageName": "lwh319/istio-zipkin-ts-login-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12342,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.487",
       "logType": "InvocationRequest",
       "requestType": "Login",
       "logInfo": "[Request Parameter: No parameter!]",
       "uri": "/verification/verify",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "03a44290bb73d122",
-        "parentSpanId": "51967a3c534333e3"
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "34577e552ac8dbeb",
+        "parentSpanId": "5a0e1b16fba67c48"
       },
       "serviceInfo": {
         "serviceName": "ts-verification-code-service",
         "instanceInfo": {
-          "instanceName": "ts-verification-code-service-678469dc76-rw9rg",
+          "instanceName": "ts-verification-code-service-678469dc76-zt5f8",
           "status": "Running",
           "container": {
             "name": "ts-verification-code-service",
@@ -666,8 +330,8 @@
         },
         "node": {
           "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
           "status": "Ready",
           "kubeProxyVersion": "v1.10.3",
           "kubeletVersion": "v1.10.3",
@@ -678,21 +342,21 @@
       }
     },
     {
-      "timestamp": "2018-07-27 09:21:27.803",
+      "timestamp": "2018-07-27 20:18:39.490",
       "logType": "InvocationResponse",
       "requestType": "",
       "logInfo": "[Response Code: 200:OK][Response Value: true]",
       "uri": "/verification/verify",
       "isError": 0,
       "traceInfo": {
-        "traceId": "51967a3c534333e3",
-        "spanId": "03a44290bb73d122",
-        "parentSpanId": "51967a3c534333e3"
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "34577e552ac8dbeb",
+        "parentSpanId": "5a0e1b16fba67c48"
       },
       "serviceInfo": {
         "serviceName": "ts-verification-code-service",
         "instanceInfo": {
-          "instanceName": "ts-verification-code-service-678469dc76-rw9rg",
+          "instanceName": "ts-verification-code-service-678469dc76-zt5f8",
           "status": "Running",
           "container": {
             "name": "ts-verification-code-service",
@@ -708,8 +372,344 @@
         },
         "node": {
           "role": "Minion",
-          "name": "centos-minion-1",
-          "ip": "10.141.211.164",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.761",
+      "logType": "InvocationRequest",
+      "requestType": "Login",
+      "logInfo": "[Request Parameter: {\"email\":\"fdse_microservices@163.com\",\"password\":\"DefaultPassword\",\"verificationCode\":\"abcd\"}]",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.767",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "The headers in sso service is {request-type=[Login], accept=[application/json, text/javascript, */*; q=0.01], x-requested-with=[XMLHttpRequest], user-agent=[Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36], content-type=[application/json], referer=[http://10.141.211.163:31380/], accept-encoding=[gzip, deflate], accept-language=[zh-CN,zh;q=0.9,en;q=0.8], cookie=[loginId=4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f; last-serviceName=all; loginToken=81a207ec-4cee-41c8-b6f2-da24cf6b068f; YsbCaptcha=E6D0AA2419C84571AB7E7B25630D6085; JSESSIONID=2425997C425724FD75794237B8E92A69; YsbCaptcha=E6D0AA2419C84571AB7E7B25630D6085], x-forwarded-for=[10.244.0.0], x-forwarded-proto=[http], x-request-id=[c93e8e8b-5a86-9f9b-bd3e-3dc2d27c5639], x-b3-traceid=[5a0e1b16fba67c48], x-b3-spanid=[84f41db09265a263], x-b3-sampled=[1], x-envoy-expected-rq-timeout-ms=[15000], host=[ts-sso-service:12349], content-length=[93], x-b3-parentspanid=[5a0e1b16fba67c48], x-envoy-internal=[true]}",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.775",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "[SSO Service][Login] Success.",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.775",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "[SSO Service][Login] Password Right. Put token to sso.",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.792",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "[SSO Service] PutLoginResult Status: true",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.792",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "[SSO Service][Login] Login Success. Id:4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f Token:2ebe2dc0-4929-4367-9155-cde1e74c88fe",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.792",
+      "logType": "InternalMethod",
+      "requestType": "",
+      "logInfo": "[SSO Service][Login] Post to sso:2ebe2dc0-4929-4367-9155-cde1e74c88fe",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "timestamp": "2018-07-27 20:18:39.796",
+      "logType": "InvocationResponse",
+      "requestType": "",
+      "logInfo": "[Response Code: 200:OK][Response Value: {\"status\":true,\"message\":\"Success\",\"account\":{\"id\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"password\":\"\",\"gender\":1,\"name\":\"Default User\",\"documentType\":1,\"documentNum\":\"DefaultDocumentNumber\",\"email\":\"fdse_microservices@163.com\"},\"token\":\"2ebe2dc0-4929-4367-9155-cde1e74c88fe\"}]",
+      "uri": "/account/login",
+      "isError": 0,
+      "traceInfo": {
+        "traceId": "5a0e1b16fba67c48",
+        "spanId": "84f41db09265a263",
+        "parentSpanId": "5a0e1b16fba67c48"
+      },
+      "serviceInfo": {
+        "serviceName": "ts-sso-service",
+        "instanceInfo": {
+          "instanceName": "ts-sso-service-6cbf5dfd76-7gwfp",
+          "status": "Running",
+          "container": {
+            "name": "ts-sso-service",
+            "imageName": "lwh319/istio-zipkin-ts-sso-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12349,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
           "status": "Ready",
           "kubeProxyVersion": "v1.10.3",
           "kubeletVersion": "v1.10.3",

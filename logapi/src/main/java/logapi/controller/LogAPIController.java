@@ -14,9 +14,9 @@ public class LogAPIController {
 
     //Get the log corresponding to the trace id
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getLogByTraceId/{traceId}", method ={RequestMethod.GET})
-    public LogResponse getLogByTraceId(@PathVariable String traceId){
-        return service.getLogByTraceId(traceId);
+    @RequestMapping(value = "/getLogByTraceId/{traceId}/{flag}", method ={RequestMethod.GET})
+    public LogResponse getLogByTraceId(@PathVariable String traceId, @PathVariable int flag){
+        return service.getLogByTraceId(traceId, flag);
     }
 
     //Get the log corresponding to the instance name(pod)

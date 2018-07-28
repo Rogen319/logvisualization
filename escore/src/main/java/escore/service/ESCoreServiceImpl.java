@@ -317,6 +317,8 @@ public class ESCoreServiceImpl implements ESCoreService {
         //Get the service name
         Set<String> serviceList = new LinkedHashSet<>();
         serviceList.add("istio-ingressgateway");
+        serviceList.add("istio-policy");
+        serviceList.add("istio-mixer");
 
         QueryBuilder qb = QueryBuilders.matchQuery("traceId",traceId);
         SearchResponse scrollResp = client.prepareSearch(ZIPKIN_SPAN_INDEX).setTypes(ZIPKIN_SPAN_TYPE)

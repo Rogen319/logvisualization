@@ -1,6 +1,8 @@
 package logapi.response;
 
 import logapi.bean.BasicLogItem;
+import logapi.bean.ServiceInfo;
+import logapi.bean.TraceInfo;
 
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class GetLogByInstanceNameAndTraceIdRes extends GeneralResponse {
     private int normalCount;
     private int errorCount;
     private int exceptionCount;
+    private ServiceInfo serviceInfo;
 
     public GetLogByInstanceNameAndTraceIdRes(){
 
@@ -44,5 +47,13 @@ public class GetLogByInstanceNameAndTraceIdRes extends GeneralResponse {
 
     public void setExceptionCount(int exceptionCount) {
         this.exceptionCount = exceptionCount;
+    }
+
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
     }
 }

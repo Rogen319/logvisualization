@@ -17,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -38,53 +40,74 @@ public class LogAPIServiceImpl implements LogAPIService {
 
     //Get log by trace id
     @Override
-    public LogResponse getLogByTraceId(String traceId) {
+    public LogResponse getLogByTraceId(String traceId, int flag) {
         LogResponse res = new LogResponse();
 
         List<LogItem> logs = getLogItemListByCondition("TraceId", traceId);
 
-        //Sort by uri, then time and last type
-        Collections.sort(logs, new Comparator<LogItem>() {
-            @Override
-            public int compare(LogItem o1, LogItem o2) {
-                if(o1.getUri().compareTo(o2.getUri()) == 0){
-                    String t1 = o1.getTimestamp();
-                    String t2 = o2.getTimestamp();
-                    if(t1.compareTo(t2) == 0){
-                        if(o1.getLogType().equals("InvocationRequest")){
-                            return -1;
-                        }else if(o1.getLogType().equals("InvocationResponse")){
-                            return 1;
-                        }else{
-                            if(o2.getLogType().equals("InvocationRequest"))
-                                return 1;
-                            else if(o2.getLogType().equals("InvocationResponse"))
-                                return -1;
-                            else
-                                return 0;
-                        }
-                    }
-                    return t1.compareTo(t2);
+        //flag:1 represents order by service/uri
+        if(flag == 0){
+            res.setLogs(logs);
+        }
+        else{
+            //Sort the uri by time
+            Set<String> requestUri = new LinkedHashSet<>();
+            for(LogItem log : logs){
+                if(log.getLogType().equals("InvocationRequest")){
+                    requestUri.add(log.getUri());
                 }
-                return o1.getUri().compareTo(o2.getUri());
             }
-        });
+
+            List<LogItem> result = new ArrayList<>();
+            //Add the log according to the uri
+            for(String uri : requestUri){
+                for(LogItem log : logs){
+                    if(log.getUri().equals(uri)){
+                        result.add(log);
+                    }
+                }
+            }
+            res.setLogs(result);
+        }
+
+
+        //Sort by uri, then time and last type
+//        Collections.sort(result, new Comparator<LogItem>() {
+//            @Override
+//            public int compare(LogItem o1, LogItem o2) {
+//                String t1 = o1.getTimestamp();
+//                String t2 = o2.getTimestamp();
+//                if(t1.compareTo(t2) == 0){
+//                    if(o1.getLogType().equals("InvocationRequest")){
+//                        return -1;
+//                    }else if(o1.getLogType().equals("InvocationResponse")){
+//                        return 1;
+//                    }else{
+//                        if(o2.getLogType().equals("InvocationRequest"))
+//                            return 1;
+//                        else if(o2.getLogType().equals("InvocationResponse"))
+//                            return -1;
+//                        else
+//                            return 0;
+//                    }
+//                }
+//                return t1.compareTo(t2);
+//            }
+//        });
 
         //Set the error count
         int normalCount = 0;
         int errorCount = 0;
         int exceptionCount = 0;
         for(LogItem log : logs){
-            int flag = log.getIsError();
-            if(flag == 0)
+            int f = log.getIsError();
+            if(f == 0)
                 normalCount++;
-            else if(flag == 1)
+            else if(f == 1)
                 errorCount++;
             else
                 exceptionCount++;
         }
-
-        res.setLogs(logs);
         res.setNormalCount(normalCount);
         res.setErrorCount(errorCount);
         res.setExceptionCount(exceptionCount);
@@ -140,7 +163,7 @@ public class LogAPIServiceImpl implements LogAPIService {
                 .setQuery(qb)
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
         //Scroll until no hits are returned
-        SearchHit[] hits;
+        SearchHit[] hits = new SearchHit[0];
         Map<String, Object> map;
 
         while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
@@ -193,6 +216,41 @@ public class LogAPIServiceImpl implements LogAPIService {
         res.setNormalCount(normalCount);
         res.setErrorCount(errorCount);
         res.setExceptionCount(exceptionCount);
+        if(hits.length > 0){
+            SearchHit hit = hits[hits.length - 1];
+            try {
+                LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
+
+                /**
+                 * Set service information
+                 */
+                ServiceInfo serviceInfo = new ServiceInfo();
+
+                List<PodInfo> currentPods = podService.getCurrentPodInfo();
+                List<NodeInfo> currentNodes = nodeService.getCurrentNodeInfo();
+                //Service name and instance information: name, container and version
+                InstanceInfo instanceInfo = new InstanceInfo();
+                String podName = logBean.getKubernetes().getPod().getName();
+                instanceInfo.setInstanceName(podName);
+                PodContainer container = new PodContainer();
+                container.setName(logBean.getKubernetes().getContainer().getName());
+                instanceInfo.setContainer(container);
+                NodeInfo nodeInfo = podService.setInstanceInfo(serviceInfo, instanceInfo, podName, currentPods);
+
+                serviceInfo.setInstanceInfo(instanceInfo);
+
+                //Node information
+                if(nodeInfo != null){
+                    nodeService.setNodeInfo(nodeInfo,currentNodes);
+                    serviceInfo.setNode(nodeInfo);
+                }
+
+                res.setServiceInfo(serviceInfo);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         return res;
     }

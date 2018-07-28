@@ -5,7 +5,7 @@ import logapi.response.GetLogByInstanceNameAndTraceIdRes;
 import logapi.response.LogResponse;
 
 public interface LogAPIService {
-    LogResponse getLogByTraceId(String traceId);
+    LogResponse getLogByTraceId(String traceId, int flag);
     LogResponse getLogByInstanceName(String instanceName);
     GetLogByInstanceNameAndTraceIdRes getLogByInstanceNameAndTraceId(GetLogByInstanceNameAndTraceIdReq request);
 }

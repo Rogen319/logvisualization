@@ -2,48 +2,240 @@
 
 {
     "status": true,
-    "message": "Succeed to get the request with trace ids. The size of request types is [9].",
+    "message": "Succeed to get the request with trace ids of specified time range. The size of request types is [9].",
     "requestWithTraceInfoList": [
         {
-            "requestType": "QueryTravelInfo",
+            "requestType": "Collect",
             "traceTypeList": [
                 {
-                    "typeName": "QueryTravelInfo-Type1",
+                    "typeName": "Collect-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "0c612186831b2a8e",
+                            "traceId": "6d9cece576bc33d0",
                             "serviceName": [
                                 "istio-ingressgateway",
-                                "ts-travel-service",
                                 "istio-policy",
                                 "istio-mixer",
-                                "ts-ticketinfo-service",
-                                "ts-basic-service",
-                                "ts-station-service",
-                                "ts-route-service",
-                                "ts-train-service",
-                                "ts-price-service",
-                                "ts-order-service",
-                                "ts-seat-service",
-                                "ts-config-service"
+                                "ts-execute-service",
+                                "ts-order-service"
                             ]
                         },
                         {
-                            "traceId": "4d20a49ef8cd0d8d",
+                            "traceId": "a185182c40e42a5a",
                             "serviceName": [
                                 "istio-ingressgateway",
-                                "ts-travel-service",
                                 "istio-policy",
                                 "istio-mixer",
-                                "ts-ticketinfo-service",
-                                "ts-basic-service",
-                                "ts-station-service",
+                                "ts-execute-service",
+                                "ts-order-service"
+                            ]
+                        }
+                    ],
+                    "count": 2
+                }
+            ]
+        },
+        {
+            "requestType": "Execute",
+            "traceTypeList": [
+                {
+                    "typeName": "Execute-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "f85d0bdc25f6f33f",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-execute-service",
+                                "ts-order-service"
+                            ]
+                        },
+                        {
+                            "traceId": "f3a60272b6f33336",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-execute-service",
+                                "ts-order-service"
+                            ]
+                        }
+                    ],
+                    "count": 2
+                }
+            ]
+        },
+        {
+            "requestType": "GetAssurance",
+            "traceTypeList": [
+                {
+                    "typeName": "GetAssurance-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "048e0970bad066da",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-assurance-service"
+                            ]
+                        },
+                        {
+                            "traceId": "b91c3791adfa8b94",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-assurance-service"
+                            ]
+                        },
+                        {
+                            "traceId": "652a3cb9a8c1af56",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-assurance-service"
+                            ]
+                        },
+                        {
+                            "traceId": "885636c1f73f1a3b",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-assurance-service"
+                            ]
+                        }
+                    ],
+                    "count": 4
+                }
+            ]
+        },
+        {
+            "requestType": "GetContact",
+            "traceTypeList": [
+                {
+                    "typeName": "GetContact-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "3020c25c2142c03f",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-contacts-service"
+                            ]
+                        },
+                        {
+                            "traceId": "8b960d2c9532015c",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-contacts-service"
+                            ]
+                        }
+                    ],
+                    "count": 2
+                }
+            ]
+        },
+        {
+            "requestType": "GetFood",
+            "traceTypeList": [
+                {
+                    "typeName": "GetFood-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "a944c18ed865dfd5",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-food-service",
+                                "ts-food-map-service",
+                                "ts-travel-service",
                                 "ts-route-service",
-                                "ts-train-service",
-                                "ts-price-service",
-                                "ts-order-service",
-                                "ts-seat-service",
-                                "ts-config-service"
+                                "ts-station-service"
+                            ]
+                        },
+                        {
+                            "traceId": "4ba3dd8df840788c",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-food-service",
+                                "ts-food-map-service",
+                                "ts-travel-service",
+                                "ts-route-service",
+                                "ts-station-service"
+                            ]
+                        }
+                    ],
+                    "count": 2
+                }
+            ]
+        },
+        {
+            "requestType": "Login",
+            "traceTypeList": [
+                {
+                    "typeName": "Login-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "5a0e1b16fba67c48",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-login-service",
+                                "ts-verification-code-service",
+                                "ts-sso-service"
+                            ]
+                        },
+                        {
+                            "traceId": "a5350ed0073324a3",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-login-service",
+                                "ts-verification-code-service",
+                                "ts-sso-service"
+                            ]
+                        }
+                    ],
+                    "count": 2
+                }
+            ]
+        },
+        {
+            "requestType": "Pay",
+            "traceTypeList": [
+                {
+                    "typeName": "Pay-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "e40840ded18792b7",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-inside-payment-service",
+                                "ts-order-service"
+                            ]
+                        },
+                        {
+                            "traceId": "65217c97c2ee90b2",
+                            "serviceName": [
+                                "istio-ingressgateway",
+                                "istio-policy",
+                                "istio-mixer",
+                                "ts-inside-payment-service",
+                                "ts-order-service"
                             ]
                         }
                     ],
@@ -121,232 +313,45 @@
             ]
         },
         {
-            "requestType": "GetAssurance",
+            "requestType": "QueryTravelInfo",
             "traceTypeList": [
                 {
-                    "typeName": "GetAssurance-Type1",
+                    "typeName": "QueryTravelInfo-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "048e0970bad066da",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-assurance-service"
-                            ]
-                        }
-                    ],
-                    "count": 1
-                },
-                {
-                    "typeName": "GetAssurance-Type2",
-                    "traceInfoList": [
-                        {
-                            "traceId": "b91c3791adfa8b94",
+                            "traceId": "0c612186831b2a8e",
                             "serviceName": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
-                                "ts-assurance-service"
-                            ]
-                        },
-                        {
-                            "traceId": "885636c1f73f1a3b",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-assurance-service"
-                            ]
-                        },
-                        {
-                            "traceId": "652a3cb9a8c1af56",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-assurance-service"
-                            ]
-                        }
-                    ],
-                    "count": 3
-                }
-            ]
-        },
-        {
-            "requestType": "Execute",
-            "traceTypeList": [
-                {
-                    "typeName": "Execute-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "f3a60272b6f33336",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-execute-service",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-order-service"
-                            ]
-                        },
-                        {
-                            "traceId": "f85d0bdc25f6f33f",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-execute-service",
+                                "ts-travel-service",
+                                "ts-ticketinfo-service",
+                                "ts-basic-service",
+                                "ts-station-service",
+                                "ts-route-service",
+                                "ts-train-service",
+                                "ts-price-service",
                                 "ts-order-service",
-                                "istio-policy",
-                                "istio-mixer"
-                            ]
-                        }
-                    ],
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "requestType": "Collect",
-            "traceTypeList": [
-                {
-                    "typeName": "Collect-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "6d9cece576bc33d0",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-execute-service",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-order-service"
+                                "ts-seat-service",
+                                "ts-config-service"
                             ]
                         },
                         {
-                            "traceId": "a185182c40e42a5a",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-execute-service",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-order-service"
-                            ]
-                        }
-                    ],
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "requestType": "Pay",
-            "traceTypeList": [
-                {
-                    "typeName": "Pay-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "e40840ded18792b7",
+                            "traceId": "4d20a49ef8cd0d8d",
                             "serviceName": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
-                                "ts-inside-payment-service",
-                                "ts-order-service"
-                            ]
-                        },
-                        {
-                            "traceId": "65217c97c2ee90b2",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-inside-payment-service",
-                                "ts-order-service"
-                            ]
-                        }
-                    ],
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "requestType": "Login",
-            "traceTypeList": [
-                {
-                    "typeName": "Login-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "5a0e1b16fba67c48",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-login-service",
-                                "ts-verification-code-service",
-                                "ts-sso-service"
-                            ]
-                        },
-                        {
-                            "traceId": "a5350ed0073324a3",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-login-service",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-verification-code-service",
-                                "ts-sso-service"
-                            ]
-                        }
-                    ],
-                    "count": 2
-                }
-            ]
-        },
-        {
-            "requestType": "GetContact",
-            "traceTypeList": [
-                {
-                    "typeName": "GetContact-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "3020c25c2142c03f",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-contacts-service"
-                            ]
-                        }
-                    ],
-                    "count": 1
-                }
-            ]
-        },
-        {
-            "requestType": "GetFood",
-            "traceTypeList": [
-                {
-                    "typeName": "GetFood-Type1",
-                    "traceInfoList": [
-                        {
-                            "traceId": "4ba3dd8df840788c",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-food-service",
-                                "ts-food-map-service",
                                 "ts-travel-service",
+                                "ts-ticketinfo-service",
+                                "ts-basic-service",
+                                "ts-station-service",
                                 "ts-route-service",
-                                "ts-station-service"
-                            ]
-                        },
-                        {
-                            "traceId": "a944c18ed865dfd5",
-                            "serviceName": [
-                                "istio-ingressgateway",
-                                "ts-food-service",
-                                "istio-mixer",
-                                "istio-policy",
-                                "ts-food-map-service",
-                                "ts-travel-service",
-                                "ts-route-service",
-                                "ts-station-service"
+                                "ts-train-service",
+                                "ts-price-service",
+                                "ts-order-service",
+                                "ts-seat-service",
+                                "ts-config-service"
                             ]
                         }
                     ],
