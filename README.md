@@ -18,6 +18,8 @@ Before you begin, you need to install istio and customerized zipkin in your kube
     * istioctl create -f trainticket-gateway.yaml
 3. To use the zipkin dependency service, execute the following commands:
     * kubectl create -f zipkin-dependency.yaml
+4. Deployment our zipkin-ui
+    * kubectl create -f zipkin-ui.yaml
     
 ## Access 
 After all of the pods are in running states, you can access the system by the following ip and port:
