@@ -21,7 +21,7 @@ spec:
         - containerPort: 9091
         env:
         - name: ZIPKIN_BASE_URL
-          value: zipkin.istio-system:9411
+          value: http://zipkin.istio-system:9411
 
 ---
 apiVersion: v1
