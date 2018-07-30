@@ -30,6 +30,7 @@ After all of the pods are in running states, you can access the system by the fo
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:
+   *  kubectl delete -f zipkin-ui.yaml
    *  kubectl delete -f zipkin-create.yaml
    *  kubectl delete -f filebeat-kubernetes.yaml
    *  kubectl delete -f logstash.yaml
