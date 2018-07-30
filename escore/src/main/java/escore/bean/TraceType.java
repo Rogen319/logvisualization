@@ -6,6 +6,9 @@ public class TraceType {
     private String typeName;
     private List<TraceInfo> traceInfoList;
     private int count;
+    private int normalCount;
+    private int errorCount;
+    private int exceptionCount;
 
     public TraceType(){
 
@@ -33,5 +36,29 @@ public class TraceType {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getNormalCount() {
+        return normalCount;
+    }
+
+    public void setNormalCount(int normalCount) {
+        this.normalCount = normalCount;
+    }
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+    public int getExceptionCount() {
+        return exceptionCount;
+    }
+
+    public void setExceptionCount(int exceptionCount) {
+        this.exceptionCount = exceptionCount;
     }
 }

@@ -1,4 +1,4 @@
-//URL: 10.141.212.24:17319/getRequestWithTraceID
+//URL: 10.141.212.24:17319/getRequestWithTraceIDByTimeRange
 
 {
     "status": true,
@@ -12,28 +12,40 @@
                     "traceInfoList": [
                         {
                             "traceId": "6d9cece576bc33d0",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "a185182c40e42a5a",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 22,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 22,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "Execute",
@@ -43,28 +55,40 @@
                     "traceInfoList": [
                         {
                             "traceId": "f85d0bdc25f6f33f",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "f3a60272b6f33336",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 22,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 22,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "GetAssurance",
@@ -74,44 +98,62 @@
                     "traceInfoList": [
                         {
                             "traceId": "048e0970bad066da",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-assurance-service"
-                            ]
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "b91c3791adfa8b94",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-assurance-service"
-                            ]
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "652a3cb9a8c1af56",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-assurance-service"
-                            ]
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "885636c1f73f1a3b",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-assurance-service"
-                            ]
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 4
+                    "count": 4,
+                    "normalCount": 12,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 12,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "GetContact",
@@ -121,26 +163,38 @@
                     "traceInfoList": [
                         {
                             "traceId": "3020c25c2142c03f",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-contacts-service"
-                            ]
+                            ],
+                            "normalCount": 6,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "8b960d2c9532015c",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-contacts-service"
-                            ]
+                            ],
+                            "normalCount": 6,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 12,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 12,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "GetFood",
@@ -150,7 +204,7 @@
                     "traceInfoList": [
                         {
                             "traceId": "a944c18ed865dfd5",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -159,11 +213,14 @@
                                 "ts-travel-service",
                                 "ts-route-service",
                                 "ts-station-service"
-                            ]
+                            ],
+                            "normalCount": 28,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "4ba3dd8df840788c",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -172,12 +229,21 @@
                                 "ts-travel-service",
                                 "ts-route-service",
                                 "ts-station-service"
-                            ]
+                            ],
+                            "normalCount": 28,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 56,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 56,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "Login",
@@ -187,30 +253,42 @@
                     "traceInfoList": [
                         {
                             "traceId": "5a0e1b16fba67c48",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-login-service",
                                 "ts-verification-code-service",
                                 "ts-sso-service"
-                            ]
+                            ],
+                            "normalCount": 17,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "a5350ed0073324a3",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-login-service",
                                 "ts-verification-code-service",
                                 "ts-sso-service"
-                            ]
+                            ],
+                            "normalCount": 17,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 34,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 34,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "Pay",
@@ -220,28 +298,40 @@
                     "traceInfoList": [
                         {
                             "traceId": "e40840ded18792b7",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-inside-payment-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 9,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "65217c97c2ee90b2",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
                                 "ts-inside-payment-service",
                                 "ts-order-service"
-                            ]
+                            ],
+                            "normalCount": 9,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 18,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 18,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "PreserveTicket",
@@ -251,7 +341,7 @@
                     "traceInfoList": [
                         {
                             "traceId": "bfff3631894e8616",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -271,17 +361,23 @@
                                 "ts-seat-service",
                                 "ts-config-service",
                                 "ts-notification-service"
-                            ]
+                            ],
+                            "normalCount": 268,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 1
+                    "count": 1,
+                    "normalCount": 268,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 },
                 {
                     "typeName": "PreserveTicket-Type2",
                     "traceInfoList": [
                         {
                             "traceId": "121803406b925241",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -305,12 +401,21 @@
                                 "ts-consign-service",
                                 "ts-consign-price-service",
                                 "ts-notification-service"
-                            ]
+                            ],
+                            "normalCount": 283,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 1
+                    "count": 1,
+                    "normalCount": 283,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 551,
+            "errorCount": 0,
+            "exceptionCount": 0
         },
         {
             "requestType": "QueryTravelInfo",
@@ -320,7 +425,7 @@
                     "traceInfoList": [
                         {
                             "traceId": "0c612186831b2a8e",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -334,11 +439,14 @@
                                 "ts-order-service",
                                 "ts-seat-service",
                                 "ts-config-service"
-                            ]
+                            ],
+                            "normalCount": 160,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         },
                         {
                             "traceId": "4d20a49ef8cd0d8d",
-                            "serviceName": [
+                            "serviceList": [
                                 "istio-ingressgateway",
                                 "istio-policy",
                                 "istio-mixer",
@@ -352,12 +460,21 @@
                                 "ts-order-service",
                                 "ts-seat-service",
                                 "ts-config-service"
-                            ]
+                            ],
+                            "normalCount": 160,
+                            "errorCount": 0,
+                            "exceptionCount": 0
                         }
                     ],
-                    "count": 2
+                    "count": 2,
+                    "normalCount": 320,
+                    "errorCount": 0,
+                    "exceptionCount": 0
                 }
-            ]
+            ],
+            "normalCount": 320,
+            "errorCount": 0,
+            "exceptionCount": 0
         }
     ]
 }

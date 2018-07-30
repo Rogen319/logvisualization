@@ -31,6 +31,8 @@ public class ESCoreServiceImpl implements ESCoreService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String ZIPKIN_SPAN_INDEX = "zipkin:span-*";
     private static final String ZIPKIN_SPAN_TYPE = "span";
+    private static final String LOGSTASH_LOG_INDEX = "logstash-*";
+    private static final String LOGSTASH_LOG_TYPE = "beats";
 
     @Autowired
     private MyConfig myConfig;
@@ -76,7 +78,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         Set<String> requestTypes = new HashSet<>();
         while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
-            log.info(String.format("The length of scroll request type search hits is [%d]", hits.length));
+//            log.info(String.format("The length of scroll request type search hits is [%d]", hits.length));
             Map<String, Object> map;
             for (SearchHit hit : hits) {
                 //Handle the hit
@@ -123,7 +125,7 @@ public class ESCoreServiceImpl implements ESCoreService {
                         .setSize(100).get();
                 while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
                     hits = scrollResp.getHits().getHits();
-                    log.info(String.format("The length of scroll requestType:[%s] search hits is [%d]", requestType, hits.length));
+//                    log.info(String.format("The length of scroll requestType:[%s] search hits is [%d]", requestType, hits.length));
                     for (SearchHit hit : hits) {
                         //Handle the hit
                         map = hit.getSourceAsMap();
@@ -206,16 +208,28 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //Construct the return data
         for(String requestType : requestWithTraceIdsMap.keySet()){
+
             RequestWithTraceInfo requestWithTraceInfo = new RequestWithTraceInfo();
             requestWithTraceInfo.setRequestType(requestType);
             List<TraceInfo> traceInfoList = new ArrayList<>();
             for(String traceId : requestWithTraceIdsMap.get(requestType)){
                 TraceInfo traceInfo = getTraceInfoById(traceId);
+                //Set the count of three kind of log
+                setCountOfTraceInfo(traceInfo);
                 traceInfoList.add(traceInfo);
             }
             List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType,traceInfoList);
-
             requestWithTraceInfo.setTraceTypeList(traceTypeList);
+            int normalCount = 0, errorCount = 0, exceptionCount = 0;
+            for(TraceType traceType : traceTypeList){
+                normalCount += traceType.getNormalCount();
+                errorCount += traceType.getErrorCount();
+                exceptionCount += traceType.getExceptionCount();
+            }
+            requestWithTraceInfo.setNormalCount(normalCount);
+            requestWithTraceInfo.setErrorCount(errorCount);
+            requestWithTraceInfo.setExceptionCount(exceptionCount);
+
             requestWithTraceInfoList.add(requestWithTraceInfo);
         }
 
@@ -238,6 +252,47 @@ public class ESCoreServiceImpl implements ESCoreService {
         return res;
     }
 
+    //Set the count of three kind log
+    private void setCountOfTraceInfo(TraceInfo traceInfo) {
+        String traceId = traceInfo.getTraceId();
+        TransportClient client = myConfig.getESClient();
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId",traceId);
+
+        SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
+                .addSort("time", SortOrder.ASC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+        SearchHit[] hits;
+        Map<String, Object> map;
+
+        int normalCount = 0, errorCount = 0, exceptionCount = 0;
+
+        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                map = hit.getSourceAsMap();
+                if(map.get("log") != null){
+                    String log = map.get("log").toString();
+                    if(log.contains("ExceptionMessage")){
+                        if(log.contains("Error") || log.contains("error"))
+                            errorCount++;
+                        else
+                            exceptionCount++;
+                    }else{
+                        normalCount++;
+                    }
+                }
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+        traceInfo.setNormalCount(normalCount);
+        traceInfo.setErrorCount(errorCount);
+        traceInfo.setExceptionCount(exceptionCount);
+    }
+
     //Retrive the trace types from the trace list
     private List<TraceType> getTraceTypesFromTraceList(String requestType, List<TraceInfo> traceInfoList) {
         Map<Set<String>, List<TraceInfo>> map = new HashMap<>();
@@ -247,7 +302,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         int count = 1;
 
         for(TraceInfo traceInfo : traceInfoList){
-            Set<String> serviceSet = traceInfo.getServiceName();
+            Set<String> serviceSet = traceInfo.getServiceList();
             if(map.get(serviceSet) == null){
                 List<TraceInfo> traces = new ArrayList<>();
                 traces.add(traceInfo);
@@ -257,11 +312,26 @@ public class ESCoreServiceImpl implements ESCoreService {
             }
         }
 
+        int normalCount, errorCount, exceptionCount;
         for(Set<String> serviceSet : map.keySet()){
             TraceType traceType = new TraceType();
             traceType.setTypeName(requestType + "-Type" + count);
-            traceType.setTraceInfoList(map.get(serviceSet));
+            List<TraceInfo> traceInfos = map.get(serviceSet);
+            traceType.setTraceInfoList(traceInfos);
             traceType.setCount(map.get(serviceSet).size());
+            //Count the number of three kind log
+            normalCount = 0;
+            errorCount = 0;
+            exceptionCount = 0;
+            for(TraceInfo traceInfo : traceInfos){
+                normalCount += traceInfo.getNormalCount();
+                errorCount += traceInfo.getErrorCount();
+                exceptionCount += traceInfo.getExceptionCount();
+            }
+            traceType.setNormalCount(normalCount);
+            traceType.setErrorCount(errorCount);
+            traceType.setExceptionCount(exceptionCount);
+
             count++;
             traceTypeList.add(traceType);
         }
@@ -335,7 +405,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         Matcher matcher;
         while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
-            log.info(String.format("The length of scroll span with traceId:[%s] search hits is [%d]", traceId, hits.length));
+//            log.info(String.format("The length of scroll span with traceId:[%s] search hits is [%d]", traceId, hits.length));
             for (SearchHit hit : hits) {
                 //Handle the hit
                 map = hit.getSourceAsMap();
@@ -359,7 +429,7 @@ public class ESCoreServiceImpl implements ESCoreService {
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
 
-        res.setServiceName(serviceList);
+        res.setServiceList(serviceList);
 
         return res;
     }
