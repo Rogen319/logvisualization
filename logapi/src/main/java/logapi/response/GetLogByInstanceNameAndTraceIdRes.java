@@ -2,7 +2,6 @@ package logapi.response;
 
 import logapi.bean.BasicLogItem;
 import logapi.bean.ServiceInfo;
-import logapi.bean.TraceInfo;
 
 import java.util.List;
 

@@ -14,7 +14,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -171,50 +169,25 @@ public class ESCoreScheduledService {
     //Delete the useless span info
     public void deleteUselessSpanInfo(){
         TransportClient client = myConfig.getESClient();
-        List<String> traceIDList = new ArrayList<>();
 
         DeleteByQueryRequestBuilder deleteBuilder = DeleteByQueryAction.INSTANCE.newRequestBuilder(client);
 
         //Delete the mixer span records with the same trace id of istio-telemetry
-        MatchQueryBuilder qb = QueryBuilders.matchQuery("localEndpoint.serviceName","istio-telemetry");
-        SearchResponse scrollResp = client.prepareSearch(SPAN_INDEX).setTypes(SPAN_TYPE)
-                .setScroll(new TimeValue(60000))
-                .setQuery(qb)
-                .setSize(100).get();
-        SearchHit[] hits;
-        Map<String, Object> map;
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-            hits = scrollResp.getHits().getHits();
-            log.info(String.format("The length of scroll istio-telemetry search hits is [%d]", hits.length));
-            for (SearchHit hit : hits) {
-                //Handle the hit
-                map = hit.getSourceAsMap();
-                //Delete the mixer span
-                traceIDList.add(map.get("traceId").toString());
-            }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-        }
-
-        log.info(String.format("The length of useless trace id list is [%d].", traceIDList.size()));
-
-        //Delete the span records with the same trace id of istio-telemetry
-        for(String traceId : traceIDList){
-            deleteBuilder
-                    .filter(QueryBuilders.matchQuery("traceId", traceId))
-                    .source(SPAN_INDEX)
-                    .execute(new ActionListener<BulkByScrollResponse>() {
-                        @Override
-                        public void onResponse(BulkByScrollResponse response) {
-                            long deleted = response.getDeleted();
-                            log.info(String.format("Succeed to delete [%d] useless span record", deleted));
-                        }
-                        @Override
-                        public void onFailure(Exception e) {
-                            // Handle the exception
-                            log.info(String.format("Fail to delete useless span info. With excepton message: [%s]", e.getStackTrace()));
-                        }
-                    });
-        }
+        deleteBuilder
+                .filter(QueryBuilders.matchQuery("localEndpoint.serviceName", "istio-telemetry"))
+                .source(SPAN_INDEX)
+                .execute(new ActionListener<BulkByScrollResponse>() {
+                    @Override
+                    public void onResponse(BulkByScrollResponse response) {
+                        long deleted = response.getDeleted();
+                        log.info(String.format("Succeed to delete [%d] useless span record", deleted));
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Handle the exception
+                        log.info(String.format("Fail to delete useless span info. With excepton message: [%s]", e.getStackTrace()));
+                    }
+                });
 
     }
 

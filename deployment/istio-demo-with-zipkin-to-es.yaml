@@ -746,7 +746,7 @@ data:
 
     # Set the following variable to true to disable policy checks by the Mixer.
     # Note that metrics will still be reported to the Mixer.
-    disablePolicyChecks: false
+    disablePolicyChecks: true
     # Set enableTracing to false to disable request tracing.
     enableTracing: true
     #
@@ -2498,8 +2498,8 @@ spec:
           - '10s' #connectTimeout
           - --serviceCluster
           - istio-egressgateway
-          - --zipkinAddress
-          - zipkin:9411
+#          - --zipkinAddress
+#          - zipkin:9411
           - --statsdUdpAddress
           - istio-statsd-prom-bridge:9125
           - --proxyAdminPort
@@ -2703,8 +2703,8 @@ spec:
           - '10s' #connectTimeout
           - --serviceCluster
           - istio-ingressgateway
-          - --zipkinAddress
-          - zipkin:9411
+#          - --zipkinAddress
+#          - zipkin:9411
           - --statsdUdpAddress
           - istio-statsd-prom-bridge:9125
           - --proxyAdminPort
@@ -2860,7 +2860,7 @@ spec:
           - tcp://127.0.0.1:9092
           - --configStoreURL=k8s://
           - --configDefaultNamespace=istio-system
-          - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
+#          - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
         resources:
             {}
             
@@ -2943,7 +2943,7 @@ spec:
           - tcp://127.0.0.1:9092
           - --configStoreURL=k8s://
           - --configDefaultNamespace=istio-system
-          - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
+#          - --trace_zipkin_url=http://zipkin:9411/api/v1/spans
         resources:
             {}
             
@@ -3479,95 +3479,6 @@ spec:
                 operator: In
                 values:
                 - s390x
-
----
-# Source: istio/charts/tracing/templates/deployment.yaml
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: istio-tracing
-  namespace: istio-system
-  labels:
-    app: istio-tracing
-    chart: tracing-0.1.0
-    release: RELEASE-NAME
-    heritage: Tiller
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: jaeger
-      annotations:
-        sidecar.istio.io/inject: "false"
-    spec:
-      containers:
-        - name: jaeger
-          image: "jaegertracing/all-in-one:1.5"
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 9411
-            - containerPort: 16686
-            - containerPort: 5775
-              protocol: UDP
-            - containerPort: 6831
-              protocol: UDP
-            - containerPort: 6832
-              protocol: UDP
-          env:
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: COLLECTOR_ZIPKIN_HTTP_PORT
-            value: "9411"
-          - name: MEMORY_MAX_TRACES
-            value: "50000"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 16686
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 16686
-          resources:
-            {}
-            
-      affinity:      
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-                - ppc64le
-                - s390x
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - ppc64le
-          - weight: 2
-            preference:
-              matchExpressions:
-              - key: beta.kubernetes.io/arch
-                operator: In
-                values:
-                - s390x
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -3688,25 +3599,6 @@ spec:
 apiVersion: v1
 kind: List
 items:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: tracing
-    namespace: istio-system
-    labels:
-      app: jaeger
-      chart: tracing-0.1.0
-      release: RELEASE-NAME
-      heritage: Tiller
-  spec:
-    ports:
-      - name: query-http
-        port: 80
-        protocol: TCP
-        targetPort: 16686
-    selector:
-      app: jaeger
-    type: LoadBalancer
 - apiVersion: v1
   kind: Service
   metadata:

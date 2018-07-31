@@ -28,9 +28,9 @@ public class ESCoreScheduledTasks {
     }
 
     //Update request traceid relation every 9 seconds
-    @Scheduled(initialDelay = 27000, fixedDelay = 9000)
-    public void updateRelationInfo(){
-        service.updateRelationInfo();
-    }
+//    @Scheduled(initialDelay = 27000, fixedDelay = 9000)
+//    public void updateRelationInfo(){
+//        service.updateRelationInfo();
+//    }
 
 }

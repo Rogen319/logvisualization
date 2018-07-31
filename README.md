@@ -27,6 +27,7 @@ After all of the pods are in running states, you can access the system by the fo
    *  kibana：http://10.141.211.163:30001
    *  elasticsearch：http://10.141.211.163:30002/
    *  zipkin：http://10.141.211.163:30005
+   *  zipkin-ui: http://10.141.211.163:30006/zipkin
     
 ## Uninstall   
 To uninstall the whole system, execute the following commands:

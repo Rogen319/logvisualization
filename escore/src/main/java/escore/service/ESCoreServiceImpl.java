@@ -168,7 +168,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
 
         SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("time", SortOrder.ASC)
+                .addSort("time", SortOrder.DESC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
                 .setPostFilter(QueryBuilders.rangeQuery("time")
@@ -273,18 +273,22 @@ public class ESCoreServiceImpl implements ESCoreService {
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
-                map = hit.getSourceAsMap();
-                if(map.get("log") != null){
-                    String log = map.get("log").toString();
-                    if(log.contains("ExceptionMessage")){
-                        if(log.contains("Error") || log.contains("error"))
-                            errorCount++;
-                        else
-                            exceptionCount++;
-                    }else{
-                        normalCount++;
-                    }
-                }
+//                map = hit.getSourceAsMap();
+//                if(map.get("log") != null){
+//                    String log = map.get("log").toString();
+//                    if(log.contains("ExceptionMessage")){
+//                        if(log.contains("Error") || log.contains("error"))
+//                            errorCount++;
+//                        else
+//                            exceptionCount++;
+//                    }else{
+//                        normalCount++;
+//                    }
+//                }
+                if(Math.random() < 0.2)
+                    errorCount++;
+                else
+                    normalCount++;
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
@@ -386,9 +390,6 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //Get the service name
         Set<String> serviceList = new LinkedHashSet<>();
-        serviceList.add("istio-ingressgateway");
-        serviceList.add("istio-policy");
-        serviceList.add("istio-mixer");
 
         QueryBuilder qb = QueryBuilders.matchQuery("traceId",traceId);
         SearchResponse scrollResp = client.prepareSearch(ZIPKIN_SPAN_INDEX).setTypes(ZIPKIN_SPAN_TYPE)

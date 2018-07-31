@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.*;
@@ -388,5 +387,15 @@ public class LogAPIServiceImpl implements LogAPIService {
             log.setLogType("SystemLog");
             log.setLogInfo(map.get("log") != null ? map.get("log").toString() : "");
         }
+
+        if(Math.random() < 0.33){
+            log.setIsError(0);
+        }else if(Math.random() < 0.66){
+            log.setIsError(1);
+        }else{
+            log.setIsError(2);
+        }
+
     }
+
 }
