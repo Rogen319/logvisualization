@@ -1,5 +1,6 @@
 package escore.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.*;
 import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,12 +35,16 @@ public class ESCoreServiceImpl implements ESCoreService {
     private static final String ZIPKIN_SPAN_TYPE = "span";
     private static final String LOGSTASH_LOG_INDEX = "logstash-*";
     private static final String LOGSTASH_LOG_TYPE = "beats";
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private MyConfig myConfig;
 
     @Autowired
     private ESUtil esUtil;
+
+    @Autowired
+    private PodService podService;
 
     //Just for demo
     @Override
@@ -163,6 +169,13 @@ public class ESCoreServiceImpl implements ESCoreService {
         String beginTime = esUtil.convertTime(endTimeValue - lookback);
         String endTime = esUtil.convertTime(endTimeValue);
 
+        log.info(String.format("===Begin time is [%s], endTime is [%s]===", beginTime, endTime));
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        log.info(String.format("===Final begin time is [%s], endTime is [%s]===", beginTime, endTime));
+
         log.info("===New method to get request with trace id by time range===");
 
         QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
@@ -273,22 +286,22 @@ public class ESCoreServiceImpl implements ESCoreService {
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
-//                map = hit.getSourceAsMap();
-//                if(map.get("log") != null){
-//                    String log = map.get("log").toString();
-//                    if(log.contains("ExceptionMessage")){
-//                        if(log.contains("Error") || log.contains("error"))
-//                            errorCount++;
-//                        else
-//                            exceptionCount++;
-//                    }else{
-//                        normalCount++;
-//                    }
-//                }
-                if(Math.random() < 0.2)
-                    errorCount++;
-                else
-                    normalCount++;
+                map = hit.getSourceAsMap();
+                if(map.get("log") != null){
+                    String log = map.get("log").toString();
+                    if(log.contains("ExceptionMessage")){
+                        if(log.contains("Error") || log.contains("error"))
+                            errorCount++;
+                        else
+                            exceptionCount++;
+                    }else{
+                        normalCount++;
+                    }
+                }
+//                if(Math.random() < 0.2)
+//                    errorCount++;
+//                else
+//                    normalCount++;
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
@@ -430,9 +443,99 @@ public class ESCoreServiceImpl implements ESCoreService {
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
 
+        List<ServiceWithCount> services = new ArrayList<>();
+        Map<String, ServiceWithCount> serviceMap = new HashMap<>();
+
+        for(String serviceName : serviceList){
+            ServiceWithCount serviceWithCount = new ServiceWithCount();
+            serviceWithCount.setServiceName(serviceName);
+            serviceMap.put(serviceName, serviceWithCount);
+        }
+
+        //Get all of the logs with specified traceid
+        List<SimpleLog> logs = getLogListByCondition("TraceId", traceId);
+
+        for(SimpleLog log : logs){
+            ServiceWithCount serviceWithCount = serviceMap.get(log.getServiceName());
+            if(serviceWithCount != null){
+                if(log.getIsError() == 0)
+                    serviceWithCount.setNormalCount(serviceWithCount.getNormalCount() + 1);
+                else if(log.getIsError() == 2)
+                    serviceWithCount.setExceptionCount(serviceWithCount.getExceptionCount() + 1);
+                else
+                    serviceWithCount.setErrorCount(serviceWithCount.getErrorCount() + 1);
+            }
+        }
+
+        for(String serviceName : serviceMap.keySet()){
+            services.add(serviceMap.get(serviceName));
+        }
         res.setServiceList(serviceList);
+        res.setServiceWithCounts(services);
 
         return res;
+    }
+
+    //Get the log list by condition
+    private List<SimpleLog> getLogListByCondition(String termName, String termValue) {
+        TransportClient client = myConfig.getESClient();
+
+        List<PodInfo> currentPods = podService.getCurrentPodInfo();
+
+        List<SimpleLog> logItemList = new ArrayList<>();
+
+        QueryBuilder qb = QueryBuilders.termQuery(termName,termValue);
+
+        SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
+                .addSort("time", SortOrder.ASC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+        SearchHit[] hits;
+
+        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                SimpleLog logItem = composeLogItemFromHit(hit, currentPods);
+                logItemList.add(logItem);
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+        log.info(String.format("The length of corresponding logitem list is [%d]", logItemList.size()));
+        return logItemList;
+    }
+
+    private SimpleLog composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods) {
+        SimpleLog log = new SimpleLog();
+
+        //Default, it is not an error
+        log.setIsError(0);
+        try {
+            LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
+            String podName = logBean.getKubernetes().getPod().getName();
+            String serviceName = podService.getServiceName(podName,currentPods);
+            log.setServiceName(serviceName);
+            String logType = logBean.getLogType();
+            if(logType.equals("InternalMethod")){
+                Map<String, Object> map = hit.getSourceAsMap();
+                if(map.get("Content") == null){
+                    String logInfo = String.format("[ExceptionMessage:%s][ExceptionCause:%s][ExceptionStack:%s]",
+                            map.get("ExceptionMessage") != null?map.get("ExceptionMessage").toString():"",
+                            map.get("ExceptionCause") != null?map.get("ExceptionCause").toString():"",
+                            map.get("ExceptionStack") != null?map.get("ExceptionStack").toString():"");
+                    log.setIsError(2);
+                    if(logInfo.contains("error") || logInfo.contains("Error")){
+                        log.setIsError(1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return log;
     }
 
 }

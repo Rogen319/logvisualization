@@ -1,10 +1,12 @@
 package escore.bean;
 
+import java.util.List;
 import java.util.Set;
 
 public class TraceInfo {
     private String traceId;
     private Set<String> serviceList;
+    private List<ServiceWithCount> serviceWithCounts;
     private int normalCount;
     private int errorCount;
     private int exceptionCount;
@@ -27,6 +29,14 @@ public class TraceInfo {
 
     public void setServiceList(Set<String> serviceList) {
         this.serviceList = serviceList;
+    }
+
+    public List<ServiceWithCount> getServiceWithCounts() {
+        return serviceWithCounts;
+    }
+
+    public void setServiceWithCounts(List<ServiceWithCount> serviceWithCounts) {
+        this.serviceWithCounts = serviceWithCounts;
     }
 
     public int getNormalCount() {

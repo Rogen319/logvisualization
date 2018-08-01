@@ -2,8 +2,156 @@
 
 {
     "status": true,
-    "message": "Succeed to get the request with trace ids of specified time range. The size of request types is [9].",
+    "message": "Succeed to get the request with trace ids of specified time range. The size of request types is [13].",
     "requestWithTraceInfoList": [
+        {
+            "requestType": "CancelOrder",
+            "traceTypeList": [
+                {
+                    "typeName": "CancelOrder-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "0f9a64aa32b312d7",
+                            "serviceList": [
+                                "ts-cancel-service",
+                                "ts-order-service",
+                                "ts-inside-payment-service",
+                                "ts-sso-service",
+                                "ts-notification-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-cancel-service",
+                                    "normalCount": 18,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-inside-payment-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-notification-service",
+                                    "normalCount": 0,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 26,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "80a95d68eada8132",
+                            "serviceList": [
+                                "ts-cancel-service",
+                                "ts-order-service",
+                                "ts-inside-payment-service",
+                                "ts-sso-service",
+                                "ts-notification-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-cancel-service",
+                                    "normalCount": 18,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-inside-payment-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-notification-service",
+                                    "normalCount": 0,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 26,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        }
+                    ],
+                    "count": 2,
+                    "normalCount": 52,
+                    "errorCount": 0,
+                    "exceptionCount": 0
+                }
+            ],
+            "normalCount": 52,
+            "errorCount": 0,
+            "exceptionCount": 0
+        },
+        {
+            "requestType": "CancelRefund",
+            "traceTypeList": [
+                {
+                    "typeName": "CancelRefund-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "1e75db3f1cf0f3c3",
+                            "serviceList": [
+                                "ts-cancel-service",
+                                "ts-order-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-cancel-service",
+                                    "normalCount": 5,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 8,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        }
+                    ],
+                    "count": 1,
+                    "normalCount": 8,
+                    "errorCount": 0,
+                    "exceptionCount": 0
+                }
+            ],
+            "normalCount": 8,
+            "errorCount": 0,
+            "exceptionCount": 0
+        },
         {
             "requestType": "Collect",
             "traceTypeList": [
@@ -11,39 +159,37 @@
                     "typeName": "Collect-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "6d9cece576bc33d0",
+                            "traceId": "10269a986daffb21",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
                             ],
-                            "normalCount": 11,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "a185182c40e42a5a",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-execute-service",
-                                "ts-order-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-execute-service",
+                                    "normalCount": 5,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 6,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 11,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 22,
+                    "count": 1,
+                    "normalCount": 11,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 22,
+            "normalCount": 11,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -54,39 +200,37 @@
                     "typeName": "Execute-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "f85d0bdc25f6f33f",
+                            "traceId": "ad933c86adf01c69",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-execute-service",
                                 "ts-order-service"
                             ],
-                            "normalCount": 11,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "f3a60272b6f33336",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-execute-service",
-                                "ts-order-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-execute-service",
+                                    "normalCount": 5,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 6,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 11,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 22,
+                    "count": 1,
+                    "normalCount": 11,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 22,
+            "normalCount": 11,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -97,48 +241,68 @@
                     "typeName": "GetAssurance-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "048e0970bad066da",
+                            "traceId": "3b4c440134ad4c74",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-assurance-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-assurance-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 3,
                             "errorCount": 0,
                             "exceptionCount": 0
                         },
                         {
-                            "traceId": "b91c3791adfa8b94",
+                            "traceId": "df66c8bd49b8f589",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-assurance-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-assurance-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 3,
                             "errorCount": 0,
                             "exceptionCount": 0
                         },
                         {
-                            "traceId": "652a3cb9a8c1af56",
+                            "traceId": "a2ec2d4998f54df1",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-assurance-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-assurance-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 3,
                             "errorCount": 0,
                             "exceptionCount": 0
                         },
                         {
-                            "traceId": "885636c1f73f1a3b",
+                            "traceId": "fbcec0d27e220824",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-assurance-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-assurance-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 3,
                             "errorCount": 0,
@@ -162,37 +326,30 @@
                     "typeName": "GetContact-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "3020c25c2142c03f",
+                            "traceId": "9aac27242492690c",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-contacts-service"
                             ],
-                            "normalCount": 6,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "8b960d2c9532015c",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-contacts-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-contacts-service",
+                                    "normalCount": 6,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 6,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 12,
+                    "count": 1,
+                    "normalCount": 6,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 12,
+            "normalCount": 6,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -203,45 +360,58 @@
                     "typeName": "GetFood-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "a944c18ed865dfd5",
+                            "traceId": "5ba1a9fbac4046cb",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-food-service",
                                 "ts-food-map-service",
                                 "ts-travel-service",
                                 "ts-route-service",
                                 "ts-station-service"
                             ],
-                            "normalCount": 28,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "4ba3dd8df840788c",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-food-service",
-                                "ts-food-map-service",
-                                "ts-travel-service",
-                                "ts-route-service",
-                                "ts-station-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-travel-service",
+                                    "normalCount": 6,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-food-service",
+                                    "normalCount": 7,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-food-map-service",
+                                    "normalCount": 9,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-route-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 28,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 56,
+                    "count": 1,
+                    "normalCount": 28,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 56,
+            "normalCount": 28,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -252,28 +422,62 @@
                     "typeName": "Login-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "5a0e1b16fba67c48",
+                            "traceId": "8b1e7dcb42bfe3ed",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-login-service",
                                 "ts-verification-code-service",
                                 "ts-sso-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-login-service",
+                                    "normalCount": 7,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-verification-code-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 8,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 17,
                             "errorCount": 0,
                             "exceptionCount": 0
                         },
                         {
-                            "traceId": "a5350ed0073324a3",
+                            "traceId": "962f6f015adfacae",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-login-service",
                                 "ts-verification-code-service",
                                 "ts-sso-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-login-service",
+                                    "normalCount": 7,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-verification-code-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 8,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 17,
                             "errorCount": 0,
@@ -297,39 +501,37 @@
                     "typeName": "Pay-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "e40840ded18792b7",
+                            "traceId": "188d262fe0d4112c",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-inside-payment-service",
                                 "ts-order-service"
                             ],
-                            "normalCount": 9,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "65217c97c2ee90b2",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-inside-payment-service",
-                                "ts-order-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-inside-payment-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 6,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 9,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 18,
+                    "count": 1,
+                    "normalCount": 9,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 18,
+            "normalCount": 9,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -340,47 +542,8 @@
                     "typeName": "PreserveTicket-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "bfff3631894e8616",
+                            "traceId": "60c1628fa36086cd",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-preserve-service",
-                                "ts-sso-service",
-                                "ts-security-service",
-                                "ts-order-service",
-                                "ts-order-other-service",
-                                "ts-contacts-service",
-                                "ts-travel-service",
-                                "ts-ticketinfo-service",
-                                "ts-basic-service",
-                                "ts-station-service",
-                                "ts-route-service",
-                                "ts-train-service",
-                                "ts-price-service",
-                                "ts-seat-service",
-                                "ts-config-service",
-                                "ts-notification-service"
-                            ],
-                            "normalCount": 268,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        }
-                    ],
-                    "count": 1,
-                    "normalCount": 268,
-                    "errorCount": 0,
-                    "exceptionCount": 0
-                },
-                {
-                    "typeName": "PreserveTicket-Type2",
-                    "traceInfoList": [
-                        {
-                            "traceId": "121803406b925241",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-preserve-service",
                                 "ts-sso-service",
                                 "ts-security-service",
@@ -402,6 +565,128 @@
                                 "ts-consign-price-service",
                                 "ts-notification-service"
                             ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-basic-service",
+                                    "normalCount": 44,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-config-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-price-service",
+                                    "normalCount": 8,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-travel-service",
+                                    "normalCount": 31,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-train-service",
+                                    "normalCount": 12,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-assurance-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-contacts-service",
+                                    "normalCount": 5,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-food-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 36,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-route-service",
+                                    "normalCount": 12,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-notification-service",
+                                    "normalCount": 0,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-security-service",
+                                    "normalCount": 10,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-ticketinfo-service",
+                                    "normalCount": 20,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-seat-service",
+                                    "normalCount": 19,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 24,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-consign-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 11,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-preserve-service",
+                                    "normalCount": 32,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-consign-price-service",
+                                    "normalCount": 2,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-other-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
                             "normalCount": 283,
                             "errorCount": 0,
                             "exceptionCount": 0
@@ -413,7 +698,234 @@
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 551,
+            "normalCount": 283,
+            "errorCount": 0,
+            "exceptionCount": 0
+        },
+        {
+            "requestType": "QueryOrder",
+            "traceTypeList": [
+                {
+                    "typeName": "QueryOrder-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "785fae1b7d495072",
+                            "serviceList": [
+                                "ts-order-service",
+                                "ts-sso-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 7,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        }
+                    ],
+                    "count": 1,
+                    "normalCount": 11,
+                    "errorCount": 0,
+                    "exceptionCount": 0
+                },
+                {
+                    "typeName": "QueryOrder-Type2",
+                    "traceInfoList": [
+                        {
+                            "traceId": "a2fe0202464bae29",
+                            "serviceList": [
+                                "ts-order-other-service",
+                                "ts-sso-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-sso-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-other-service",
+                                    "normalCount": 7,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 11,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        }
+                    ],
+                    "count": 1,
+                    "normalCount": 11,
+                    "errorCount": 0,
+                    "exceptionCount": 0
+                }
+            ],
+            "normalCount": 22,
+            "errorCount": 0,
+            "exceptionCount": 0
+        },
+        {
+            "requestType": "QueryStation",
+            "traceTypeList": [
+                {
+                    "typeName": "QueryStation-Type1",
+                    "traceInfoList": [
+                        {
+                            "traceId": "2453ff812abb6f95",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "af2dbca325a65698",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "c00ba28d2e2781c7",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "41a3cfcd0e925317",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "47741552961614a7",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "a9a56f500e9f839b",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "7b4aa38383d0fced",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        },
+                        {
+                            "traceId": "1f95bd17afe5bcf6",
+                            "serviceList": [
+                                "ts-station-service"
+                            ],
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 3,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
+                            ],
+                            "normalCount": 3,
+                            "errorCount": 0,
+                            "exceptionCount": 0
+                        }
+                    ],
+                    "count": 8,
+                    "normalCount": 24,
+                    "errorCount": 0,
+                    "exceptionCount": 0
+                }
+            ],
+            "normalCount": 24,
             "errorCount": 0,
             "exceptionCount": 0
         },
@@ -424,11 +936,8 @@
                     "typeName": "QueryTravelInfo-Type1",
                     "traceInfoList": [
                         {
-                            "traceId": "0c612186831b2a8e",
+                            "traceId": "2ea3de2a7c9ae87f",
                             "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
                                 "ts-travel-service",
                                 "ts-ticketinfo-service",
                                 "ts-basic-service",
@@ -440,39 +949,80 @@
                                 "ts-seat-service",
                                 "ts-config-service"
                             ],
-                            "normalCount": 160,
-                            "errorCount": 0,
-                            "exceptionCount": 0
-                        },
-                        {
-                            "traceId": "4d20a49ef8cd0d8d",
-                            "serviceList": [
-                                "istio-ingressgateway",
-                                "istio-policy",
-                                "istio-mixer",
-                                "ts-travel-service",
-                                "ts-ticketinfo-service",
-                                "ts-basic-service",
-                                "ts-station-service",
-                                "ts-route-service",
-                                "ts-train-service",
-                                "ts-price-service",
-                                "ts-order-service",
-                                "ts-seat-service",
-                                "ts-config-service"
+                            "serviceWithCounts": [
+                                {
+                                    "serviceName": "ts-basic-service",
+                                    "normalCount": 34,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-config-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-ticketinfo-service",
+                                    "normalCount": 18,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-price-service",
+                                    "normalCount": 4,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-travel-service",
+                                    "normalCount": 30,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-train-service",
+                                    "normalCount": 8,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-seat-service",
+                                    "normalCount": 12,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-station-service",
+                                    "normalCount": 24,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-route-service",
+                                    "normalCount": 16,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                },
+                                {
+                                    "serviceName": "ts-order-service",
+                                    "normalCount": 10,
+                                    "errorCount": 0,
+                                    "exceptionCount": 0
+                                }
                             ],
                             "normalCount": 160,
                             "errorCount": 0,
                             "exceptionCount": 0
                         }
                     ],
-                    "count": 2,
-                    "normalCount": 320,
+                    "count": 1,
+                    "normalCount": 160,
                     "errorCount": 0,
                     "exceptionCount": 0
                 }
             ],
-            "normalCount": 320,
+            "normalCount": 160,
             "errorCount": 0,
             "exceptionCount": 0
         }

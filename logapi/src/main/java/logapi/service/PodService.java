@@ -65,6 +65,7 @@ public class PodService {
                 QueryPodInfoRes.class);
         if(result.isStatus()){
             PodInfo podInfo = result.getPodInfo();
+            serviceInfo.setServiceName(podInfo.getServiceName());
             nodeInfo.setName(podInfo.getNodeName());
             nodeInfo.setIp(podInfo.getNodeIP());
             instanceInfo.setStatus("Dead");
