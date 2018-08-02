@@ -1,0 +1,31 @@
+1. 概述
+	微服务介绍
+	微服务存在的问题:debug困难
+	debug：
+		微服务的trace：Dapper，zipkin，jaeger
+		微服务log收集：ELK，Filebeat，Fluent
+		将日志和trace关联所带来的意义
+2. 相关工作
+	trace方面：Dapper，zipkin，jaeger
+	log：ELK，Filebear，Fluent
+	trace+log: zipkin，jaeger
+3. 方法及实现
+	日志的领域模型图
+	策略及其组合
+		策略一： 单条trace+日志
+		策略二： trace之间的对比
+		策略三： trace分段
+	谱聚类算法：
+		对服务依赖图分区，进而对trace分段；划分的区，可以作为服务合并和部署的分析单元
+	原型工具实现（体系结构图）
+4. 实验
+	benchmark system
+	选择的典型fault，以及跟zipkin+elk工具的对比：有用性，有效性
+	trace分段的有效性
+5. 讨论
+	实现上的不足（需要通过aop的方式增强日志，有一定的侵入性，而且只适用于Java开发的微服务）
+	实验的缺陷：实验人员数量，可对比性
+	分区分段有效性的评判标准
+6. 结论及展望
+	将日志与调用链关联的意义以及实现的原型工具的意义
+	未来的工作方向
