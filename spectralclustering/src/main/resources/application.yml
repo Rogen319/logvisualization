@@ -1,0 +1,6 @@
+server:
+  port: 18888
+
+spring:
+  application:
+    name: logvisualization-spectralclustering

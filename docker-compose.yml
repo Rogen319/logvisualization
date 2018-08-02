@@ -45,6 +45,17 @@ services:
       networks:
         - my-network
 
+    logvisualization-zipkinapi:
+        build: spectralclustering
+        image: logvisualization/spectralclustering
+        restart: always
+        volumes:
+          - /opt/log/zipkinapi:/opt/log/spectralclustering
+        ports:
+          - 18888:18888
+        networks:
+          - my-network
+
 networks:
     my-network:
       driver: bridge
