@@ -3,7 +3,7 @@ package logapi.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import logapi.bean.*;
 import logapi.request.GetLogByInstanceNameAndTraceIdReq;
-import logapi.response.GetLogByInstanceNameAndTraceIdRes;
+import logapi.response.GetLogByServiceNameAndTraceIdRes;
 import logapi.response.LogResponse;
 import logapi.util.MyUtil;
 import org.elasticsearch.action.search.SearchResponse;
@@ -148,12 +148,33 @@ public class LogAPIServiceImpl implements LogAPIService {
     }
 
     @Override
-    public GetLogByInstanceNameAndTraceIdRes getLogByInstanceNameAndTraceId(GetLogByInstanceNameAndTraceIdReq request) {
-        GetLogByInstanceNameAndTraceIdRes res = new GetLogByInstanceNameAndTraceIdRes();
+    public GetLogByServiceNameAndTraceIdRes getLogByServiceNameAndTraceId(GetLogByInstanceNameAndTraceIdReq request) {
+        GetLogByServiceNameAndTraceIdRes res = new GetLogByServiceNameAndTraceIdRes();
+
+        List<InstanceAndTraceIdLog> instanceAndTraceIdLogList = new ArrayList<>();
+        //Get all of the instances of the specified service
+        List<String> instanceNames = podService.getInstanceOfService(request.getServiceName());
+        for(String instanceName : instanceNames){
+            InstanceAndTraceIdLog instanceAndTraceIdLog = getSpecifiedInstanceLog(instanceName, request.getTraceId());
+            if(instanceAndTraceIdLog.getLogs().size() > 0){
+                instanceAndTraceIdLogList.add(instanceAndTraceIdLog);
+            }
+        }
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get all of the logs of instances belong to the specified service:[%s].The size is [%d].",
+                request.getServiceName(), instanceAndTraceIdLogList.size()));
+        res.setInstanceWithLogList(instanceAndTraceIdLogList);
+
+        return res;
+    }
+
+    //Get the log information of specified service instance and trace id
+    private InstanceAndTraceIdLog getSpecifiedInstanceLog(String instanceName, String traceId){
+        InstanceAndTraceIdLog res = new InstanceAndTraceIdLog();
 
         QueryBuilder qb = QueryBuilders.boolQuery()
-                .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword",request.getInstanceName()))
-                .must(QueryBuilders.termQuery("TraceId",request.getTraceId()));
+                .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword",instanceName))
+                .must(QueryBuilders.termQuery("TraceId",traceId));
 
         List<BasicLogItem> logs = new ArrayList<>();
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
@@ -207,10 +228,6 @@ public class LogAPIServiceImpl implements LogAPIService {
             else
                 exceptionCount++;
         }
-
-        res.setStatus(true);
-        res.setMessage(String.format("Succeed to get the logs of instance:[%s] with traceid:[%s]. Size is [%d]",
-                request.getInstanceName(),request.getTraceId(),logs.size()));
         res.setLogs(logs);
         res.setNormalCount(normalCount);
         res.setErrorCount(errorCount);
@@ -250,7 +267,6 @@ public class LogAPIServiceImpl implements LogAPIService {
                 e.printStackTrace();
             }
         }
-
         return res;
     }
 

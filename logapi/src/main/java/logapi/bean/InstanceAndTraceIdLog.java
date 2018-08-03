@@ -1,18 +1,15 @@
-package logapi.response;
-
-import logapi.bean.BasicLogItem;
-import logapi.bean.ServiceInfo;
+package logapi.bean;
 
 import java.util.List;
 
-public class GetLogByInstanceNameAndTraceIdRes extends GeneralResponse {
+public class InstanceAndTraceIdLog {
     private List<BasicLogItem> logs;
     private int normalCount;
     private int errorCount;
     private int exceptionCount;
     private ServiceInfo serviceInfo;
 
-    public GetLogByInstanceNameAndTraceIdRes(){
+    public InstanceAndTraceIdLog(){
 
     }
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -82,5 +83,21 @@ public class PodService {
             }
         }
         return null;
+    }
+
+    //Get all of the instance name of the specified service
+    public List<String> getInstanceOfService(String serviceName) {
+        List<String> res = new ArrayList<>();
+
+        GetPodsListResponse result = restTemplate.getForObject(
+                "http://logvisualization-k8sapi:18319/api/getPodsList",
+                GetPodsListResponse.class);
+        if(result.isStatus()){
+            for(PodInfo podInfo : result.getPods()){
+                if(podInfo.getServiceName().equals(serviceName))
+                    res.add(podInfo.getName());
+            }
+        }
+        return res;
     }
 }

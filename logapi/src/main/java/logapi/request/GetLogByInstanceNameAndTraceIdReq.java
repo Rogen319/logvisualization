@@ -1,19 +1,19 @@
 package logapi.request;
 
 public class GetLogByInstanceNameAndTraceIdReq {
-    private String instanceName;
+    private String serviceName;
     private String traceId;
 
     public GetLogByInstanceNameAndTraceIdReq(){
 
     }
 
-    public String getInstanceName() {
-        return instanceName;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public String getTraceId() {

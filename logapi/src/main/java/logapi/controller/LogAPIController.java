@@ -1,7 +1,7 @@
 package logapi.controller;
 
 import logapi.request.GetLogByInstanceNameAndTraceIdReq;
-import logapi.response.GetLogByInstanceNameAndTraceIdRes;
+import logapi.response.GetLogByServiceNameAndTraceIdRes;
 import logapi.response.LogResponse;
 import logapi.service.LogAPIService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class LogAPIController {
 
     //Get the log corresponding to the instance name(pod) and trace id
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getLogByInstanceNameAndTraceId", method ={RequestMethod.POST})
-    public GetLogByInstanceNameAndTraceIdRes getLogByInstanceNameAndTraceId(@RequestBody GetLogByInstanceNameAndTraceIdReq request){
-        return service.getLogByInstanceNameAndTraceId(request);
+    @RequestMapping(value = "/getLogByServiceNameAndTraceId", method ={RequestMethod.POST})
+    public GetLogByServiceNameAndTraceIdRes getLogByServiceNameAndTraceId(@RequestBody GetLogByInstanceNameAndTraceIdReq request){
+        return service.getLogByServiceNameAndTraceId(request);
     }
 }
