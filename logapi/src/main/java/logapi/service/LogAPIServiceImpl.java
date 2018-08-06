@@ -404,6 +404,7 @@ public class LogAPIServiceImpl implements LogAPIService {
             log.setLogInfo(map.get("log") != null ? map.get("log").toString() : "");
         }
 
+        //待删除
 //        if(Math.random() < 0.33){
 //            log.setIsError(0);
 //        }else if(Math.random() < 0.66){

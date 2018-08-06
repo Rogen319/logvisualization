@@ -2,6 +2,7 @@ package escore.controller;
 
 import escore.bean.NodeInfo;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
+import escore.response.GetInstanceNamesFromESRes;
 import escore.response.GetRequestWithTraceIDRes;
 import escore.response.QueryNodeInfoRes;
 import escore.response.QueryPodInfoRes;
@@ -49,5 +50,11 @@ public class ESController {
     @RequestMapping(value="/queryNodeInfo", method= RequestMethod.POST)
     public QueryNodeInfoRes queryNodeInfo(@RequestBody NodeInfo nodeInfo){
         return service.queryNodeInfo(nodeInfo);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getInstanceNamesOfSpecifiedService/{serviceName}", method ={RequestMethod.GET})
+    public GetInstanceNamesFromESRes getInstanceNamesOfSpecifiedService(@PathVariable String serviceName){
+        return service.getInstanceNamesOfSpecifiedService(serviceName);
     }
 }

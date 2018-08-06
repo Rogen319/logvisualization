@@ -40,3 +40,8 @@ To uninstall the whole system, execute the following commands:
    *  kubectl delete -f ts-deployment-part3.yml
    *  kubectl delete -f ts-deployment-part2.yml
    *  kubectl delete -f ts-deployment-part1.yml
+   
+## Notification
+1. When build and run the zipkin ui in kubernetes, it may crash loop backoff because "standard_init_linux.go:178: exec user process caused "no such file or directory"".
+This is caused by the format of nginx.conf and run.sh. If you open them in Windows, the format may be changed to dos. You need to use the dos2unix to change it to the
+unix format.

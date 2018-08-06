@@ -5,10 +5,7 @@ import escore.bean.*;
 import escore.config.MyConfig;
 import escore.init.InitIndexAndType;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
-import escore.response.GetRequestTypesRes;
-import escore.response.GetRequestWithTraceIDRes;
-import escore.response.QueryNodeInfoRes;
-import escore.response.QueryPodInfoRes;
+import escore.response.*;
 import escore.util.ESUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -35,6 +32,8 @@ public class ESCoreServiceImpl implements ESCoreService {
     private static final String ZIPKIN_SPAN_TYPE = "span";
     private static final String LOGSTASH_LOG_INDEX = "logstash-*";
     private static final String LOGSTASH_LOG_TYPE = "beats";
+    private static final String K8S_POD_INDEX = "k8s_pod";
+    private static final String K8S_POD_TYPE = "pod";
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -265,6 +264,40 @@ public class ESCoreServiceImpl implements ESCoreService {
         return res;
     }
 
+    @Override
+    public GetInstanceNamesFromESRes getInstanceNamesOfSpecifiedService(String serviceName) {
+        GetInstanceNamesFromESRes res = new GetInstanceNamesFromESRes();
+
+        List<String> instanceNames = new ArrayList<>();
+
+        TransportClient client = myConfig.getESClient();
+        QueryBuilder qb = QueryBuilders.termQuery("serviceName",serviceName);
+
+        SearchResponse scrollResp = client.prepareSearch(K8S_POD_INDEX).setTypes(K8S_POD_TYPE)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+        SearchHit[] hits;
+        Map<String, Object> map;
+
+        while(scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                map = hit.getSourceAsMap();
+                if(map.get("name") != null){
+                    instanceNames.add(map.get("name").toString());
+                }
+            }
+        }
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the instance names of service:[%s]. Size is [%d].", serviceName, instanceNames.size()));
+        res.setInstanceNames(instanceNames);
+
+        return res;
+    }
+
     //Set the count of three kind log
     private void setCountOfTraceInfo(TraceInfo traceInfo) {
         String traceId = traceInfo.getTraceId();
@@ -298,6 +331,8 @@ public class ESCoreServiceImpl implements ESCoreService {
                         normalCount++;
                     }
                 }
+
+                //待删除
 //                if(Math.random() < 0.2)
 //                    errorCount++;
 //                else
@@ -534,6 +569,15 @@ public class ESCoreServiceImpl implements ESCoreService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //待删除
+//        if(Math.random() < 0.33){
+//            log.setIsError(0);
+//        }else if(Math.random() < 0.66){
+//            log.setIsError(1);
+//        }else{
+//            log.setIsError(2);
+//        }
 
         return log;
     }

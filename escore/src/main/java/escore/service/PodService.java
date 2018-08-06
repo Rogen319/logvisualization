@@ -30,16 +30,18 @@ public class PodService {
     //Set the instance information
     public String getServiceName(String podName, List<PodInfo> currentPods){
         //Check if pod exist in the current pods
-        for(PodInfo podInfo : currentPods){
-            if(podInfo.getName().equals(podName))
-                return podInfo.getServiceName();
+        if(currentPods != null){
+            for(PodInfo podInfo : currentPods){
+                if(podInfo.getName().equals(podName))
+                    return podInfo.getServiceName();
+            }
         }
 
         //Query pod information in the elasticsearch
         QueryPodInfoRes result = restTemplate.getForObject(
                 "http://logvisualization-escore:17319/queryPodInfo/" + podName,
                 QueryPodInfoRes.class);
-        if(result.isStatus()){
+        if(result.isStatus() && result.getPodInfo() != null){
             PodInfo podInfo = result.getPodInfo();
             return podInfo.getServiceName();
         }
