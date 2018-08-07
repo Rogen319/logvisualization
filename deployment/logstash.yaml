@@ -86,7 +86,14 @@ data:
          if [kubernetes][namespace] != "default" or [kubernetes][container][name] == "istio-proxy"{
               drop{}
          } else {
-              if "Response" in [log]{
+              if "Exception" in [log]{
+                   grok{
+                     patterns_dir => "/usr/share/logstash/config/patterns"
+                     match => ["log","%{EXCEPTIONLOG}"]
+                   }
+               }
+
+              else if "Response" in [log]{
                   grok{
                     patterns_dir => "/usr/share/logstash/config/patterns"
                     match => ["log","%{RESPONSELOG}"]
@@ -104,13 +111,6 @@ data:
                   grok{
                     patterns_dir => "/usr/share/logstash/config/patterns"
                     match => ["log","%{REQUESTLOG}"]
-                  }
-              }
-
-               else if "Exception" in [log]{
-                  grok{
-                    patterns_dir => "/usr/share/logstash/config/patterns"
-                    match => ["log","%{EXCEPTIONLOG}"]
                   }
               }
          }
@@ -246,4 +246,4 @@ data:
 
     INTERNALMETHODLOG %{PARENTSPANIDPREFIX}%{ID:ParentSpanId}%{SUFFIX}%{GAP}%{REQUESTIDPREFIX}%{ID:RequestId}%{SUFFIX}%{GAP}%{TRACEIDPREFIX}%{ID:TraceId}%{SUFFIX}%{GAP}%{SPANIDPREFIX}%{ID:SpanId}%{SUFFIX}%{GAP}%{LOGTYPEPREFIX}%{STRING:LogType}%{SUFFIX}%{GAP}%{URIPREFIX}%{CONTENT:URI}%{SUFFIX}%{GAP}%{CONTENTPREFIX}%{CONTENT:Content}%{SUFFIX}
 
-    EXCEPTIONLOG %{PARENTSPANIDPREFIX}%{ID:ParentSpanId}%{SUFFIX}%{GAP}%{REQUESTIDPREFIX}%{ID:RequestId}%{SUFFIX}%{GAP}%{TRACEIDPREFIX}%{ID:TraceId}%{SUFFIX}%{GAP}%{SPANIDPREFIX}%{ID:SpanId}%{SUFFIX}%{GAP}%{LOGTYPEPREFIX}%{STRING:LogType}%{SUFFIX}%{GAP}%{URIPREFIX}%{CONTENT:URI}%{SUFFIX}%{GAP}%{EXCEPTIONMESSAGEPREFIX}%{CONTENT:ExceptionMessage}%{SUFFIX}%{GAP}%{EXCEPTIONCAUSEPREFIX}%{CONTENT:ExceptionCause}%{SUFFIX}%{GAP}%{EXCEPTIONSTACKPREFIX}%{CONTENT:ExceptionStack}%{SUFFIX}
+    EXCEPTIONLOG %{PARENTSPANIDPREFIX}%{ID:ParentSpanId}%{SUFFIX}%{GAP}%{REQUESTIDPREFIX}%{ID:RequestId}%{SUFFIX}%{GAP}%{TRACEIDPREFIX}%{ID:TraceId}%{SUFFIX}%{GAP}%{SPANIDPREFIX}%{ID:SpanId}%{SUFFIX}%{GAP}%{LOGTYPEPREFIX}%{STRING:LogType}%{SUFFIX}%{GAP}%{URIPREFIX}%{CONTENT:URI}%{SUFFIX}%{GAP}%{EXCEPTIONMESSAGEPREFIX}%{CONTENT:ExceptionMessage}%{SUFFIX}%{GAP}%{EXCEPTIONCAUSEPREFIX}%{CONTENT:ExceptionCause}%{SUFFIX}%{GAP}%{EXCEPTIONSTACKPREFIX}%{CONTENT:ExceptionStack}
