@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class NodeService {
@@ -21,7 +22,7 @@ public class NodeService {
     //Get the node list
     public V1NodeList getNodeList(){
         //Get the current nodes information and echo to the file
-        String filePath = "/app/get_node_list_result_" + System.currentTimeMillis() + ".json";
+        String filePath = "/app/get_node_list_result_" + UUID.randomUUID().toString() + ".json";
         V1NodeList nodeList = new V1NodeList();
         String apiUrl = String.format("%s/api/v1/nodes",clusterConfig.getApiServer());
         log.info(String.format("The constructed api url for getting the node list is %s", apiUrl));

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class PodService {
@@ -21,7 +22,7 @@ public class PodService {
     //Get the pods list
     public V1PodList getPodList(){
         //Get the current pods information and echo to the file
-        String filePath = "/app/get_pod_list_result_" + System.currentTimeMillis()+ ".json";
+        String filePath = "/app/get_pod_list_result_" + UUID.randomUUID().toString() + ".json";
         V1PodList podList = new V1PodList();
         String apiUrl = String.format("%s/api/v1/namespaces/%s/pods",clusterConfig.getApiServer(),MyUtil.DEFAULT_NAMESPACE);
         log.info(String.format("The constructed api url for getting the pod list is %s", apiUrl));
