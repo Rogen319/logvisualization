@@ -2,10 +2,9 @@ package escore.service;
 
 import escore.bean.NodeInfo;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
-import escore.response.GetInstanceNamesFromESRes;
-import escore.response.GetRequestWithTraceIDRes;
-import escore.response.QueryNodeInfoRes;
-import escore.response.QueryPodInfoRes;
+import escore.response.*;
+
+import java.util.List;
 
 public interface ESCoreService {
     String demo();
@@ -15,4 +14,5 @@ public interface ESCoreService {
     QueryPodInfoRes queryPodInfo(String podName);
     QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo);
     GetInstanceNamesFromESRes getInstanceNamesOfSpecifiedService(String serviceName);
+    List<TraceSequenceRes> getSequenceInfo();
 }
