@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface ESCoreService {
     String demo();
-//    GetRequestTypesRes getRequestTypes();
-    GetRequestWithTraceIDRes getRequestWithTraceID();
     GetRequestWithTraceIDRes getRequestWithTraceIDByTimeRange(GetRequestWithTraceIDByTimeRangeReq request);
     QueryPodInfoRes queryPodInfo(String podName);
     QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo);

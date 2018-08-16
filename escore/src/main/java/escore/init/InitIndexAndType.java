@@ -29,7 +29,8 @@ public class InitIndexAndType implements CommandLineRunner {
 
     public static final String K8S_INDEX_POD = "k8s_pod";
     public static final String K8S_INDEX_NODE = "k8s_node";
-    public static final String REQUEST_TRACE_RELATION_INDEX = "rt_relation";
+    public static final String TRACE_STATUS = "trace_status";
+//    public static final String REQUEST_TRACE_RELATION_INDEX = "rt_relation";
 
     @Override
     public void run(String... strings) throws Exception {
@@ -38,11 +39,11 @@ public class InitIndexAndType implements CommandLineRunner {
 //        indicesAdminClient.prepareDelete(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
 
         //Judge if the k8s and rt indices already exists
-        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).
+        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, TRACE_STATUS).
                 execute().actionGet();
-        log.info(String.format("Indices [%s, %s, %s] exists? %b", K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX, indicesExistsResponse.isExists()));
+        log.info(String.format("Indices [%s, %s, %s] exists? %b", K8S_INDEX_POD, K8S_INDEX_NODE, TRACE_STATUS, indicesExistsResponse.isExists()));
 
-        //If not, create the two indices
+        //If not, create the three indices
         if(!indicesExistsResponse.isExists()){
             //Pod index
             CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(K8S_INDEX_POD)
@@ -71,15 +72,15 @@ public class InitIndexAndType implements CommandLineRunner {
             }
 
             //Request-Trace index
-            createIndexResponse = indicesAdminClient.prepareCreate(REQUEST_TRACE_RELATION_INDEX)
+            createIndexResponse = indicesAdminClient.prepareCreate(TRACE_STATUS)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
-                log.info(String.format("Index [%s] has been created successfully!", REQUEST_TRACE_RELATION_INDEX));
+                log.info(String.format("Index [%s] has been created successfully!", TRACE_STATUS));
 
                 //Add request trace relation type
-                addRelationType();
+                addStatusType();
             } else {
-                log.info(String.format("Fail to create index [%s]!", REQUEST_TRACE_RELATION_INDEX));
+                log.info(String.format("Fail to create index [%s]!", TRACE_STATUS));
             }
         }
     }
@@ -112,23 +113,6 @@ public class InitIndexAndType implements CommandLineRunner {
                         "      \"type\": \"text\"\n" +
                         "    },\n" +
                         "    \"containerRuntimeVersion\": {\n" +
-                        "      \"type\": \"text\"\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}", XContentType.JSON)
-                .get();
-    }
-
-    //Add relation type in the rt_relation index
-    private void addRelationType(){
-        client.admin().indices().preparePutMapping(REQUEST_TRACE_RELATION_INDEX)
-                .setType("relation")
-                .setSource("{\n" +
-                        "  \"properties\": {\n" +
-                        "    \"requestType\": {\n" +
-                        "      \"type\": \"text\"\n" +
-                        "    },\n" +
-                        "    \"traceId\": {\n" +
                         "      \"type\": \"text\"\n" +
                         "    }\n" +
                         "  }\n" +
@@ -227,5 +211,22 @@ public class InitIndexAndType implements CommandLineRunner {
         }else{
             log.info("Fail to get the pod list information!");
         }
+    }
+
+    //Add relation type in the trace_status index
+    private void addStatusType(){
+        client.admin().indices().preparePutMapping(TRACE_STATUS)
+                .setType("status")
+                .setSource("{\n" +
+                        "  \"properties\": {\n" +
+                        "    \"status\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"traceId\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}", XContentType.JSON)
+                .get();
     }
 }

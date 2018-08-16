@@ -67,93 +67,6 @@ public class ESCoreServiceImpl implements ESCoreService {
         return sb.toString();
     }
 
-    //Get the request types list
-    private GetRequestTypesRes getRequestTypes(String index, String type) {
-        log.info(String.format("Get reuqest types from [%s:%s]", index, type));
-        TransportClient client = myConfig.getESClient();
-
-        GetRequestTypesRes res = new GetRequestTypesRes();
-        res.setStatus(false);
-        res.setMessage("This is the default message!");
-
-        SearchResponse scrollResp = client.prepareSearch(index).setTypes(type)
-                .setScroll(new TimeValue(60000))
-                .setSize(100).get();
-
-        //Scroll until no hits are returned
-        SearchHit[] hits;
-        Set<String> requestTypes = new HashSet<>();
-        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
-            hits = scrollResp.getHits().getHits();
-//            log.info(String.format("The length of scroll request type search hits is [%d]", hits.length));
-            Map<String, Object> map;
-            for (SearchHit hit : hits) {
-                //Handle the hit
-                map = hit.getSourceAsMap();
-                requestTypes.add(map.get("requestType").toString());
-            }
-            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-        }
-        log.info(String.format("Succeed to get request types. There are [%d] request types now.", requestTypes.size()));
-        res.setRequestTypes(requestTypes);
-        res.setStatus(true);
-        res.setMessage(String.format("Succeed to get request types. There are [%d] request types now.", requestTypes.size()));
-
-        return res;
-    }
-
-    //Get the request type with its trace ids
-    @Override
-    public GetRequestWithTraceIDRes getRequestWithTraceID() {
-        TransportClient client = myConfig.getESClient();
-
-        GetRequestWithTraceIDRes res = new GetRequestWithTraceIDRes();
-        res.setStatus(false);
-        res.setMessage("This is the default message");
-        List<RequestWithTraceInfo> requestWithTraceInfoList = new ArrayList<>();
-
-        //Get request types first
-        GetRequestTypesRes getRequestTypesRes = this.getRequestTypes(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX, "relation");
-        if (getRequestTypesRes.isStatus()) {
-            MatchQueryBuilder qb;
-            SearchResponse scrollResp;
-            SearchHit[] hits;
-            Map<String, Object> map;
-            for (String requestType : getRequestTypesRes.getRequestTypes()) {
-                //Create the object to store the information
-                RequestWithTraceInfo requestWithTraceInfo = new RequestWithTraceInfo();
-                requestWithTraceInfo.setRequestType(requestType);
-                List<TraceInfo> traceInfoList = new ArrayList<>();
-
-                qb = QueryBuilders.matchQuery("requestType", requestType);
-                scrollResp = client.prepareSearch(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX).setTypes("relation")
-                        .setScroll(new TimeValue(60000))
-                        .setQuery(qb)
-                        .setSize(100).get();
-                while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
-                    hits = scrollResp.getHits().getHits();
-//                    log.info(String.format("The length of scroll requestType:[%s] search hits is [%d]", requestType, hits.length));
-                    for (SearchHit hit : hits) {
-                        //Handle the hit
-                        map = hit.getSourceAsMap();
-                        TraceInfo traceInfo = getTraceInfoById(map.get("traceId").toString());
-                        traceInfoList.add(traceInfo);
-                    }
-                    scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-                }
-                List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType, traceInfoList);
-
-                requestWithTraceInfo.setTraceTypeList(traceTypeList);
-                requestWithTraceInfoList.add(requestWithTraceInfo);
-            }
-            res.setStatus(true);
-            res.setMessage(String.format("Succeed to get the request with trace ids. The size of request types is [%d].", getRequestTypesRes.getRequestTypes().size()));
-        }
-        res.setRequestWithTraceInfoList(requestWithTraceInfoList);
-
-        return res;
-    }
-
     @Override
     public GetRequestWithTraceIDRes getRequestWithTraceIDByTimeRange(GetRequestWithTraceIDByTimeRangeReq request) {
         TransportClient client = myConfig.getESClient();
@@ -170,12 +83,12 @@ public class ESCoreServiceImpl implements ESCoreService {
         String beginTime = esUtil.convertTime(endTimeValue - lookback);
         String endTime = esUtil.convertTime(endTimeValue);
 
-        log.info(String.format("===Begin time is [%s], endTime is [%s]===", beginTime, endTime));
+//        log.info(String.format("===Begin time is [%s], endTime is [%s]===", beginTime, endTime));
 
         beginTime = beginTime.split(" ")[0] + " 00:00:00";
         endTime = endTime.split(" ")[0] + " 23:59:59";
 
-        log.info(String.format("===Final begin time is [%s], endTime is [%s]===", beginTime, endTime));
+//        log.info(String.format("===Final begin time is [%s], endTime is [%s]===", beginTime, endTime));
 
         log.info("===New method to get request with trace id by time range===");
 
@@ -234,17 +147,28 @@ public class ESCoreServiceImpl implements ESCoreService {
             }
             List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType, traceInfoList);
             requestWithTraceInfo.setTraceTypeList(traceTypeList);
-            int normalCount = 0, errorCount = 0, exceptionCount = 0;
-            for (TraceType traceType : traceTypeList) {
-                normalCount += traceType.getNormalCount();
-                errorCount += traceType.getErrorCount();
-                exceptionCount += traceType.getExceptionCount();
+            //Judge if the trace only contains 1 service
+            boolean flag = false;
+            for(TraceType traceType : traceTypeList){
+                if(traceType.getTraceInfoList().get(0).getServiceList().size() > 1){
+                    flag = true;
+                    break;
+                }
             }
-            requestWithTraceInfo.setNormalCount(normalCount);
-            requestWithTraceInfo.setErrorCount(errorCount);
-            requestWithTraceInfo.setExceptionCount(exceptionCount);
+            if(flag){
+                int normalCount = 0, errorCount = 0, exceptionCount = 0;
+                for (TraceType traceType : traceTypeList) {
+                    normalCount += traceType.getNormalCount();
+                    errorCount += traceType.getErrorCount();
+                    exceptionCount += traceType.getExceptionCount();
+                }
+                requestWithTraceInfo.setNormalCount(normalCount);
+                requestWithTraceInfo.setErrorCount(errorCount);
+                requestWithTraceInfo.setExceptionCount(exceptionCount);
 
-            requestWithTraceInfoList.add(requestWithTraceInfo);
+                requestWithTraceInfoList.add(requestWithTraceInfo);
+            }
+
         }
 
         //@deprecated Sort the request type
@@ -335,10 +259,10 @@ public class ESCoreServiceImpl implements ESCoreService {
                 }
 
                 //待删除
-//                if(Math.random() < 0.2)
-//                    errorCount++;
-//                else
-//                    normalCount++;
+                if(Math.random() < 0.2)
+                    errorCount++;
+                else
+                    normalCount++;
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
@@ -573,13 +497,13 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         //待删除
-//        if(Math.random() < 0.33){
-//            log.setIsError(0);
-//        }else if(Math.random() < 0.66){
-//            log.setIsError(1);
-//        }else{
-//            log.setIsError(2);
-//        }
+        if(Math.random() < 0.33){
+            log.setIsError(0);
+        }else if(Math.random() < 0.66){
+            log.setIsError(1);
+        }else{
+            log.setIsError(2);
+        }
 
         return log;
     }

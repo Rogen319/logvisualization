@@ -127,43 +127,43 @@ public class ESCoreScheduledService {
         SearchHit[] hits = new SearchHit[0];
         Map<String, Object> map;
         ObjectMapper mapper = new ObjectMapper();
-        try{
-            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-                hits = scrollResp.getHits().getHits();
-                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
-                String requestType,traceId;
-                RTRelation relation;
-                for (SearchHit hit : hits) {
-                    //Handle the hit
-                    map = hit.getSourceAsMap();
-                    requestType = map.get("RequestType").toString();
-                    traceId = map.get("TraceId").toString();
-                    relation = new RTRelation();
-                    relation.setRequestType(requestType);
-                    relation.setTraceId(traceId);
-                    if(!existInOriginRelation(relation, originRelations)){
-                        log.info(String.format("Begin to add the relation RequestType:[%s]-TraceId:[%s]", relation.getRequestType(), relation.getTraceId()));
-                        byte[] json = mapper.writeValueAsBytes(relation);
-                        client.prepareIndex(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX,"relation").setSource(json, XContentType.JSON).get();
-                        originRelations.add(relation);
-                    }else{
-//                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
-                    }
-
-                }
-                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-            }
-
-            //Update the prevTimestamp according to the last record
-            if(hits.length > 0){
-                SearchHit last = hits[hits.length - 1];
-                map = last.getSourceAsMap();
-                prevTimestamp = map.get("time").toString();
-                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+//        try{
+//            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+//                hits = scrollResp.getHits().getHits();
+//                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
+//                String requestType,traceId;
+//                RTRelation relation;
+//                for (SearchHit hit : hits) {
+//                    //Handle the hit
+//                    map = hit.getSourceAsMap();
+//                    requestType = map.get("RequestType").toString();
+//                    traceId = map.get("TraceId").toString();
+//                    relation = new RTRelation();
+//                    relation.setRequestType(requestType);
+//                    relation.setTraceId(traceId);
+//                    if(!existInOriginRelation(relation, originRelations)){
+//                        log.info(String.format("Begin to add the relation RequestType:[%s]-TraceId:[%s]", relation.getRequestType(), relation.getTraceId()));
+//                        byte[] json = mapper.writeValueAsBytes(relation);
+//                        client.prepareIndex(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX,"relation").setSource(json, XContentType.JSON).get();
+//                        originRelations.add(relation);
+//                    }else{
+////                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
+//                    }
+//
+//                }
+//                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+//            }
+//
+//            //Update the prevTimestamp according to the last record
+//            if(hits.length > 0){
+//                SearchHit last = hits[hits.length - 1];
+//                map = last.getSourceAsMap();
+//                prevTimestamp = map.get("time").toString();
+//                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     //Delete the useless span info
