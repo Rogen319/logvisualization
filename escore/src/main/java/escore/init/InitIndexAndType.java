@@ -5,6 +5,7 @@ import escore.bean.NodeInfo;
 import escore.bean.PodInfo;
 import escore.response.GetNodesListResponse;
 import escore.response.GetPodsListResponse;
+import escore.util.Const;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -27,11 +28,6 @@ public class InitIndexAndType implements CommandLineRunner {
     @Autowired
     private TransportClient client;
 
-    public static final String K8S_INDEX_POD = "k8s_pod";
-    public static final String K8S_INDEX_NODE = "k8s_node";
-    public static final String TRACE_STATUS = "trace_status";
-//    public static final String REQUEST_TRACE_RELATION_INDEX = "rt_relation";
-
     @Override
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
@@ -39,55 +35,55 @@ public class InitIndexAndType implements CommandLineRunner {
 //        indicesAdminClient.prepareDelete(K8S_INDEX_POD, K8S_INDEX_NODE, REQUEST_TRACE_RELATION_INDEX).execute().actionGet();
 
         //Judge if the k8s and rt indices already exists
-        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(K8S_INDEX_POD, K8S_INDEX_NODE, TRACE_STATUS).
+        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX, Const.TRACE_STATUS_INDEX).
                 execute().actionGet();
-        log.info(String.format("Indices [%s, %s, %s] exists? %b", K8S_INDEX_POD, K8S_INDEX_NODE, TRACE_STATUS, indicesExistsResponse.isExists()));
+        log.info(String.format("Indices [%s, %s, %s] exists? %b", Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX, Const.TRACE_STATUS_INDEX, indicesExistsResponse.isExists()));
 
         //If not, create the three indices
         if(!indicesExistsResponse.isExists()){
             //Pod index
-            CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(K8S_INDEX_POD)
+            CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_POD_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
-                log.info(String.format("Index [%s] has been created successfully!", K8S_INDEX_POD));
+                log.info(String.format("Index [%s] has been created successfully!", Const.K8S_POD_INDEX));
 
                 //Add pod type and insert pod information
                 addPodType();
                 insertPodData();
             } else {
-                log.info(String.format("Fail to create index [%s]!", K8S_INDEX_POD));
+                log.info(String.format("Fail to create index [%s]!", Const.K8S_POD_INDEX));
             }
 
             //Node index
-            createIndexResponse = indicesAdminClient.prepareCreate(K8S_INDEX_NODE)
+            createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_NODE_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
-                log.info(String.format("Index [%s] has been created successfully!", K8S_INDEX_NODE));
+                log.info(String.format("Index [%s] has been created successfully!", Const.K8S_NODE_INDEX));
 
                 //Add node type and insert node information
                 addNodeType();
                 insertNodeData();
             } else {
-                log.info(String.format("Fail to create index [%s]!", K8S_INDEX_NODE));
+                log.info(String.format("Fail to create index [%s]!", Const.K8S_NODE_INDEX));
             }
 
             //Request-Trace index
-            createIndexResponse = indicesAdminClient.prepareCreate(TRACE_STATUS)
+            createIndexResponse = indicesAdminClient.prepareCreate(Const.TRACE_STATUS_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
-                log.info(String.format("Index [%s] has been created successfully!", TRACE_STATUS));
+                log.info(String.format("Index [%s] has been created successfully!", Const.TRACE_STATUS_INDEX));
 
                 //Add request trace relation type
                 addStatusType();
             } else {
-                log.info(String.format("Fail to create index [%s]!", TRACE_STATUS));
+                log.info(String.format("Fail to create index [%s]!", Const.TRACE_STATUS_INDEX));
             }
         }
     }
 
     //Add node type in the node index
     private void addNodeType(){
-        client.admin().indices().preparePutMapping(K8S_INDEX_NODE)
+        client.admin().indices().preparePutMapping(Const.K8S_NODE_INDEX)
                 .setType("node")
                 .setSource("{\n" +
                         "  \"properties\": {\n" +
@@ -130,7 +126,7 @@ public class InitIndexAndType implements CommandLineRunner {
             ObjectMapper mapper = new ObjectMapper();
             for(NodeInfo nodeInfo : result.getNodes()){
                 byte[] json = mapper.writeValueAsBytes(nodeInfo);
-                client.prepareIndex(K8S_INDEX_NODE,"node").setSource(json, XContentType.JSON).get();
+                client.prepareIndex(Const.K8S_NODE_INDEX,"node").setSource(json, XContentType.JSON).get();
             }
         }else{
             log.info("Fail to get the node list information!");
@@ -139,7 +135,7 @@ public class InitIndexAndType implements CommandLineRunner {
 
     //Add pod type in the pod index
     private void addPodType(){
-        client.admin().indices().preparePutMapping(K8S_INDEX_POD)
+        client.admin().indices().preparePutMapping(Const.K8S_POD_INDEX)
                 .setType("pod")
                 .setSource("{\n" +
                         "  \"properties\": {\n" +
@@ -206,7 +202,7 @@ public class InitIndexAndType implements CommandLineRunner {
             ObjectMapper mapper = new ObjectMapper();
             for(PodInfo podInfo : result.getPods()){
                 byte[] json = mapper.writeValueAsBytes(podInfo);
-                client.prepareIndex(K8S_INDEX_POD,"pod").setSource(json, XContentType.JSON).get();
+                client.prepareIndex(Const.K8S_POD_INDEX,"pod").setSource(json, XContentType.JSON).get();
             }
         }else{
             log.info("Fail to get the pod list information!");
@@ -215,7 +211,7 @@ public class InitIndexAndType implements CommandLineRunner {
 
     //Add relation type in the trace_status index
     private void addStatusType(){
-        client.admin().indices().preparePutMapping(TRACE_STATUS)
+        client.admin().indices().preparePutMapping(Const.TRACE_STATUS_INDEX)
                 .setType("status")
                 .setSource("{\n" +
                         "  \"properties\": {\n" +

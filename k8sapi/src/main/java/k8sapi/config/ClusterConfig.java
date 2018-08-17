@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "k8s-cluster-config")
+@ConfigurationProperties(prefix = "k8s-cluster-config-136")
 public class ClusterConfig {
     private String masterIp;
     private String token;

@@ -3,9 +3,9 @@ package escore.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.*;
 import escore.config.MyConfig;
-import escore.init.InitIndexAndType;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
 import escore.response.*;
+import escore.util.Const;
 import escore.util.ESUtil;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -30,12 +30,7 @@ import java.util.stream.Stream;
 @Service
 public class ESCoreServiceImpl implements ESCoreService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
-    private static final String ZIPKIN_SPAN_INDEX = "zipkin:span-*";
-    private static final String ZIPKIN_SPAN_TYPE = "span";
-    private static final String LOGSTASH_LOG_INDEX = "logstash-*";
-    private static final String LOGSTASH_LOG_TYPE = "beats";
-    private static final String K8S_POD_INDEX = "k8s_pod";
-    private static final String K8S_POD_TYPE = "pod";
+
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -141,6 +136,14 @@ public class ESCoreServiceImpl implements ESCoreService {
             List<TraceInfo> traceInfoList = new ArrayList<>();
             for (String traceId : requestWithTraceIdsMap.get(requestType)) {
                 TraceInfo traceInfo = getTraceInfoById(traceId);
+
+                //Set the status of trace
+                String statusString = esUtil.getStatusOfTrace(traceId);
+                if(statusString.equals("true"))
+                    traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
+                else
+                    traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
+
                 //Set the count of three kind of log
                 setCountOfTraceInfo(traceInfo);
                 traceInfoList.add(traceInfo);
@@ -157,14 +160,19 @@ public class ESCoreServiceImpl implements ESCoreService {
             }
             if(flag){
                 int normalCount = 0, errorCount = 0, exceptionCount = 0;
+                int normalTraceCount = 0, errorTraceCount = 0;
                 for (TraceType traceType : traceTypeList) {
                     normalCount += traceType.getNormalCount();
                     errorCount += traceType.getErrorCount();
                     exceptionCount += traceType.getExceptionCount();
+                    normalTraceCount += traceType.getNormalTraceCount();
+                    errorTraceCount += traceType.getErrorTraceCount();
                 }
                 requestWithTraceInfo.setNormalCount(normalCount);
                 requestWithTraceInfo.setErrorCount(errorCount);
                 requestWithTraceInfo.setExceptionCount(exceptionCount);
+                requestWithTraceInfo.setNormalTraceCount(normalTraceCount);
+                requestWithTraceInfo.setErrorTraceCount(errorTraceCount);
 
                 requestWithTraceInfoList.add(requestWithTraceInfo);
             }
@@ -199,7 +207,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         TransportClient client = myConfig.getESClient();
         QueryBuilder qb = QueryBuilders.termQuery("serviceName", serviceName);
 
-        SearchResponse scrollResp = client.prepareSearch(K8S_POD_INDEX).setTypes(K8S_POD_TYPE)
+        SearchResponse scrollResp = client.prepareSearch(Const.K8S_POD_INDEX).setTypes(Const.K8S_POD_TYPE)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
@@ -230,7 +238,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         TransportClient client = myConfig.getESClient();
         QueryBuilder qb = QueryBuilders.termQuery("TraceId", traceId);
 
-        SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
+        SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
                 .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
@@ -291,6 +299,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         int normalCount, errorCount, exceptionCount;
+        int normalTraceCount, errorTraceCount;
         for (Set<String> serviceSet : map.keySet()) {
             TraceType traceType = new TraceType();
             traceType.setTypeName(requestType + "-Type" + count);
@@ -301,14 +310,22 @@ public class ESCoreServiceImpl implements ESCoreService {
             normalCount = 0;
             errorCount = 0;
             exceptionCount = 0;
+            normalTraceCount = 0;
+            errorTraceCount = 0;
             for (TraceInfo traceInfo : traceInfos) {
                 normalCount += traceInfo.getNormalCount();
                 errorCount += traceInfo.getErrorCount();
                 exceptionCount += traceInfo.getExceptionCount();
+                if(traceInfo.getStatus() == Const.NORMAL_TRACE_FLAG)
+                    normalTraceCount++;
+                else
+                    errorTraceCount++;
             }
             traceType.setNormalCount(normalCount);
             traceType.setErrorCount(errorCount);
             traceType.setExceptionCount(exceptionCount);
+            traceType.setNormalTraceCount(normalTraceCount);
+            traceType.setErrorTraceCount(errorTraceCount);
 
             count++;
             traceTypeList.add(traceType);
@@ -366,7 +383,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         Set<String> serviceList = new LinkedHashSet<>();
 
         QueryBuilder qb = QueryBuilders.matchQuery("traceId", traceId);
-        SearchResponse scrollResp = client.prepareSearch(ZIPKIN_SPAN_INDEX).setTypes(ZIPKIN_SPAN_TYPE)
+        SearchResponse scrollResp = client.prepareSearch(Const.ZIPKIN_SPAN_INDEX).setTypes(Const.ZIPKIN_SPAN_TYPE)
                 .addSort("timestamp_millis", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
@@ -447,7 +464,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         QueryBuilder qb = QueryBuilders.termQuery(termName, termValue);
 
-        SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
+        SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
                 .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
@@ -515,8 +532,8 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         Map<String, Set<String>> reqTypeTraId = new HashMap<>();
 
-        SearchResponse ret = client.prepareSearch(LOGSTASH_LOG_INDEX)
-                .setTypes(LOGSTASH_LOG_TYPE)
+        SearchResponse ret = client.prepareSearch(Const.LOGSTASH_LOG_INDEX)
+                .setTypes(Const.LOGSTASH_LOG_TYPE)
                 .setQuery(qb)
                 .setScroll(new TimeValue(60000))
                 .setSize(100)

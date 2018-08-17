@@ -7,6 +7,7 @@ public class TraceInfo {
     private String traceId;
     private Set<String> serviceList;
     private List<ServiceWithCount> serviceWithCounts;
+    private int status;
     private int normalCount;
     private int errorCount;
     private int exceptionCount;
@@ -37,6 +38,14 @@ public class TraceInfo {
 
     public void setServiceWithCounts(List<ServiceWithCount> serviceWithCounts) {
         this.serviceWithCounts = serviceWithCounts;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getNormalCount() {

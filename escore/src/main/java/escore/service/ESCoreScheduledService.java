@@ -3,11 +3,11 @@ package escore.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.NodeInfo;
 import escore.bean.PodInfo;
-import escore.bean.RTRelation;
+import escore.bean.TraceStatus;
 import escore.config.MyConfig;
-import escore.init.InitIndexAndType;
 import escore.response.GetNodesListResponse;
 import escore.response.GetPodsListResponse;
+import escore.util.Const;
 import escore.util.ESUtil;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.search.SearchResponse;
@@ -33,8 +33,7 @@ import java.util.Map;
 @Service
 public class ESCoreScheduledService {
     private Logger log = LoggerFactory.getLogger(this.getClass());
-    private static final String SPAN_INDEX = "zipkin:span-*";
-    private static final String SPAN_TYPE = "span";
+
 //    private MyConfig myConfig = new MyConfig();//This way will say: nullpointer exception
 
     @Autowired
@@ -65,7 +64,7 @@ public class ESCoreScheduledService {
                     if(!existInOrginPods(pod, originPods)){
 //                        log.info(String.format("Begin to add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
                         byte[] json = mapper.writeValueAsBytes(pod);
-                        client.prepareIndex(InitIndexAndType.K8S_INDEX_POD,"pod").setSource(json, XContentType.JSON).get();
+                        client.prepareIndex(Const.K8S_POD_INDEX,Const.K8S_POD_TYPE).setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
                     }else{
 //                        log.info(String.format("The pod [%s] with ip address [%s] already exists!", pod.getName(), pod.getPodIP()));
@@ -94,7 +93,7 @@ public class ESCoreScheduledService {
                     if(!existInOrginNodes(node, originNodes)){
 //                        log.info(String.format("Begin to add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
                         byte[] json = mapper.writeValueAsBytes(node);
-                        client.prepareIndex(InitIndexAndType.K8S_INDEX_NODE,"node").setSource(json, XContentType.JSON).get();
+                        client.prepareIndex(Const.K8S_NODE_INDEX,Const.K8S_NODE_TYPE).setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
                     }else{
 //                        log.info(String.format("The node [%s] with ip address [%s] already exists!", node.getName(), node.getIp()));
@@ -106,12 +105,12 @@ public class ESCoreScheduledService {
         }
     }
 
-    //Update request traceid relation
-    public void updateRelationInfo(){
+    //Update trace status
+    public void updateTraceStatus(){
         TransportClient client = myConfig.getESClient();
 
-        log.info("===Update the relation information===");
-        List<RTRelation> originRelations = esUtil.getStoredRelations();
+        log.info("===Update the trace status===");
+        List<TraceStatus> originStatus = esUtil.getExistedTraceStatus();
 
         //Search the log generated after the previous timestamp
 
@@ -127,43 +126,75 @@ public class ESCoreScheduledService {
         SearchHit[] hits = new SearchHit[0];
         Map<String, Object> map;
         ObjectMapper mapper = new ObjectMapper();
-//        try{
-//            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
-//                hits = scrollResp.getHits().getHits();
-//                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
-//                String requestType,traceId;
-//                RTRelation relation;
-//                for (SearchHit hit : hits) {
-//                    //Handle the hit
-//                    map = hit.getSourceAsMap();
-//                    requestType = map.get("RequestType").toString();
-//                    traceId = map.get("TraceId").toString();
-//                    relation = new RTRelation();
-//                    relation.setRequestType(requestType);
-//                    relation.setTraceId(traceId);
-//                    if(!existInOriginRelation(relation, originRelations)){
-//                        log.info(String.format("Begin to add the relation RequestType:[%s]-TraceId:[%s]", relation.getRequestType(), relation.getTraceId()));
-//                        byte[] json = mapper.writeValueAsBytes(relation);
-//                        client.prepareIndex(InitIndexAndType.REQUEST_TRACE_RELATION_INDEX,"relation").setSource(json, XContentType.JSON).get();
-//                        originRelations.add(relation);
-//                    }else{
-////                        log.info(String.format("Relation RequestType:[%s]-TraceId:[%s] already exists!", relation.getRequestType(), relation.getTraceId()));
-//                    }
-//
-//                }
-//                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-//            }
-//
-//            //Update the prevTimestamp according to the last record
-//            if(hits.length > 0){
-//                SearchHit last = hits[hits.length - 1];
-//                map = last.getSourceAsMap();
-//                prevTimestamp = map.get("time").toString();
-//                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
-//            }
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
+        try{
+            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
+                String traceId;
+                TraceStatus traceStatus;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    traceId = map.get("TraceId").toString();
+                    boolean isExisted = false;
+                    for(TraceStatus status : originStatus){
+                        if(status.getTraceId().equals(traceId)){
+                            isExisted = true;
+                            break;
+                        }
+                    }
+                    if(!isExisted){
+                        traceStatus = new TraceStatus();
+                        traceStatus.setTraceId(traceId);
+                        traceStatus.setStatus(getStatusOfTrace(traceId));
+                        //Store to the elasticsearch
+                        byte[] json = mapper.writeValueAsBytes(traceStatus);
+                        client.prepareIndex(Const.TRACE_STATUS_INDEX,Const.TRACE_STATUS_TYPE).setSource(json, XContentType.JSON).get();
+                        originStatus.add(traceStatus);
+                    }
+                }
+
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+            }
+
+            //Update the prevTimestamp according to the last record
+            if(hits.length > 0){
+                SearchHit last = hits[hits.length - 1];
+                map = last.getSourceAsMap();
+                prevTimestamp = map.get("time").toString();
+                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private String getStatusOfTrace(String traceId) {
+        TransportClient client = myConfig.getESClient();
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId", traceId);
+
+        SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+        //Scroll until no hits are returned
+        SearchHit[] hits;
+        Map<String, Object> map;
+
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                map = hit.getSourceAsMap();
+                if (map.get("log") != null) {
+                    String log = map.get("log").toString();
+                    if (log.contains("ExceptionMessage"))
+                        return "false";
+                }
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+        return "true";
     }
 
     //Delete the useless span info
@@ -175,7 +206,7 @@ public class ESCoreScheduledService {
         //Delete the mixer span records with the same trace id of istio-telemetry
         deleteBuilder
                 .filter(QueryBuilders.matchQuery("localEndpoint.serviceName", "istio-telemetry"))
-                .source(SPAN_INDEX)
+                .source(Const.ZIPKIN_SPAN_INDEX)
                 .execute(new ActionListener<BulkByScrollResponse>() {
                     @Override
                     public void onResponse(BulkByScrollResponse response) {
@@ -204,15 +235,6 @@ public class ESCoreScheduledService {
     private boolean existInOrginNodes(NodeInfo node, List<NodeInfo> originNodes){
         for(NodeInfo originNode : originNodes){
             if(node.equals(originNode))
-                return true;
-        }
-        return false;
-    }
-
-    //Judge if the given relation exists in the original relation list
-    private boolean existInOriginRelation(RTRelation relation, List<RTRelation> originRelations){
-        for(RTRelation originRelation : originRelations){
-            if(relation.equals(originRelation))
                 return true;
         }
         return false;

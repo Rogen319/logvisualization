@@ -9,6 +9,8 @@ public class TraceType {
     private int normalCount;
     private int errorCount;
     private int exceptionCount;
+    private int normalTraceCount;
+    private int errorTraceCount;
 
     public TraceType(){
 
@@ -60,5 +62,21 @@ public class TraceType {
 
     public void setExceptionCount(int exceptionCount) {
         this.exceptionCount = exceptionCount;
+    }
+
+    public int getNormalTraceCount() {
+        return normalTraceCount;
+    }
+
+    public void setNormalTraceCount(int normalTraceCount) {
+        this.normalTraceCount = normalTraceCount;
+    }
+
+    public int getErrorTraceCount() {
+        return errorTraceCount;
+    }
+
+    public void setErrorTraceCount(int errorTraceCount) {
+        this.errorTraceCount = errorTraceCount;
     }
 }
