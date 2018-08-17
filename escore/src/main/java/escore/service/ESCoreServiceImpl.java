@@ -129,6 +129,8 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         //Construct the return data
+        Map<String, TraceStatusCount> traceStatusCountMap = new HashMap<>();
+
         for (String requestType : requestWithTraceIdsMap.keySet()) {
 
             RequestWithTraceInfo requestWithTraceInfo = new RequestWithTraceInfo();
@@ -149,6 +151,7 @@ public class ESCoreServiceImpl implements ESCoreService {
                 traceInfoList.add(traceInfo);
             }
             List<TraceType> traceTypeList = getTraceTypesFromTraceList(requestType, traceInfoList);
+
             requestWithTraceInfo.setTraceTypeList(traceTypeList);
             //Judge if the trace only contains 1 service
             boolean flag = false;
@@ -159,6 +162,9 @@ public class ESCoreServiceImpl implements ESCoreService {
                 }
             }
             if(flag){
+                //Count the trace count of service
+                countTrace(traceInfoList, traceStatusCountMap);
+
                 int normalCount = 0, errorCount = 0, exceptionCount = 0;
                 int normalTraceCount = 0, errorTraceCount = 0;
                 for (TraceType traceType : traceTypeList) {
@@ -190,12 +196,48 @@ public class ESCoreServiceImpl implements ESCoreService {
         //Sort the request type by lambda
         requestWithTraceInfoList.sort(Comparator.comparing(RequestWithTraceInfo::getRequestType));
 
+        //Construct the service with trace count
+        List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
+        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+            ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
+            serviceWithTraceStatusCount.setServiceName(entry.getKey());
+            serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
+            serviceWithTraceStatusCount.setErrorTraceCount(entry.getValue().getErrorTraceCount());
+
+            serviceWithTraceStatusCountList.add(serviceWithTraceStatusCount);
+        }
+
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the request with trace ids of specified time range. " +
                 "The size of request types is [%d].", requestWithTraceIdsMap.keySet().size()));
         res.setRequestWithTraceInfoList(requestWithTraceInfoList);
+        res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
 
         return res;
+    }
+
+    //Count the normal/error trace number of service
+    private void countTrace(List<TraceInfo> traceInfoList, Map<String, TraceStatusCount> map) {
+        int status;
+        for(TraceInfo traceInfo : traceInfoList){
+            status = traceInfo.getStatus();
+            Set<String> services = traceInfo.getServiceList();
+            for(String service : services){
+                TraceStatusCount traceStatusCount;
+                if(map.get(service) != null)
+                    traceStatusCount = map.get(service);
+                else {
+                    traceStatusCount = new TraceStatusCount();
+                    map.put(service, traceStatusCount);
+                }
+
+                if(status == Const.NORMAL_TRACE_FLAG){
+                    traceStatusCount.setNormalTraceCount(traceStatusCount.getNormalTraceCount() + 1);
+                }else{
+                    traceStatusCount.setErrorTraceCount(traceStatusCount.getErrorTraceCount() + 1);
+                }
+            }
+        }
     }
 
     @Override
