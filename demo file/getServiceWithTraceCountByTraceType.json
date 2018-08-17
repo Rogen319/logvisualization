@@ -1,0 +1,44 @@
+//URL: 10.141.212.137:17319/getServiceWithTraceCountByTraceType
+/**
+数据格式：
+
+  {
+      "requestType":"GetFood",
+      "endTime":1534487606664,
+      "lookback":86400000,
+      "services":["ts-travel-service","ts-food-service","ts-food-map-service","ts-route-service","ts-station-service"]
+  }
+
+*/
+
+{
+  "status": true,
+  "message": "Succeed to get the service with trace count of traceType. Size is [5]. ",
+  "serviceWithTraceStatusCountList": [
+    {
+      "serviceName": "ts-travel-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-food-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-food-map-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-route-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-station-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    }
+  ]
+}

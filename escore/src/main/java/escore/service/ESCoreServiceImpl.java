@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.*;
 import escore.config.MyConfig;
 import escore.request.GetRequestWithTraceIDByTimeRangeReq;
+import escore.request.GetServiceWithTraceCountByRequestTypeReq;
+import escore.request.GetServiceWithTraceCountByTraceTypeReq;
 import escore.response.*;
 import escore.util.Const;
 import escore.util.ESUtil;
@@ -216,30 +218,6 @@ public class ESCoreServiceImpl implements ESCoreService {
         return res;
     }
 
-    //Count the normal/error trace number of service
-    private void countTrace(List<TraceInfo> traceInfoList, Map<String, TraceStatusCount> map) {
-        int status;
-        for(TraceInfo traceInfo : traceInfoList){
-            status = traceInfo.getStatus();
-            Set<String> services = traceInfo.getServiceList();
-            for(String service : services){
-                TraceStatusCount traceStatusCount;
-                if(map.get(service) != null)
-                    traceStatusCount = map.get(service);
-                else {
-                    traceStatusCount = new TraceStatusCount();
-                    map.put(service, traceStatusCount);
-                }
-
-                if(status == Const.NORMAL_TRACE_FLAG){
-                    traceStatusCount.setNormalTraceCount(traceStatusCount.getNormalTraceCount() + 1);
-                }else{
-                    traceStatusCount.setErrorTraceCount(traceStatusCount.getErrorTraceCount() + 1);
-                }
-            }
-        }
-    }
-
     @Override
     public GetInstanceNamesFromESRes getInstanceNamesOfSpecifiedService(String serviceName) {
         GetInstanceNamesFromESRes res = new GetInstanceNamesFromESRes();
@@ -272,6 +250,362 @@ public class ESCoreServiceImpl implements ESCoreService {
         res.setInstanceNames(instanceNames);
 
         return res;
+    }
+
+    @Override
+    public QueryPodInfoRes queryPodInfo(String podName) {
+        QueryPodInfoRes res = new QueryPodInfoRes();
+        res.setStatus(false);
+        res.setMessage(String.format("No pod named [%s]", podName));
+        res.setPodInfo(null);
+
+        List<PodInfo> storedPods = esUtil.getStoredPods();
+        for (PodInfo podInfo : storedPods) {
+            if (podInfo.getName().equals(podName)) {
+                res.setPodInfo(podInfo);
+                res.setStatus(true);
+                res.setMessage("Succeed to get pod information in the stored list(es)");
+                return res;
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo) {
+        QueryNodeInfoRes res = new QueryNodeInfoRes();
+        res.setStatus(false);
+        res.setMessage(String.format("No node named [%s] with ip:[%s]", nodeInfo.getName(), nodeInfo.getIp()));
+        res.setNodeInfo(null);
+
+        List<NodeInfo> storedNodes = esUtil.getStoredNodes();
+        for (NodeInfo node : storedNodes) {
+            if (node.equals(nodeInfo)) {
+                res.setStatus(true);
+                res.setMessage("Succeed to get node information in the stored list(es)");
+                res.setNodeInfo(node);
+                return res;
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public List<TraceSequenceRes> getSequenceInfo() {
+        TransportClient client = myConfig.getESClient();
+        QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
+
+        Map<String, Set<String>> reqTypeTraId = new HashMap<>();
+
+        SearchResponse ret = client.prepareSearch(Const.LOGSTASH_LOG_INDEX)
+                .setTypes(Const.LOGSTASH_LOG_TYPE)
+                .setQuery(qb)
+                .setScroll(new TimeValue(60000))
+                .setSize(100)
+                .execute().actionGet();
+
+        while (null != ret && 0 != ret.getHits().getHits().length) {
+            SearchHit[] hits = ret.getHits().getHits();
+            Stream<SearchHit> hitStream = Stream.of(hits);
+
+            hitStream.forEach(n -> {
+                String requestType = n.getSourceAsMap().get("RequestType").toString();
+                String traceId = n.getSourceAsMap().get("TraceId").toString();
+
+                if (reqTypeTraId.containsKey(requestType)) {
+                    reqTypeTraId.get(requestType).add(traceId);
+                } else {
+                    Set<String> set = new HashSet<>();
+                    set.add(traceId);
+                    reqTypeTraId.put(requestType, set);
+                }
+            });
+
+            ret = client.prepareSearchScroll(
+                    ret.getScrollId()).setScroll(new TimeValue(60000))
+                    .execute().actionGet();
+        }
+
+
+        reqTypeTraId.forEach((k, v) ->
+                log.info(k + ": " + v.toString()));
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        Comparator<LogItem> logItemComparator = (o1, o2) -> {
+
+            if (o1.getTimestamp().equals(o2.getTimestamp())) {
+                if (o1.getLogType().equals("InvocationRequest")) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+            return o1.getTimestamp().compareTo(o2.getTimestamp());
+
+        };
+
+        List<TraceSequenceRes> traceSequenceRes = new ArrayList<>();
+
+        reqTypeTraId.forEach((k, v) -> {
+
+            List<List<String>> seqs = new ArrayList<>();
+            List<SequenceInfo> sequenceInfos = new ArrayList<>();
+            for (String traceId : v) {
+                StringBuilder sb =
+                        new StringBuilder("http://10.141.212.25:16319/getLogByTraceId/");
+                sb.append(traceId);
+                sb.append("/0");
+                LogResponse logResp =
+                        restTemplate.getForObject(sb.toString(), LogResponse.class);
+                List<LogItem> logItems = logResp.getLogs();
+                LogItem[] logItemArr = logItems.toArray(new LogItem[logItems.size()]);
+                Arrays.sort(logItemArr, logItemComparator);
+
+                List<String> svcSeq = new ArrayList<>();
+                Stream<LogItem> logItemStream = Stream.of(logItemArr);
+                logItemStream.forEach(n -> {
+                    if (n.getLogType().equals("InvocationRequest") || n.getLogType().equals("InvocationResponse"))
+                        svcSeq.add(n.getServiceInfo().getServiceName());
+                });
+
+                log.info("{}-{}: {}", k, traceId, svcSeq.toString());
+
+
+                if (!seqs.contains(svcSeq)){
+                    SequenceInfo sequenceInfo = new SequenceInfo();
+                    sequenceInfo.setTraceId(traceId);
+                    sequenceInfo.setServiceSequence(svcSeq);
+                    sequenceInfos.add(sequenceInfo);
+                }
+                seqs.add(svcSeq);
+
+
+            }
+
+            TraceSequenceRes tsr = new TraceSequenceRes();
+            tsr.setRequestType(k);
+            tsr.setSequenceCount(sequenceInfos.size());
+            tsr.setSequenceInfos(sequenceInfos);
+
+            traceSequenceRes.add(tsr);
+
+        });
+
+
+        return traceSequenceRes;
+    }
+
+    @Override
+    public ServiceWithTraceCountRes getServiceWithTraceCountByRequestType(GetServiceWithTraceCountByRequestTypeReq request) {
+        TransportClient client = myConfig.getESClient();
+
+        ServiceWithTraceCountRes res = new ServiceWithTraceCountRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        QueryBuilder qb = QueryBuilders.termQuery("RequestType.keyword",requestType);
+
+        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
+                .addSort("time", SortOrder.DESC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setPostFilter(QueryBuilders.rangeQuery("time")
+                        .timeZone("+08:00")
+                        .format("yyyy-MM-dd HH:mm:ss")
+                        .from(beginTime, false)
+                        .to(endTime, false))
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+
+        //Construct the traceId list
+        Set<String> traceIdSet = new HashSet<>();
+        SearchHit[] hits;
+        Map<String, Object> map;
+        try {
+            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                String traceId;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    traceId = map.get("TraceId").toString();
+                    traceIdSet.add(traceId);
+                }
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        log.info(String.format("The request type is [%s]", requestType));
+        log.info(String.format("The size of corresponding trace is [%d]", traceIdSet.size()));
+
+        //Construct the return data
+        Map<String, TraceStatusCount> traceStatusCountMap = new HashMap<>();
+        List<TraceInfo> traceInfoList = new ArrayList<>();
+        for (String traceId : traceIdSet) {
+            TraceInfo traceInfo = getTraceInfoById(traceId);
+
+            //Set the status of trace
+            String statusString = esUtil.getStatusOfTrace(traceId);
+            if(statusString.equals("true"))
+                traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
+            else
+                traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
+
+            traceInfoList.add(traceInfo);
+        }
+
+        //Count the trace count of service
+        countTrace(traceInfoList, traceStatusCountMap);
+
+        //Construct the service with trace count
+        List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
+        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+            ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
+            serviceWithTraceStatusCount.setServiceName(entry.getKey());
+            serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
+            serviceWithTraceStatusCount.setErrorTraceCount(entry.getValue().getErrorTraceCount());
+
+            serviceWithTraceStatusCountList.add(serviceWithTraceStatusCount);
+        }
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the service with trace count of requestType:[%s]. Size is [%d]. ",
+                requestType, serviceWithTraceStatusCountList.size()) );
+        res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
+
+        return res;
+    }
+
+    @Override
+    public ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(GetServiceWithTraceCountByTraceTypeReq request) {
+        TransportClient client = myConfig.getESClient();
+
+        ServiceWithTraceCountRes res = new ServiceWithTraceCountRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+        Set<String> services = request.getServices();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        QueryBuilder qb = QueryBuilders.termQuery("RequestType.keyword",requestType);
+
+        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
+                .addSort("time", SortOrder.DESC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setPostFilter(QueryBuilders.rangeQuery("time")
+                        .timeZone("+08:00")
+                        .format("yyyy-MM-dd HH:mm:ss")
+                        .from(beginTime, false)
+                        .to(endTime, false))
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+
+        //Construct the traceId list
+        Set<String> traceIdSet = new HashSet<>();
+        SearchHit[] hits;
+        Map<String, Object> map;
+        try {
+            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                String traceId;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    traceId = map.get("TraceId").toString();
+                    traceIdSet.add(traceId);
+                }
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Construct the return data
+        Map<String, TraceStatusCount> traceStatusCountMap = new HashMap<>();
+        List<TraceInfo> traceInfoList = new ArrayList<>();
+        for (String traceId : traceIdSet) {
+            TraceInfo traceInfo = getTraceInfoById(traceId);
+
+            if(traceInfo.getServiceList().equals(services)){
+                //Set the status of trace
+                String statusString = esUtil.getStatusOfTrace(traceId);
+                if(statusString.equals("true"))
+                    traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
+                else
+                    traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
+
+                traceInfoList.add(traceInfo);
+            }
+
+        }
+
+        //Count the trace count of service
+        countTrace(traceInfoList, traceStatusCountMap);
+
+        //Construct the service with trace count
+        List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
+        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+            ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
+            serviceWithTraceStatusCount.setServiceName(entry.getKey());
+            serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
+            serviceWithTraceStatusCount.setErrorTraceCount(entry.getValue().getErrorTraceCount());
+
+            serviceWithTraceStatusCountList.add(serviceWithTraceStatusCount);
+        }
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get the service with trace count of traceType. Size is [%d]. ",
+                serviceWithTraceStatusCountList.size()) );
+        res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
+
+        return res;
+    }
+
+    //Count the normal/error trace number of service
+    private void countTrace(List<TraceInfo> traceInfoList, Map<String, TraceStatusCount> map) {
+        int status;
+        for(TraceInfo traceInfo : traceInfoList){
+            status = traceInfo.getStatus();
+            Set<String> services = traceInfo.getServiceList();
+            for(String service : services){
+                TraceStatusCount traceStatusCount;
+                if(map.get(service) != null)
+                    traceStatusCount = map.get(service);
+                else {
+                    traceStatusCount = new TraceStatusCount();
+                    map.put(service, traceStatusCount);
+                }
+
+                if(status == Const.NORMAL_TRACE_FLAG){
+                    traceStatusCount.setNormalTraceCount(traceStatusCount.getNormalTraceCount() + 1);
+                }else{
+                    traceStatusCount.setErrorTraceCount(traceStatusCount.getErrorTraceCount() + 1);
+                }
+            }
+        }
     }
 
     //Set the count of three kind log
@@ -374,44 +708,6 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         return traceTypeList;
-    }
-
-    @Override
-    public QueryPodInfoRes queryPodInfo(String podName) {
-        QueryPodInfoRes res = new QueryPodInfoRes();
-        res.setStatus(false);
-        res.setMessage(String.format("No pod named [%s]", podName));
-        res.setPodInfo(null);
-
-        List<PodInfo> storedPods = esUtil.getStoredPods();
-        for (PodInfo podInfo : storedPods) {
-            if (podInfo.getName().equals(podName)) {
-                res.setPodInfo(podInfo);
-                res.setStatus(true);
-                res.setMessage("Succeed to get pod information in the stored list(es)");
-                return res;
-            }
-        }
-        return res;
-    }
-
-    @Override
-    public QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo) {
-        QueryNodeInfoRes res = new QueryNodeInfoRes();
-        res.setStatus(false);
-        res.setMessage(String.format("No node named [%s] with ip:[%s]", nodeInfo.getName(), nodeInfo.getIp()));
-        res.setNodeInfo(null);
-
-        List<NodeInfo> storedNodes = esUtil.getStoredNodes();
-        for (NodeInfo node : storedNodes) {
-            if (node.equals(nodeInfo)) {
-                res.setStatus(true);
-                res.setMessage("Succeed to get node information in the stored list(es)");
-                res.setNodeInfo(node);
-                return res;
-            }
-        }
-        return res;
     }
 
     //Get the trace info by the trace id
@@ -565,113 +861,6 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         return log;
-    }
-
-    @Override
-    public List<TraceSequenceRes> getSequenceInfo() {
-        TransportClient client = myConfig.getESClient();
-        QueryBuilder qb = QueryBuilders.existsQuery("RequestType");
-
-        Map<String, Set<String>> reqTypeTraId = new HashMap<>();
-
-        SearchResponse ret = client.prepareSearch(Const.LOGSTASH_LOG_INDEX)
-                .setTypes(Const.LOGSTASH_LOG_TYPE)
-                .setQuery(qb)
-                .setScroll(new TimeValue(60000))
-                .setSize(100)
-                .execute().actionGet();
-
-        while (null != ret && 0 != ret.getHits().getHits().length) {
-            SearchHit[] hits = ret.getHits().getHits();
-            Stream<SearchHit> hitStream = Stream.of(hits);
-
-            hitStream.forEach(n -> {
-                String requestType = n.getSourceAsMap().get("RequestType").toString();
-                String traceId = n.getSourceAsMap().get("TraceId").toString();
-
-                if (reqTypeTraId.containsKey(requestType)) {
-                    reqTypeTraId.get(requestType).add(traceId);
-                } else {
-                    Set<String> set = new HashSet<>();
-                    set.add(traceId);
-                    reqTypeTraId.put(requestType, set);
-                }
-            });
-
-            ret = client.prepareSearchScroll(
-                    ret.getScrollId()).setScroll(new TimeValue(60000))
-                    .execute().actionGet();
-        }
-
-
-        reqTypeTraId.forEach((k, v) ->
-                log.info(k + ": " + v.toString()));
-
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        Comparator<LogItem> logItemComparator = (o1, o2) -> {
-
-            if (o1.getTimestamp().equals(o2.getTimestamp())) {
-                if (o1.getLogType().equals("InvocationRequest")) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-            }
-            return o1.getTimestamp().compareTo(o2.getTimestamp());
-
-        };
-
-        List<TraceSequenceRes> traceSequenceRes = new ArrayList<>();
-
-        reqTypeTraId.forEach((k, v) -> {
-
-            List<List<String>> seqs = new ArrayList<>();
-            List<SequenceInfo> sequenceInfos = new ArrayList<>();
-            for (String traceId : v) {
-                StringBuilder sb =
-                        new StringBuilder("http://10.141.212.25:16319/getLogByTraceId/");
-                sb.append(traceId);
-                sb.append("/0");
-                LogResponse logResp =
-                        restTemplate.getForObject(sb.toString(), LogResponse.class);
-                List<LogItem> logItems = logResp.getLogs();
-                LogItem[] logItemArr = logItems.toArray(new LogItem[logItems.size()]);
-                Arrays.sort(logItemArr, logItemComparator);
-
-                List<String> svcSeq = new ArrayList<>();
-                Stream<LogItem> logItemStream = Stream.of(logItemArr);
-                logItemStream.forEach(n -> {
-                    if (n.getLogType().equals("InvocationRequest") || n.getLogType().equals("InvocationResponse"))
-                        svcSeq.add(n.getServiceInfo().getServiceName());
-                });
-
-                log.info("{}-{}: {}", k, traceId, svcSeq.toString());
-
-
-                if (!seqs.contains(svcSeq)){
-                    SequenceInfo sequenceInfo = new SequenceInfo();
-                    sequenceInfo.setTraceId(traceId);
-                    sequenceInfo.setServiceSequence(svcSeq);
-                    sequenceInfos.add(sequenceInfo);
-                }
-                seqs.add(svcSeq);
-
-
-            }
-
-            TraceSequenceRes tsr = new TraceSequenceRes();
-            tsr.setRequestType(k);
-            tsr.setSequenceCount(sequenceInfos.size());
-            tsr.setSequenceInfos(sequenceInfos);
-
-            traceSequenceRes.add(tsr);
-
-        });
-
-
-        return traceSequenceRes;
     }
 
 }

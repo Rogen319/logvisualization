@@ -1,0 +1,33 @@
+//URL: 10.141.212.137:17319/getServiceWithTraceCountByRequestType
+/**
+数据格式：
+
+  {
+    "requestType":"Login",
+    "endTime":1534487606664,
+    "lookback":86400000
+  }
+
+*/
+
+{
+  "status": true,
+  "message": "Succeed to get the service with trace count of requestType:[Login]. Size is [3]. ",
+  "serviceWithTraceStatusCountList": [
+    {
+      "serviceName": "ts-login-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-verification-code-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    },
+    {
+      "serviceName": "ts-sso-service",
+      "normalTraceCount": 1,
+      "errorTraceCount": 0
+    }
+  ]
+}
