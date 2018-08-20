@@ -1,4 +1,4 @@
-package com.example.spectralclustering.dto;
+package algrithm.spectralclustering.dto;
 
 import java.io.Serializable;
 

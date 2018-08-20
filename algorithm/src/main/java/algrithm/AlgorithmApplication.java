@@ -1,12 +1,12 @@
-package com.example.spectralclustering;
+package algrithm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpectralclusteringApplication {
+public class AlgorithmApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpectralclusteringApplication.class, args);
+		SpringApplication.run(AlgorithmApplication.class, args);
 	}
 }

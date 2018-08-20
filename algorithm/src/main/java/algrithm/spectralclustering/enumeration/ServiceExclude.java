@@ -1,4 +1,4 @@
-package com.example.spectralclustering;
+package algrithm.spectralclustering.enumeration;
 
 public enum ServiceExclude {
     ISTIO_TELEMETRY("istio-telemetry"),

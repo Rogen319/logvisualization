@@ -1,9 +1,9 @@
-package com.example.spectralclustering.service.impl;
+package algrithm.spectralclustering.service.impl;
 
-import com.example.spectralclustering.ServiceExclude;
-import com.example.spectralclustering.dto.ClusterResult;
-import com.example.spectralclustering.dto.SingleDependency;
-import com.example.spectralclustering.service.SpectralClusteringSerivce;
+import algrithm.spectralclustering.enumeration.ServiceExclude;
+import algrithm.spectralclustering.dto.ClusterResult;
+import algrithm.spectralclustering.dto.SingleDependency;
+import algrithm.spectralclustering.service.SpectralClusteringSerivce;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import smile.clustering.SpectralClustering;

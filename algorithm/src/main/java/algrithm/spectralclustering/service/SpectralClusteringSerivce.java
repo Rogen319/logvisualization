@@ -1,6 +1,6 @@
-package com.example.spectralclustering.service;
+package algrithm.spectralclustering.service;
 
-import com.example.spectralclustering.dto.ClusterResult;
+import algrithm.spectralclustering.dto.ClusterResult;
 
 public interface SpectralClusteringSerivce {
     ClusterResult getResult(long endTs, long lookback, int k);
