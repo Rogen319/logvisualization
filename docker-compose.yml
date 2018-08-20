@@ -45,7 +45,7 @@ services:
       networks:
         - my-network
 
-  logvisualization-spectralclustering:
+  logvisualization-algorithm:
       build: algorithm
       image: logvisualization/algorithm
       restart: always

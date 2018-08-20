@@ -1,0 +1,68 @@
+//URL: 10.141.212.25:17319/getServiceWithInstanceOfTSCByTraceType
+/**
+
+    {
+      "requestType":"GetFood",
+      "endTime":1534793699968,
+      "lookback":86400000,
+      "services":["ts-travel-service","ts-food-service","ts-food-map-service","ts-route-service","ts-station-service"]
+    }
+
+*/
+
+{
+  "status": true,
+  "message": "Succeed to get service with instance of TSC by trace type. The size is [5].",
+  "list": [
+    {
+      "serviceName": "ts-travel-service",
+      "siwtscList": [
+        {
+          "instanceNum": 1,
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-food-service",
+      "siwtscList": [
+        {
+          "instanceNum": 1,
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-food-map-service",
+      "siwtscList": [
+        {
+          "instanceNum": 1,
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-station-service",
+      "siwtscList": [
+        {
+          "instanceNum": 1,
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-route-service",
+      "siwtscList": [
+        {
+          "instanceNum": 1,
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        }
+      ]
+    }
+  ]
+}
