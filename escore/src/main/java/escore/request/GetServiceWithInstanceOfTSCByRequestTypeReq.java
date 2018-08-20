@@ -1,14 +1,11 @@
 package escore.request;
 
-import java.util.Set;
-
-public class GetServiceWithTraceCountByTraceTypeReq {
+public class GetServiceWithInstanceOfTSCByRequestTypeReq {
     private String requestType;
     private long endTime;
     private long lookback;
-    private Set<String> services;
 
-    public GetServiceWithTraceCountByTraceTypeReq(){
+    public GetServiceWithInstanceOfTSCByRequestTypeReq(){
 
     }
 
@@ -34,13 +31,5 @@ public class GetServiceWithTraceCountByTraceTypeReq {
 
     public void setLookback(long lookback) {
         this.lookback = lookback;
-    }
-
-    public Set<String> getServices() {
-        return services;
-    }
-
-    public void setServices(Set<String> services) {
-        this.services = services;
     }
 }

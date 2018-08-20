@@ -1,9 +1,7 @@
 package escore.service;
 
 import escore.bean.NodeInfo;
-import escore.request.GetRequestWithTraceIDByTimeRangeReq;
-import escore.request.GetServiceWithTraceCountByRequestTypeReq;
-import escore.request.GetServiceWithTraceCountByTraceTypeReq;
+import escore.request.*;
 import escore.response.*;
 
 import java.util.List;
@@ -17,4 +15,6 @@ public interface ESCoreService {
     List<TraceSequenceRes> getSequenceInfo();
     ServiceWithTraceCountRes getServiceWithTraceCountByRequestType(GetServiceWithTraceCountByRequestTypeReq request);
     ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(GetServiceWithTraceCountByTraceTypeReq request);
+    ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
+    ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
 }

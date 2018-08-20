@@ -1,9 +1,7 @@
 package escore.controller;
 
 import escore.bean.NodeInfo;
-import escore.request.GetRequestWithTraceIDByTimeRangeReq;
-import escore.request.GetServiceWithTraceCountByRequestTypeReq;
-import escore.request.GetServiceWithTraceCountByTraceTypeReq;
+import escore.request.*;
 import escore.response.*;
 import escore.service.ESCoreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +61,17 @@ public class ESController {
     @RequestMapping(value = "/getServiceWithTraceCountByTraceType", method ={RequestMethod.POST})
     public ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(@RequestBody GetServiceWithTraceCountByTraceTypeReq request){
         return service.getServiceWithTraceCountByTraceType(request);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getServiceWithInstanceOfTSCByRequestType", method ={RequestMethod.POST})
+    public ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(@RequestBody GetServiceWithInstanceOfTSCByRequestTypeReq request){
+        return service.getServiceWithInstanceOfTSCByRequestType(request);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getServiceWithInstanceOfTSCByTraceType", method ={RequestMethod.POST})
+    public ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType(@RequestBody GetServiceWithInstanceOfTSCByTraceTypeReq request){
+        return service.getServiceWithInstanceOfTSCByTraceType(request);
     }
 }

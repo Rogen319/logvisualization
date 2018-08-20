@@ -3,9 +3,7 @@ package escore.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import escore.bean.*;
 import escore.config.MyConfig;
-import escore.request.GetRequestWithTraceIDByTimeRangeReq;
-import escore.request.GetServiceWithTraceCountByRequestTypeReq;
-import escore.request.GetServiceWithTraceCountByTraceTypeReq;
+import escore.request.*;
 import escore.response.*;
 import escore.util.Const;
 import escore.util.ESUtil;
@@ -399,8 +397,6 @@ public class ESCoreServiceImpl implements ESCoreService {
 
     @Override
     public ServiceWithTraceCountRes getServiceWithTraceCountByRequestType(GetServiceWithTraceCountByRequestTypeReq request) {
-        TransportClient client = myConfig.getESClient();
-
         ServiceWithTraceCountRes res = new ServiceWithTraceCountRes();
         res.setStatus(false);
         res.setMessage("This is the default message");
@@ -415,39 +411,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         beginTime = beginTime.split(" ")[0] + " 00:00:00";
         endTime = endTime.split(" ")[0] + " 23:59:59";
 
-        QueryBuilder qb = QueryBuilders.termQuery("RequestType.keyword",requestType);
-
-        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("time", SortOrder.DESC)
-                .setScroll(new TimeValue(60000))
-                .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("time")
-                        .timeZone("+08:00")
-                        .format("yyyy-MM-dd HH:mm:ss")
-                        .from(beginTime, false)
-                        .to(endTime, false))
-                .setSize(100).get(); //max of 100 hits will be returned for each scroll
-
-        //Construct the traceId list
-        Set<String> traceIdSet = new HashSet<>();
-        SearchHit[] hits;
-        Map<String, Object> map;
-        try {
-            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
-                hits = scrollResp.getHits().getHits();
-                String traceId;
-                for (SearchHit hit : hits) {
-                    //Handle the hit
-                    map = hit.getSourceAsMap();
-                    traceId = map.get("TraceId").toString();
-                    traceIdSet.add(traceId);
-                }
-                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Set<String> traceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
 
         log.info(String.format("The request type is [%s]", requestType));
         log.info(String.format("The size of corresponding trace is [%d]", traceIdSet.size()));
@@ -492,8 +456,6 @@ public class ESCoreServiceImpl implements ESCoreService {
 
     @Override
     public ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(GetServiceWithTraceCountByTraceTypeReq request) {
-        TransportClient client = myConfig.getESClient();
-
         ServiceWithTraceCountRes res = new ServiceWithTraceCountRes();
         res.setStatus(false);
         res.setMessage("This is the default message");
@@ -509,39 +471,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         beginTime = beginTime.split(" ")[0] + " 00:00:00";
         endTime = endTime.split(" ")[0] + " 23:59:59";
 
-        QueryBuilder qb = QueryBuilders.termQuery("RequestType.keyword",requestType);
-
-        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
-                .addSort("time", SortOrder.DESC)
-                .setScroll(new TimeValue(60000))
-                .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("time")
-                        .timeZone("+08:00")
-                        .format("yyyy-MM-dd HH:mm:ss")
-                        .from(beginTime, false)
-                        .to(endTime, false))
-                .setSize(100).get(); //max of 100 hits will be returned for each scroll
-
-        //Construct the traceId list
-        Set<String> traceIdSet = new HashSet<>();
-        SearchHit[] hits;
-        Map<String, Object> map;
-        try {
-            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
-                hits = scrollResp.getHits().getHits();
-                String traceId;
-                for (SearchHit hit : hits) {
-                    //Handle the hit
-                    map = hit.getSourceAsMap();
-                    traceId = map.get("TraceId").toString();
-                    traceIdSet.add(traceId);
-                }
-                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Set<String> traceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
 
         //Construct the return data
         Map<String, TraceStatusCount> traceStatusCountMap = new HashMap<>();
@@ -582,6 +512,230 @@ public class ESCoreServiceImpl implements ESCoreService {
         res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
 
         return res;
+    }
+
+    @Override
+    public ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request) {
+        ServiceWithInstanceOfTSCRes res = new ServiceWithInstanceOfTSCRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        Set<String> traceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
+
+        List<ServiceWithInstanceOfTraceStatusCount> siwtscList = getServiceWithInstanceOfTraceStatusCount(traceIdSet);
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get service with instance of TSC by request type. The size is [%d].", siwtscList.size()));
+        res.setList(siwtscList);
+        return res;
+    }
+
+    @Override
+    public ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType(GetServiceWithInstanceOfTSCByTraceTypeReq request) {
+        ServiceWithInstanceOfTSCRes res = new ServiceWithInstanceOfTSCRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+        Set<String> services = request.getServices();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        Set<String> allTraceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
+        Set<String> effectiveTraceIdSet = new HashSet<>();
+
+        //Select the trace ids corresponding to the trace type
+        for(String traceId : allTraceIdSet){
+            TraceInfo traceInfo = getTraceInfoById(traceId);
+
+            if(traceInfo.getServiceList().equals(services)){
+                effectiveTraceIdSet.add(traceId);
+            }
+        }
+
+        List<ServiceWithInstanceOfTraceStatusCount> siwtscList = getServiceWithInstanceOfTraceStatusCount(effectiveTraceIdSet);
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get service with instance of TSC by trace type. The size is [%d].", siwtscList.size()));
+        res.setList(siwtscList);
+        return res;
+    }
+
+    //Get the list of service with instance of trace status count
+    private List<ServiceWithInstanceOfTraceStatusCount> getServiceWithInstanceOfTraceStatusCount(Set<String> traceIdSet){
+
+        //Count the instance number of ervery service
+        List<PodInfo> currentPods = podService.getCurrentPodInfo();
+        Map<String, ServiceWithInstanceOfTraceStatusCount> map = new HashMap<>();
+        for(String traceId : traceIdSet){
+            String status = esUtil.getStatusOfTrace(traceId);
+            List<ServiceWithInstanceNum> serviceWithInstanceNumList = getServiceWithInstanceNumByTraceId(traceId, currentPods);
+            String serviceName; int num;
+            for(ServiceWithInstanceNum serviceWithInstanceNum : serviceWithInstanceNumList){
+                serviceName = serviceWithInstanceNum.getServiceName();
+                num = serviceWithInstanceNum.getInstanceNum();
+                if(map.get(serviceName) != null){
+                    List<ServiceInstanceWithTraceStatusCount> list = map.get(serviceName).getSiwtscList();
+                    boolean isExisted = false;
+                    //Service with num instance already exists
+                    for(ServiceInstanceWithTraceStatusCount instance : list){
+                        if(instance.getInstanceNum() == num){
+                            if(status.equals("true"))
+                                instance.setNormalTraceCount(instance.getNormalTraceCount() + 1);
+                            else
+                                instance.setErrorTraceCount(instance.getErrorTraceCount() + 1);
+                            isExisted = true;
+                            break;
+                        }
+                    }
+                    //New a instance
+                    if(!isExisted){
+                        ServiceInstanceWithTraceStatusCount newInstance = new ServiceInstanceWithTraceStatusCount();
+                        newInstance.setInstanceNum(num);
+                        if(status.equals("true"))
+                            newInstance.setNormalTraceCount(1);
+                        else
+                            newInstance.setErrorTraceCount(1);
+                        list.add(newInstance);
+                        map.get(serviceName).setSiwtscList(list);
+                    }
+
+                }else{
+                    ServiceWithInstanceOfTraceStatusCount instance = new ServiceWithInstanceOfTraceStatusCount();
+
+                    instance.setServiceName(serviceName);
+
+                    ServiceInstanceWithTraceStatusCount instance2 = new ServiceInstanceWithTraceStatusCount();
+                    instance2.setInstanceNum(num);
+                    if(status.equals("true"))
+                        instance2.setNormalTraceCount(1);
+                    else
+                        instance2.setErrorTraceCount(1);
+                    List<ServiceInstanceWithTraceStatusCount> instance3 = new ArrayList<>();
+                    instance3.add(instance2);
+
+                    instance.setSiwtscList(instance3);
+
+                    map.put(serviceName, instance);
+                }
+            }
+        }
+
+        List<ServiceWithInstanceOfTraceStatusCount> siwtscList = new ArrayList<>();
+        for(ServiceWithInstanceOfTraceStatusCount instance : map.values()){
+            siwtscList.add(instance);
+        }
+
+        return siwtscList;
+    }
+
+    //Get the service with instance number in the trace
+    private List<ServiceWithInstanceNum> getServiceWithInstanceNumByTraceId(String traceId, List<PodInfo> currentPods) {
+        TransportClient client = myConfig.getESClient();
+
+        List<ServiceWithInstanceNum> res = new ArrayList<>();
+
+        //1: Get all of the instances name(pods name)
+        Set<String> instanceNames = new HashSet<>();
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId",traceId);
+
+        SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get();
+        SearchHit[] hits;
+
+        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                try {
+                    LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
+                    if(logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null){
+                        instanceNames.add(logBean.getKubernetes().getPod().getName());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+        //2: Count the service instance number
+        Map<String, Integer> serviceWithInstance = new HashMap<>();
+        String serviceName;
+        for(String instanceName : instanceNames){
+            serviceName = podService.getServiceName(instanceName, currentPods);
+            if(serviceWithInstance.get(serviceName) == null){
+                serviceWithInstance.put(serviceName, 1);
+            }else{
+                serviceWithInstance.put(serviceName, serviceWithInstance.get(serviceName) + 1);
+            }
+        }
+
+        //Construct the return data
+        for(Map.Entry<String, Integer> entry : serviceWithInstance.entrySet()){
+            ServiceWithInstanceNum temp = new ServiceWithInstanceNum();
+            temp.setServiceName(entry.getKey());
+            temp.setInstanceNum(entry.getValue());
+            res.add(temp);
+        }
+
+        return res;
+    }
+
+    //Get the trace id set from ES in the specified time range
+    private Set<String> getTraceIdSet(String beginTime, String endTime, String term, String termValue){
+        TransportClient client = myConfig.getESClient();
+        QueryBuilder qb = QueryBuilders.termQuery(term,termValue);
+
+        SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
+                .addSort("time", SortOrder.DESC)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setPostFilter(QueryBuilders.rangeQuery("time")
+                        .timeZone("+08:00")
+                        .format("yyyy-MM-dd HH:mm:ss")
+                        .from(beginTime, false)
+                        .to(endTime, false))
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+
+        //Construct the traceId list
+        Set<String> traceIdSet = new HashSet<>();
+        SearchHit[] hits;
+        Map<String, Object> map;
+        try {
+            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
+                hits = scrollResp.getHits().getHits();
+                String traceId;
+                for (SearchHit hit : hits) {
+                    //Handle the hit
+                    map = hit.getSourceAsMap();
+                    traceId = map.get("TraceId").toString();
+                    traceIdSet.add(traceId);
+                }
+                scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return traceIdSet;
     }
 
     //Count the normal/error trace number of service
@@ -823,6 +977,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         return logItemList;
     }
 
+    //Compose log item from hit
     private SimpleLog composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods) {
         SimpleLog log = new SimpleLog();
 
