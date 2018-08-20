@@ -14,7 +14,7 @@
         <module>k8sapi</module>
         <module>zipkinapi</module>
         <module>logapi</module>
-        <module>spectralclustering</module>
+        <module>algorithm</module>
     </modules>
 
     <parent>

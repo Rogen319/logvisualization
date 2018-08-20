@@ -46,8 +46,8 @@ services:
         - my-network
 
   logvisualization-spectralclustering:
-      build: spectralclustering
-      image: logvisualization/spectralclustering
+      build: algorithm
+      image: logvisualization/algorithm
       restart: always
       ports:
         - 18888:18888

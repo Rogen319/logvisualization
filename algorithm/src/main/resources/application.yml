@@ -1,0 +1,10 @@
+server:
+  port: 18888
+
+spring:
+  application:
+    name: logvisualization-algorithm
+
+escore:
+  ip: 10.141.212.142
+  port: 17319
