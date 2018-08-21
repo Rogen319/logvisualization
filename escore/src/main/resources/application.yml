@@ -13,6 +13,10 @@ es-config-136:
   host: 10.141.212.136
   port: 30003
 
+es-config-142:
+  host: 10.141.212.142
+  port: 30003
+
 logback:
   logdir: /opt/log/escore
   appname: escore
