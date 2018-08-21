@@ -1,5 +1,9 @@
 package algrithm.sequence.service;
 
-public interface SequenceService {
+import algrithm.sequence.dto.RequestTypeSequenceDto;
 
+import java.util.List;
+
+public interface SequenceService {
+    List<RequestTypeSequenceDto> getSequence(long endTime, long lookback);
 }

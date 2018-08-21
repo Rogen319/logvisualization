@@ -1,7 +1,9 @@
 package algrithm.sequence.controller;
 
 import algrithm.sequence.dto.GetRequestWithTraceIDRes;
+import algrithm.sequence.dto.RequestTypeSequenceDto;
 import algrithm.sequence.repository.SequenceRepository;
+import algrithm.sequence.service.SequenceService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -27,16 +29,17 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/sequences")
 public class SequenceController {
     @Autowired
-    private SequenceRepository sequenceRepository;
+    private SequenceService sequenceService;
 
     @GetMapping()
-    public GetRequestWithTraceIDRes getRequestWithTraceIDRes(@RequestParam long endTime, @RequestParam long lookback) {
-        return sequenceRepository.getRequestWithTraceIDRes(endTime, lookback);
+    public List<RequestTypeSequenceDto> getRequestWithTraceIDRes(@RequestParam long endTime, @RequestParam long lookback) {
+        return sequenceService.getSequence(endTime,lookback);
     }
 
     @GetMapping("/test")

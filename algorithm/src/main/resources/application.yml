@@ -6,5 +6,5 @@ spring:
     name: logvisualization-algorithm
 
 escore:
-  ip: 10.141.212.142
+  ip: 10.141.212.146
   port: 17319
