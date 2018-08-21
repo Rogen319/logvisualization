@@ -323,7 +323,7 @@ kind: Deployment
 metadata:
   name: ts-login-service
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -623,7 +623,7 @@ kind: Deployment
 metadata:
   name: ts-sso-service
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -643,7 +643,7 @@ kind: Deployment
 metadata:
   name: ts-station-service
 spec:
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -783,7 +783,7 @@ kind: Deployment
 metadata:
   name: ts-verification-code-service
 spec:
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:

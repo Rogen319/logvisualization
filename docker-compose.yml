@@ -18,6 +18,8 @@ services:
       restart: always
       volumes:
         - /opt/log/escore:/opt/log/escore
+      depends_on:
+        - logvisualization-k8sapi
       ports:
         - 17319:17319
       networks:

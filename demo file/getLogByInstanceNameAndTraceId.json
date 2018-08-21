@@ -9,82 +9,106 @@
 */
 {
   "status": true,
-  "message": "Succeed to get all of the logs of instances belong to the specified service:[ts-login-service].The size is [1].",
+  "message": "Succeed to get all of the logs of instances belong to the specified service:[ts-station-service].The size is [5].",
   "instanceWithLogList": [
     {
       "logs": [
         {
-          "timestamp": "2018-07-31 16:47:40.898",
+          "timestamp": "2018-08-21 09:30:55.786",
           "logType": "InvocationRequest",
-          "requestType": "Login",
-          "logInfo": "[Request Parameter: {\"email\":\"fdse_microservices@163.com\",\"password\":\"DefaultPassword\",\"verificationCode\":\"abcd\"}\"65148746CE394F5B8040451C0399D11B\"]",
-          "uri": "/login",
-          "isError": 0
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/exist",
+          "isError": 1
         },
         {
-          "timestamp": "2018-07-31 16:47:40.936",
-          "logType": "InternalMethod",
-          "requestType": null,
-          "logInfo": "The headers in login service is {host=[10.141.211.163:31380], content-length=[93], request-type=[Login], accept=[application/json, text/javascript, */*; q=0.01], origin=[http://10.141.211.163:31380], x-requested-with=[XMLHttpRequest], user-agent=[Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36], content-type=[application/json], referer=[http://10.141.211.163:31380/], accept-encoding=[gzip, deflate], accept-language=[zh-CN,zh;q=0.9,en;q=0.8], cookie=[loginId=4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f; last-serviceName=all; loginToken=150fc7d2-e6aa-4f69-88a9-8af665af868d; YsbCaptcha=65148746CE394F5B8040451C0399D11B; JSESSIONID=03B1FFFB6CA045FF6BFA30BFA51512FB], x-forwarded-for=[10.244.0.0], x-forwarded-proto=[http], x-request-id=[5d13908b-49f2-9f32-b39e-c7ba5af403c4], x-envoy-expected-rq-timeout-ms=[15000], x-envoy-internal=[true], x-b3-traceid=[962f6f015adfacae], x-b3-spanid=[962f6f015adfacae], x-b3-sampled=[1]}",
-          "uri": "/login",
-          "isError": 0
-        },
-        {
-          "timestamp": "2018-07-31 16:47:40.957",
-          "logType": "InternalMethod",
-          "requestType": null,
-          "logInfo": "[Login Service][Login] Verification Code:abcd VerifyCookie:65148746CE394F5B8040451C0399D11B",
-          "uri": "/login",
-          "isError": 0
-        },
-        {
-          "timestamp": "2018-07-31 16:47:41.101",
-          "logType": "InternalMethod",
-          "requestType": null,
-          "logInfo": "[Login Service][Login] Verification Result:true",
-          "uri": "/login",
-          "isError": 0
-        },
-        {
-          "timestamp": "2018-07-31 16:47:42.435",
-          "logType": "InternalMethod",
-          "requestType": null,
-          "logInfo": "[Login Service] Status:true",
-          "uri": "/login",
-          "isError": 0
-        },
-        {
-          "timestamp": "2018-07-31 16:47:42.435",
-          "logType": "InternalMethod",
-          "requestType": null,
-          "logInfo": "[Login Service] Status: true. Put Cookie.",
-          "uri": "/login",
-          "isError": 0
-        },
-        {
-          "timestamp": "2018-07-31 16:47:42.490",
+          "timestamp": "2018-08-21 09:30:55.789",
           "logType": "InvocationResponse",
           "requestType": null,
-          "logInfo": "[Response Code: 200:OK][Response Value: {\"status\":true,\"message\":\"Success\",\"account\":{\"id\":\"4d2a46c7-71cb-4cf1-b5bb-b68406d9da6f\",\"password\":\"\",\"gender\":1,\"name\":\"Default User\",\"documentType\":1,\"documentNum\":\"DefaultDocumentNumber\",\"email\":\"fdse_microservices@163.com\"},\"token\":\"03a437df-5bb6-43b3-bcc9-9341ff421dbb\"}]",
-          "uri": "/login",
+          "logInfo": "[Response Code: 200:OK][Response Value: true]",
+          "uri": "/station/exist",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.228",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
           "isError": 0
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.238",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.470",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.523",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.102",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.108",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.602",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.637",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 2
         }
       ],
-      "normalCount": 7,
-      "errorCount": 0,
-      "exceptionCount": 0,
+      "normalCount": 1,
+      "errorCount": 3,
+      "exceptionCount": 6,
       "serviceInfo": {
-        "serviceName": "ts-login-service",
+        "serviceName": "ts-station-service",
         "instanceInfo": {
-          "instanceName": "ts-login-service-6d7c445b86-kxrbn",
+          "instanceName": "ts-station-service-784d68d546-5mrl7",
           "status": "Running",
           "container": {
-            "name": "ts-login-service",
-            "imageName": "lwh319/istio-zipkin-ts-login-service",
+            "name": "ts-station-service",
+            "imageName": "lwh319/istio-zipkin-ts-station-service",
             "imageVersion": "1.0",
             "ports": [
               {
-                "containerPort": 12342,
+                "containerPort": 12345,
                 "protocol": "TCP"
               }
             ]
@@ -94,6 +118,358 @@
           "role": "Minion",
           "name": "centos-minion-1",
           "ip": "10.141.211.164",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "logs": [
+        {
+          "timestamp": "2018-08-21 09:30:55.810",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/exist",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:55.815",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: true]",
+          "uri": "/station/exist",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.657",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.660",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:57.631",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:57.641",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 0
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.652",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.654",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        }
+      ],
+      "normalCount": 1,
+      "errorCount": 4,
+      "exceptionCount": 3,
+      "serviceInfo": {
+        "serviceName": "ts-station-service",
+        "instanceInfo": {
+          "instanceName": "ts-station-service-784d68d546-dffd6",
+          "status": "Running",
+          "container": {
+            "name": "ts-station-service",
+            "imageName": "lwh319/istio-zipkin-ts-station-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12345,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "logs": [
+        {
+          "timestamp": "2018-08-21 09:30:55.595",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:55.613",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:55.679",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:55.682",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.326",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.376",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.037",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.062",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.253",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/exist",
+          "isError": 2
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.271",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: true]",
+          "uri": "/station/exist",
+          "isError": 1
+        }
+      ],
+      "normalCount": 0,
+      "errorCount": 5,
+      "exceptionCount": 5,
+      "serviceInfo": {
+        "serviceName": "ts-station-service",
+        "instanceInfo": {
+          "instanceName": "ts-station-service-784d68d546-gvz6t",
+          "status": "Running",
+          "container": {
+            "name": "ts-station-service",
+            "imageName": "lwh319/istio-zipkin-ts-station-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12345,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-1",
+          "ip": "10.141.211.164",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "logs": [
+        {
+          "timestamp": "2018-08-21 09:30:56.052",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Su Zhou\"}]",
+          "uri": "/station/queryForId",
+          "isError": 0
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.053",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"suzhou\"]",
+          "uri": "/station/queryForId",
+          "isError": 0
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.210",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/exist",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:58.211",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: true]",
+          "uri": "/station/exist",
+          "isError": 1
+        }
+      ],
+      "normalCount": 2,
+      "errorCount": 2,
+      "exceptionCount": 0,
+      "serviceInfo": {
+        "serviceName": "ts-station-service",
+        "instanceInfo": {
+          "instanceName": "ts-station-service-784d68d546-xllcx",
+          "status": "Running",
+          "container": {
+            "name": "ts-station-service",
+            "imageName": "lwh319/istio-zipkin-ts-station-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12345,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
+          "status": "Ready",
+          "kubeProxyVersion": "v1.10.3",
+          "kubeletVersion": "v1.10.3",
+          "operatingSystem": "linux",
+          "osImage": "CentOS Linux 7 (Core)",
+          "containerRuntimeVersion": "docker://17.3.2"
+        }
+      }
+    },
+    {
+      "logs": [
+        {
+          "timestamp": "2018-08-21 09:30:56.036",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:56.039",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:57.581",
+          "logType": "InvocationRequest",
+          "requestType": "PreserveTicket",
+          "logInfo": "[Request Parameter: {\"name\":\"Shang Hai\"}]",
+          "uri": "/station/queryForId",
+          "isError": 1
+        },
+        {
+          "timestamp": "2018-08-21 09:30:57.583",
+          "logType": "InvocationResponse",
+          "requestType": null,
+          "logInfo": "[Response Code: 200:OK][Response Value: \"shanghai\"]",
+          "uri": "/station/queryForId",
+          "isError": 2
+        }
+      ],
+      "normalCount": 0,
+      "errorCount": 3,
+      "exceptionCount": 1,
+      "serviceInfo": {
+        "serviceName": "ts-station-service",
+        "instanceInfo": {
+          "instanceName": "ts-station-service-784d68d546-xppw5",
+          "status": "Running",
+          "container": {
+            "name": "ts-station-service",
+            "imageName": "lwh319/istio-zipkin-ts-station-service",
+            "imageVersion": "1.0",
+            "ports": [
+              {
+                "containerPort": 12345,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        },
+        "node": {
+          "role": "Minion",
+          "name": "centos-minion-2",
+          "ip": "10.141.211.177",
           "status": "Ready",
           "kubeProxyVersion": "v1.10.3",
           "kubeletVersion": "v1.10.3",

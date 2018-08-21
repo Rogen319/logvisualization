@@ -2,25 +2,35 @@
 	微服务介绍
 	微服务存在的问题:debug困难
 	debug：
+		维度划分：basic错误，逻辑错误，sequence错误，instance错误
 		微服务的trace：Dapper，zipkin，jaeger
 		微服务log收集：ELK，Filebeat，Fluent
 		将日志和trace关联所带来的意义
 2. 相关工作
 	trace方面：Dapper，zipkin，jaeger
-	log：ELK，Filebear，Fluent
+	log：ELK，Filebeat，Fluent
 	trace+log: zipkin，jaeger
 3. 方法及实现
 	日志的领域模型图
 	策略及其组合
-		策略一： 单条trace+日志
+		策略一： 单条trace+日志，日志追踪（关键词检索）
 		策略二： trace之间的对比
-		策略三： trace分段
+		策略三： instance分析
+		策略四： sequence分析
+		策略五： trace分段
+	sequence异步调用识别
 	谱聚类算法：
 		对服务依赖图分区，进而对trace分段；划分的区，可以作为服务合并和部署的分析单元
 	原型工具实现（体系结构图）
 4. 实验
 	benchmark system
-	选择的典型fault，以及跟zipkin+elk工具的对比：有用性，有效性
+	选择的典型fault：
+		a. basic错误（从exception就能看出问题所在的错误）
+		b. 逻辑错误（一等座价格比二等座高）
+		c. sequence错误（F1）
+		d. instance错误（F12）
+	复现以后，跟zipkin+elk工具的对比：有用性，有效性
+	异步识别的有效性
 	trace分段的有效性
 5. 讨论
 	实现上的不足（需要通过aop的方式增强日志，有一定的侵入性，而且只适用于Java开发的微服务）
