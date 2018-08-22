@@ -21,7 +21,7 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
     @Override
     public ClusterResult getResult(long endTs, long lookback, int k) {
 
-        StringBuilder sb = new StringBuilder("http://10.141.211.163:30005/zipkin/api/v1/dependencies?");
+        StringBuilder sb = new StringBuilder("http://10.141.211.163:30005/zipkin/api/v2/dependencies?");
         sb.append("endTs=" + endTs);
         sb.append("&");
         sb.append("lookback=" + lookback);
