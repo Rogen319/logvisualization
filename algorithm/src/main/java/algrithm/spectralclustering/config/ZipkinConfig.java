@@ -1,11 +1,11 @@
-package algrithm.sequence.config;
+package algrithm.spectralclustering.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "escore")
-public class EscoreConfig {
+@ConfigurationProperties(prefix = "zipkin-istio")
+public class ZipkinConfig {
     private String ip;
     private String port;
 

@@ -78,7 +78,7 @@ public class SequenceServiceImpl implements SequenceService {
 
     private List<String> getServiceSequence(String traceId) {
         StringBuilder sb =
-                new StringBuilder("http://10.141.212.146:16319/getLogByTraceId/");
+                new StringBuilder("http://logvisualization-logapi:16319/getLogByTraceId/");
         sb.append(traceId);
         sb.append("/0");
 

@@ -5,6 +5,6 @@ spring:
   application:
     name: logvisualization-algorithm
 
-escore:
-  ip: 10.141.212.146
-  port: 17319
+zipkin-istio:
+  ip: 10.141.212.142
+  port: 30005

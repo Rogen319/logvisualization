@@ -1,6 +1,5 @@
 package algrithm.sequence.repository;
 
-import algrithm.sequence.config.EscoreConfig;
 import algrithm.sequence.dto.GetRequestWithTraceIDRes;
 import algrithm.sequence.dto.TimeRangeRequest;
 import org.slf4j.Logger;
@@ -15,19 +14,12 @@ public class SequenceRepository {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
-    private EscoreConfig escoreConfig;
-
     public GetRequestWithTraceIDRes getRequestWithTraceIDRes(long endTime, long lookback) {
-        StringBuilder sb = new StringBuilder("http://");
-        sb.append(escoreConfig.getIp());
-        sb.append(":");
-        sb.append(escoreConfig.getPort());
-        sb.append("/getRequestWithTraceIDByTimeRange");
-        logger.info("Escore request URL: {}", sb.toString());
+        String url = "http://logvisualization-escore:17319/getRequestWithTraceIDByTimeRange";
+        logger.info("Escore request URL: {}", url);
 
         TimeRangeRequest body = new TimeRangeRequest(endTime, lookback);
 
-        return restTemplate.postForObject(sb.toString(), body, GetRequestWithTraceIDRes.class);
+        return restTemplate.postForObject(url, body, GetRequestWithTraceIDRes.class);
     }
 }

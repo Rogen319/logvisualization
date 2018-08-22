@@ -1,9 +1,11 @@
 package algrithm.spectralclustering.service.impl;
 
+import algrithm.spectralclustering.config.ZipkinConfig;
 import algrithm.spectralclustering.enumeration.ServiceExclude;
 import algrithm.spectralclustering.dto.ClusterResult;
 import algrithm.spectralclustering.dto.SingleDependency;
 import algrithm.spectralclustering.service.SpectralClusteringSerivce;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import smile.clustering.SpectralClustering;
@@ -17,14 +19,20 @@ import java.util.stream.Stream;
 
 @Service
 public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce {
+    @Autowired
+    private ZipkinConfig zipkinConfig;
 
     @Override
     public ClusterResult getResult(long endTs, long lookback, int k) {
 
-        StringBuilder sb = new StringBuilder("http://10.141.211.163:30005/zipkin/api/v2/dependencies?");
-        sb.append("endTs=" + endTs);
-        sb.append("&");
-        sb.append("lookback=" + lookback);
+        StringBuilder sb = new StringBuilder("http://");
+        sb.append(zipkinConfig.getIp())
+        .append(":")
+        .append(zipkinConfig.getPort())
+        .append("/zipkin/api/v2/dependencies?endTs=")
+        .append(endTs)
+        .append("&lookback=")
+        .append(lookback);
 
         List<SingleDependency> dependencyList = getZipkinDependencies(sb.toString());
         SpectralClustering sc = new SpectralClustering((convCallCount2Proportion(convJson2array(dependencyList))), k);
