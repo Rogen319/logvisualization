@@ -5,7 +5,6 @@ import algrithm.sequence.domain.SequenceInfo;
 import algrithm.sequence.domain.SequenceTypeDetails;
 import algrithm.sequence.dto.AsynRequestDto;
 import algrithm.sequence.dto.LogDto;
-import algrithm.sequence.dto.RequestTypeSequenceDto;
 import algrithm.sequence.dto.TraceTypeSequenceDto;
 import algrithm.sequence.repository.SequenceRepository;
 import algrithm.sequence.service.SequenceService;
@@ -34,8 +33,6 @@ public class SequenceServiceImpl implements SequenceService {
         Map<String, String> map = sequenceRepository.getTraceIdByRequestTypeAndTimeRange(requestDto);
 
         Set<String> traceIds = map.keySet();
-        SequenceInfo sequenceInfo = new SequenceInfo();
-
         List<SequenceTypeDetails> sequenceTypeDetailsList = new ArrayList<>();
         List<List<String>> allSequences = new ArrayList<>();
         traceIds.forEach(t -> {
@@ -60,26 +57,38 @@ public class SequenceServiceImpl implements SequenceService {
                         .collect(Collectors.toList());
                 logger.info("tranceId: {}, sequence: {}", t, sequence.toString());
                 allSequences.add(sequence);
-                sequenceTypeDetailsList.forEach(m -> {
-                    if (m.getSequence().equals(sequence)) {
-                        if ("true".equals(traceStatus)) {
-                            m.setSuccessTime(m.getSuccessTime() + 1);
-                        } else {
-                            m.setFailedTime(m.getFailedTime() + 1);
-                        }
-                        m.getTraceSet().add(t);
+                if (sequenceTypeDetailsList.isEmpty()) {
+                    SequenceTypeDetails details = new SequenceTypeDetails();
+                    if ("true".equals(traceStatus)) {
+                        details.setSuccessTime(1L);
                     } else {
-                        SequenceTypeDetails details = new SequenceTypeDetails();
-                        if ("true".equals(traceStatus)) {
-                            m.setSuccessTime(1L);
-                        } else {
-                            m.setFailedTime(1L);
-                        }
-                        details.setSequence(sequence);
-                        details.getTraceSet().add(t);
-                        sequenceTypeDetailsList.add(details);
+                        details.setFailedTime(1L);
                     }
-                });
+                    details.setSequence(sequence);
+                    details.getTraceSet().add(t);
+                    sequenceTypeDetailsList.add(details);
+                } else {
+                    sequenceTypeDetailsList.forEach(m -> {
+                        if (m.getSequence().equals(sequence)) {
+                            if ("true".equals(traceStatus)) {
+                                m.setSuccessTime(m.getSuccessTime() + 1);
+                            } else {
+                                m.setFailedTime(m.getFailedTime() + 1);
+                            }
+                            m.getTraceSet().add(t);
+                        } else {
+                            SequenceTypeDetails details = new SequenceTypeDetails();
+                            if ("true".equals(traceStatus)) {
+                                m.setSuccessTime(1L);
+                            } else {
+                                m.setFailedTime(1L);
+                            }
+                            details.setSequence(sequence);
+                            details.getTraceSet().add(t);
+                            sequenceTypeDetailsList.add(details);
+                        }
+                    });
+                }
             }
         });
 

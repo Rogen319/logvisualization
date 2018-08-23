@@ -20,7 +20,7 @@ public class SequenceRepository {
     private RestTemplate restTemplate;
 
     public Map<String, String> getTraceIdByRequestTypeAndTimeRange(AsynRequestDto dto) {
-        String url = "http://logvisualization-escore/traceIds";
+        String url = "http://logvisualization-escore:17319/traceIds";
         logger.info("Escore request URL: {}", url);
 
         TraceIdsRequestDto request = new TraceIdsRequestDto(dto.getRequestType(), dto.getEndTime(), dto.getLookback());
