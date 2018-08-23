@@ -577,6 +577,27 @@ public class ESCoreServiceImpl implements ESCoreService {
         return res;
     }
 
+    @Override
+    public Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request){
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        Set<String> traceId = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
+
+        Map<String, String> map = new HashMap<>();
+        traceId.forEach(t->{
+            map.put(t, esUtil.getStatusOfTrace(t));
+        });
+        return map;
+    }
+
     //Get the list of service with instance of trace status count
     private List<ServiceWithInstanceOfTraceStatusCount> getServiceWithInstanceOfTraceStatusCount(Set<String> traceIdSet){
 

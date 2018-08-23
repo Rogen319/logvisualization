@@ -1,7 +1,9 @@
 package algrithm.sequence.controller;
 
+import algrithm.sequence.dto.AsynRequestDto;
 import algrithm.sequence.dto.GetRequestWithTraceIDRes;
 import algrithm.sequence.dto.RequestTypeSequenceDto;
+import algrithm.sequence.dto.TraceTypeSequenceDto;
 import algrithm.sequence.repository.SequenceRepository;
 import algrithm.sequence.service.SequenceService;
 import com.google.gson.Gson;
@@ -18,10 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
@@ -38,8 +37,8 @@ public class SequenceController {
     private SequenceService sequenceService;
 
     @GetMapping()
-    public List<RequestTypeSequenceDto> getRequestWithTraceIDRes(@RequestParam long endTime, @RequestParam long lookback) {
-        return sequenceService.getSequence(endTime,lookback);
+    public TraceTypeSequenceDto getRequestWithTraceIDRes(@RequestBody AsynRequestDto requestDto) {
+        return sequenceService.getSequence(requestDto);
     }
 
     @GetMapping("/test")

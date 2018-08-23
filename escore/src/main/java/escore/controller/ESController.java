@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class ESController {
@@ -73,5 +75,11 @@ public class ESController {
     @RequestMapping(value = "/getServiceWithInstanceOfTSCByTraceType", method ={RequestMethod.POST})
     public ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType(@RequestBody GetServiceWithInstanceOfTSCByTraceTypeReq request){
         return service.getServiceWithInstanceOfTSCByTraceType(request);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/traceIds", method ={RequestMethod.POST})
+    public Map<String, String> getTraceIdsByRequestType(@RequestBody GetTraceIdsByRequestTypeAndTimeRange request){
+        return service.getTraceIdsByRequestType(request);
     }
 }

@@ -1,12 +1,16 @@
 package algrithm.sequence.repository;
 
-import algrithm.sequence.dto.GetRequestWithTraceIDRes;
-import algrithm.sequence.dto.TimeRangeRequest;
+import algrithm.sequence.dto.AsynRequestDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @Repository
 public class SequenceRepository {
@@ -14,12 +18,15 @@ public class SequenceRepository {
     @Autowired
     private RestTemplate restTemplate;
 
-    public GetRequestWithTraceIDRes getRequestWithTraceIDRes(long endTime, long lookback) {
-        String url = "http://logvisualization-escore:17319/getRequestWithTraceIDByTimeRange";
+    public Map<String, String> getTraceIdByRequestTypeAndTimeRange
+            (AsynRequestDto dto) {
+        String url = "http://logvisualization-escore:17319/traceIds";
         logger.info("Escore request URL: {}", url);
-
-        TimeRangeRequest body = new TimeRangeRequest(endTime, lookback);
-
-        return restTemplate.postForObject(url, body, GetRequestWithTraceIDRes.class);
+        HttpEntity<AsynRequestDto> httpEntity = new HttpEntity<>(dto);
+        TraceIdsRequestDto request = new TraceIdsRequestDto(dto
+                .getRequestType(), dto.getEndTime(), dto.getLookback());
+        return restTemplate.exchange(url, HttpMethod.POST, httpEntity,
+                new ParameterizedTypeReference<Map<String, String>>() {
+                }).getBody();
     }
 }

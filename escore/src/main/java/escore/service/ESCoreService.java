@@ -4,7 +4,10 @@ import escore.bean.NodeInfo;
 import escore.request.*;
 import escore.response.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface ESCoreService {
     String demo();
@@ -17,4 +20,5 @@ public interface ESCoreService {
     ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(GetServiceWithTraceCountByTraceTypeReq request);
     ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
     ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
+    Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request);
 }

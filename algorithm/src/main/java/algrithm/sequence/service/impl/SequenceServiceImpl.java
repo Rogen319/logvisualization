@@ -1,10 +1,9 @@
 package algrithm.sequence.service.impl;
 
 import algrithm.sequence.domain.LogItem;
-import algrithm.sequence.domain.RequestWithTraceInfo;
-import algrithm.sequence.domain.TraceInfo;
-import algrithm.sequence.domain.TraceType;
-import algrithm.sequence.dto.GetRequestWithTraceIDRes;
+import algrithm.sequence.domain.SequenceInfo;
+import algrithm.sequence.domain.SequenceTypeDetails;
+import algrithm.sequence.dto.AsynRequestDto;
 import algrithm.sequence.dto.LogDto;
 import algrithm.sequence.dto.RequestTypeSequenceDto;
 import algrithm.sequence.dto.TraceTypeSequenceDto;
@@ -17,89 +16,96 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SequenceServiceImpl implements SequenceService {
-    private static final Logger logger = LoggerFactory.getLogger(SequenceServiceImpl.class);
 
     @Autowired
     private SequenceRepository sequenceRepository;
 
+    private Comparator<LogItem> logItemComparator = Comparator.comparing(LogItem::getTimestamp);
+
+    private static Logger logger = LoggerFactory.getLogger(SequenceServiceImpl.class);
+
     @Override
-    public List<RequestTypeSequenceDto> getSequence(long endTime, long lookback) {
-        GetRequestWithTraceIDRes ret = sequenceRepository.getRequestWithTraceIDRes(endTime, lookback);
+    public TraceTypeSequenceDto getSequence(AsynRequestDto requestDto) {
 
-        List<RequestTypeSequenceDto> requestTypeSequenceDtos = new ArrayList<>();
-        for (RequestWithTraceInfo rti : ret.getRequestWithTraceInfoList()) {
-            RequestTypeSequenceDto rtsd = new RequestTypeSequenceDto();
-            rtsd.setRequestTypeName(rti.getRequestType());
-            List<TraceTypeSequenceDto> traceTypeSequenceDtos = new ArrayList<>();
+        Map<String, String> map = sequenceRepository.getTraceIdByRequestTypeAndTimeRange(requestDto);
 
-            for (TraceType tt : rti.getTraceTypeList()) {
-                TraceTypeSequenceDto ttsd = new TraceTypeSequenceDto();
-                ttsd.setTraceType(tt.getTypeName());
-                List<List<String>> allSvcSeqInTraceType = new ArrayList<>();
+        Set<String> traceIds = map.keySet();
+        SequenceInfo sequenceInfo = new SequenceInfo();
 
-                for (TraceInfo ti : tt.getTraceInfoList()) {
-                    List<String> svcSeq = getServiceSequence(ti.getTraceId());
-                    logger.info("traceId: {}, service sequence: {}", ti.getTraceId(), svcSeq.toString());
-                    allSvcSeqInTraceType.add(svcSeq);
-                }
+        List<SequenceTypeDetails> sequenceTypeDetailsList = new ArrayList<>();
+        List<List<String>> allSequences = new ArrayList<>();
+        traceIds.forEach(t -> {
+            String traceStatus = map.get(t);
+            StringBuilder sb = new StringBuilder("http://logvisualization-logapi:16319" + "/getLogByTraceId/");
+            sb.append(t).append("/0");
 
-                Set<String> service = tt.getTraceInfoList().get(0).getServiceList();
-                List<String> asynScope = analyseAsyn(allSvcSeqInTraceType, service);
-                ttsd.setAsynService(asynScope);
-                if (asynScope.size() == 0) {
-                    ttsd.setAsyn(false);
-                } else {
-                    ttsd.setAsyn(true);
-                }
+            RestTemplate restTemplate = new RestTemplate();
 
-                traceTypeSequenceDtos.add(ttsd);
+            LogDto logResp = restTemplate.getForObject(sb.toString(), LogDto.class);
+            List<LogItem> logItems = logResp.getLogs();
+
+            Set<String> services = logItems.stream().filter(m -> m.getLogType
+                    ().equals("InvocationRequest")).map(m -> m.getServiceInfo
+                    ().getServiceName()).collect(Collectors.toSet());
+
+            // 判断是否为同一个traceType
+            if (services.equals(requestDto.getServices())) {
+                // 获取sequence
+                List<String> sequence = logItems.stream().filter(m -> m.getLogType().equals("InvocationRequest"))
+                        .sorted(logItemComparator).map(m -> m.getServiceInfo().getServiceName())
+                        .collect(Collectors.toList());
+                logger.info("tranceId: {}, sequence: {}", t, sequence.toString());
+                allSequences.add(sequence);
+                sequenceTypeDetailsList.forEach(m -> {
+                    if (m.getSequence().equals(sequence)) {
+                        if ("true".equals(traceStatus)) {
+                            m.setSuccessTime(m.getSuccessTime() + 1);
+                        } else {
+                            m.setFailedTime(m.getFailedTime() + 1);
+                        }
+                        m.getTraceSet().add(t);
+                    } else {
+                        SequenceTypeDetails details = new SequenceTypeDetails();
+                        if ("true".equals(traceStatus)) {
+                            m.setSuccessTime(1L);
+                        } else {
+                            m.setFailedTime(1L);
+                        }
+                        details.setSequence(sequence);
+                        details.getTraceSet().add(t);
+                        sequenceTypeDetailsList.add(details);
+                    }
+                });
             }
-            rtsd.setTraceTypes(traceTypeSequenceDtos);
-            requestTypeSequenceDtos.add(rtsd);
-        }
+        });
 
-        return requestTypeSequenceDtos;
+        List<SequenceInfo> sequenceInfos = new ArrayList<>();
+        sequenceTypeDetailsList.forEach(i -> {
+            SequenceInfo info = new SequenceInfo(i.getSequence(), i.getTraceSet(), i.getFailedTime() / (i
+                    .getSuccessTime() + i.getFailedTime()));
+            sequenceInfos.add(info);
+        });
+
+        Set<String> asynServices = analyseAsyn(allSequences, requestDto.getServices());
+
+        TraceTypeSequenceDto dto = new TraceTypeSequenceDto();
+        dto.setAsyn(!asynServices.isEmpty());
+        dto.setAsynService(asynServices);
+        dto.setSequences(sequenceInfos);
+        dto.setStatus(true);
+        dto.setMessage("success");
+
+        return dto;
     }
 
-    private Comparator<LogItem> logItemComparator = (o1, o2) -> {
 
-        if (o1.getTimestamp().equals(o2.getTimestamp())) {
-            if (o1.getLogType().equals("InvocationRequest"))
-                return -1;
-            else
-                return 1;
-        }
-        return o1.getTimestamp().compareTo(o2.getTimestamp());
-
-    };
-
-    private List<String> getServiceSequence(String traceId) {
-        StringBuilder sb =
-                new StringBuilder("http://logvisualization-logapi:16319/getLogByTraceId/");
-        sb.append(traceId);
-        sb.append("/0");
-
-        RestTemplate restTemplate = new RestTemplate();
-        LogDto logResp =
-                restTemplate.getForObject(sb.toString(), LogDto.class);
-        List<LogItem> logItems = logResp.getLogs();
-        LogItem[] logItemArr = logItems.toArray(new LogItem[logItems.size()]);
-        Arrays.sort(logItemArr, logItemComparator);
-
-        List<String> svcSeq = new ArrayList<>();
-        for (LogItem li : logItemArr) {
-            if (li.getLogType().equals("InvocationRequest") || li.getLogType().equals("InvocationResponse"))
-                svcSeq.add(li.getServiceInfo().getServiceName());
-        }
-
-        return svcSeq;
-    }
-
-    private List<String> analyseAsyn(List<List<String>> allSvcSeqInTraceType, Set<String> service) {
-        List<String> asynService = new ArrayList<>();
+    private Set<String> analyseAsyn(List<List<String>> allSvcSeqInTraceType,
+                                    Set<String> service) {
+        Set<String> asynService = new HashSet<>();
         service.forEach(s -> {
             Set<Integer> set = new HashSet<>();
             allSvcSeqInTraceType.forEach(e -> {

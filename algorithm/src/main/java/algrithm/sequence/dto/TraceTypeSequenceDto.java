@@ -1,31 +1,27 @@
 package algrithm.sequence.dto;
 
+import algrithm.sequence.domain.SequenceInfo;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
-public class TraceTypeSequenceDto implements Serializable{
+public class TraceTypeSequenceDto extends GeneralResponse implements Serializable {
 
     private static final long serialVersionUID = -2512631240886515425L;
 
-    private String traceType;
     private boolean asyn;
-    private List<String> asynService;
+    private Set<String> asynService;
+    private List<SequenceInfo> sequences;
 
     public TraceTypeSequenceDto() {
     }
 
-    public TraceTypeSequenceDto(String traceType, boolean asyn, List<String> asynService) {
-        this.traceType = traceType;
+    public TraceTypeSequenceDto(boolean asyn, Set<String> asynService,
+                                List<SequenceInfo> sequences) {
         this.asyn = asyn;
         this.asynService = asynService;
-    }
-
-    public String getTraceType() {
-        return traceType;
-    }
-
-    public void setTraceType(String traceType) {
-        this.traceType = traceType;
+        this.sequences = sequences;
     }
 
     public boolean isAsyn() {
@@ -36,11 +32,19 @@ public class TraceTypeSequenceDto implements Serializable{
         this.asyn = asyn;
     }
 
-    public List<String> getAsynService() {
+    public Set<String> getAsynService() {
         return asynService;
     }
 
-    public void setAsynService(List<String> asynService) {
+    public void setAsynService(Set<String> asynService) {
         this.asynService = asynService;
+    }
+
+    public List<SequenceInfo> getSequences() {
+        return sequences;
+    }
+
+    public void setSequences(List<SequenceInfo> sequences) {
+        this.sequences = sequences;
     }
 }
