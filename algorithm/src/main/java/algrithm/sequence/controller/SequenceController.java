@@ -36,7 +36,7 @@ public class SequenceController {
     @Autowired
     private SequenceService sequenceService;
 
-    @GetMapping()
+    @PostMapping()
     public TraceTypeSequenceDto getRequestWithTraceIDRes(@RequestBody AsynRequestDto requestDto) {
         return sequenceService.getSequence(requestDto);
     }

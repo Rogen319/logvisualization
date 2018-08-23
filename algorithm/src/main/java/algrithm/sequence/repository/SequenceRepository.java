@@ -19,13 +19,12 @@ public class SequenceRepository {
     @Autowired
     private RestTemplate restTemplate;
 
-    public Map<String, String> getTraceIdByRequestTypeAndTimeRange
-            (AsynRequestDto dto) {
-        String url = "http://logvisualization-escore:17319/traceIds";
+    public Map<String, String> getTraceIdByRequestTypeAndTimeRange(AsynRequestDto dto) {
+        String url = "http://logvisualization-escore/traceIds";
         logger.info("Escore request URL: {}", url);
-        HttpEntity<AsynRequestDto> httpEntity = new HttpEntity<>(dto);
-        TraceIdsRequestDto request = new TraceIdsRequestDto(dto
-                .getRequestType(), dto.getEndTime(), dto.getLookback());
+
+        TraceIdsRequestDto request = new TraceIdsRequestDto(dto.getRequestType(), dto.getEndTime(), dto.getLookback());
+        HttpEntity<TraceIdsRequestDto> httpEntity = new HttpEntity<>(request);
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity,
                 new ParameterizedTypeReference<Map<String, String>>() {
                 }).getBody();
