@@ -3,6 +3,7 @@ package escore.service;
 import escore.bean.NodeInfo;
 import escore.request.*;
 import escore.response.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,4 +22,6 @@ public interface ESCoreService {
     ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
     ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
     Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request);
+    ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
+    ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
 }

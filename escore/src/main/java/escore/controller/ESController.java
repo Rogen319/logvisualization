@@ -78,6 +78,18 @@ public class ESController {
     }
 
     @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getServiceWithInstanceNameOfTSCByRequestType", method ={RequestMethod.POST})
+    public ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByRequestType(@RequestBody GetServiceWithInstanceOfTSCByRequestTypeReq request){
+        return service.getServiceWithInstanceNameOfTSCByRequestType(request);
+    }
+
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/getServiceWithInstanceNameOfTSCByTraceType", method ={RequestMethod.POST})
+    public ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByTraceType(@RequestBody GetServiceWithInstanceOfTSCByTraceTypeReq request){
+        return service.getServiceWithInstanceNameOfTSCByTraceType(request);
+    }
+
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/traceIds", method ={RequestMethod.POST})
     public Map<String, String> getTraceIdsByRequestType(@RequestBody GetTraceIdsByRequestTypeAndTimeRange request){
         return service.getTraceIdsByRequestType(request);

@@ -598,6 +598,137 @@ public class ESCoreServiceImpl implements ESCoreService {
         return map;
     }
 
+    @Override
+    public ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request) {
+        ServiceWithInstanceNameOfTSCRes res = new ServiceWithInstanceNameOfTSCRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        Set<String> traceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
+
+        List<ServiceWithInstanceNameOfTraceStatusCount> siwtscList = getServiceWithInstanceNameOfTraceStatusCount(traceIdSet);
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get service with instance name of TSC by request type. The size is [%d].", siwtscList.size()));
+        res.setList(siwtscList);
+        return res;
+    }
+
+    @Override
+    public ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByTraceType(GetServiceWithInstanceOfTSCByTraceTypeReq request) {
+        ServiceWithInstanceNameOfTSCRes res = new ServiceWithInstanceNameOfTSCRes();
+        res.setStatus(false);
+        res.setMessage("This is the default message");
+
+        long endTimeValue = request.getEndTime();
+        long lookback = request.getLookback();
+        String requestType = request.getRequestType();
+        Set<String> services = request.getServices();
+
+        String beginTime = esUtil.convertTime(endTimeValue - lookback);
+        String endTime = esUtil.convertTime(endTimeValue);
+
+        beginTime = beginTime.split(" ")[0] + " 00:00:00";
+        endTime = endTime.split(" ")[0] + " 23:59:59";
+
+        Set<String> allTraceIdSet = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
+        Set<String> effectiveTraceIdSet = new HashSet<>();
+
+        //Select the trace ids corresponding to the trace type
+        for(String traceId : allTraceIdSet){
+            TraceInfo traceInfo = getTraceInfoById(traceId);
+
+            if(traceInfo.getServiceList().equals(services)){
+                effectiveTraceIdSet.add(traceId);
+            }
+        }
+
+        List<ServiceWithInstanceNameOfTraceStatusCount> siwtscList = getServiceWithInstanceNameOfTraceStatusCount(effectiveTraceIdSet);
+
+        res.setStatus(true);
+        res.setMessage(String.format("Succeed to get service with instance name of TSC by request type. The size is [%d].", siwtscList.size()));
+        res.setList(siwtscList);
+        return res;
+    }
+
+    //Get the list of service with instance name of trace status count
+    private List<ServiceWithInstanceNameOfTraceStatusCount> getServiceWithInstanceNameOfTraceStatusCount(Set<String> traceIdSet){
+
+        //Count the instance number of ervery service
+        List<PodInfo> currentPods = podService.getCurrentPodInfo();
+        Map<String, ServiceWithInstanceNameOfTraceStatusCount> map = new HashMap<>();
+        for(String traceId : traceIdSet){
+            String status = esUtil.getStatusOfTrace(traceId);
+            List<ServiceWithInstanceName> serviceWithInstanceNameList = getServiceWithInstanceNameByTraceId(traceId, currentPods);
+            String serviceName; String instanceName;
+            for(ServiceWithInstanceName serviceWithInstanceName : serviceWithInstanceNameList){
+                serviceName = serviceWithInstanceName.getServiceName();
+                instanceName = serviceWithInstanceName.getInstanceName();
+                if(map.get(serviceName) != null){
+                    List<ServiceInstanceNameWithTraceStatusCount> list = map.get(serviceName).getSinwtscList();
+                    boolean isExisted = false;
+                    //Service with num instance already exists
+                    for(ServiceInstanceNameWithTraceStatusCount instance : list){
+                        if(instance.getInstanceName().equals(instanceName)){
+                            if(status.equals("true"))
+                                instance.setNormalTraceCount(instance.getNormalTraceCount() + 1);
+                            else
+                                instance.setErrorTraceCount(instance.getErrorTraceCount() + 1);
+                            isExisted = true;
+                            break;
+                        }
+                    }
+                    //New a instance
+                    if(!isExisted){
+                        ServiceInstanceNameWithTraceStatusCount newInstance = new ServiceInstanceNameWithTraceStatusCount();
+                        newInstance.setInstanceName(instanceName);
+                        if(status.equals("true"))
+                            newInstance.setNormalTraceCount(1);
+                        else
+                            newInstance.setErrorTraceCount(1);
+                        list.add(newInstance);
+                        map.get(serviceName).setSinwtscList(list);
+                    }
+
+                }else{
+                    ServiceWithInstanceNameOfTraceStatusCount instance = new ServiceWithInstanceNameOfTraceStatusCount();
+
+                    instance.setServiceName(serviceName);
+
+                    ServiceInstanceNameWithTraceStatusCount instance2 = new ServiceInstanceNameWithTraceStatusCount();
+                    instance2.setInstanceName(instanceName);
+                    if(status.equals("true"))
+                        instance2.setNormalTraceCount(1);
+                    else
+                        instance2.setErrorTraceCount(1);
+                    List<ServiceInstanceNameWithTraceStatusCount> instance3 = new ArrayList<>();
+                    instance3.add(instance2);
+
+                    instance.setSinwtscList(instance3);
+
+                    map.put(serviceName, instance);
+                }
+            }
+        }
+
+        List<ServiceWithInstanceNameOfTraceStatusCount> siwtscList = new ArrayList<>();
+        for(ServiceWithInstanceNameOfTraceStatusCount instance : map.values()){
+            siwtscList.add(instance);
+        }
+
+        return siwtscList;
+    }
+
     //Get the list of service with instance of trace status count
     private List<ServiceWithInstanceOfTraceStatusCount> getServiceWithInstanceOfTraceStatusCount(Set<String> traceIdSet){
 
@@ -664,6 +795,50 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         return siwtscList;
+    }
+
+    //Get the service with instance name in the trace
+    private List<ServiceWithInstanceName> getServiceWithInstanceNameByTraceId(String traceId, List<PodInfo> currentPods) {
+        TransportClient client = myConfig.getESClient();
+
+        List<ServiceWithInstanceName> res = new ArrayList<>();
+
+        //1: Get all of the instances name(pods name)
+        Set<String> instanceNames = new HashSet<>();
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId",traceId);
+
+        SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
+                .setScroll(new TimeValue(60000))
+                .setQuery(qb)
+                .setSize(100).get();
+        SearchHit[] hits;
+
+        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+            hits = scrollResp.getHits().getHits();
+            for (SearchHit hit : hits) {
+                //Handle the hit
+                try {
+                    LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
+                    if(logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null){
+                        instanceNames.add(logBean.getKubernetes().getPod().getName());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
+        }
+
+        String serviceName;
+        for(String instanceName : instanceNames){
+            serviceName = podService.getServiceName(instanceName, currentPods);
+            ServiceWithInstanceName temp = new ServiceWithInstanceName();
+            temp.setServiceName(serviceName);
+            temp.setInstanceName(instanceName);
+            res.add(temp);
+        }
+
+        return res;
     }
 
     //Get the service with instance number in the trace
@@ -818,10 +993,10 @@ public class ESCoreServiceImpl implements ESCoreService {
                 }
 
                 //待删除
-                if(Math.random() < 0.2)
-                    errorCount++;
-                else
-                    normalCount++;
+//                if(Math.random() < 0.2)
+//                    errorCount++;
+//                else
+//                    normalCount++;
             }
             scrollResp = client.prepareSearchScroll(scrollResp.getScrollId()).setScroll(new TimeValue(60000)).execute().actionGet();
         }
@@ -1028,13 +1203,13 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         //待删除
-        if(Math.random() < 0.33){
-            log.setIsError(0);
-        }else if(Math.random() < 0.66){
-            log.setIsError(1);
-        }else{
-            log.setIsError(2);
-        }
+//        if(Math.random() < 0.33){
+//            log.setIsError(0);
+//        }else if(Math.random() < 0.66){
+//            log.setIsError(1);
+//        }else{
+//            log.setIsError(2);
+//        }
 
         return log;
     }

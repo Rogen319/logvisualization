@@ -9,8 +9,8 @@ es-config:
   host: 10.141.211.163
   port: 30003
 
-es-config-136:
-  host: 10.141.212.136
+es-config-133:
+  host: 10.141.212.133
   port: 30003
 
 es-config-142:

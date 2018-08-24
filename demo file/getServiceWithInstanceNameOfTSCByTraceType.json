@@ -1,0 +1,63 @@
+//URL: 10.141.212.25:17319/getServiceWithInstanceNameOfTSCByTraceType
+/**
+
+    {
+      "requestType":"Login",
+      "endTime":1535145158355,
+      "lookback":86400000,
+      "services":["ts-login-service","ts-sso-service","ts-verification-code-service"]
+    }
+
+*/
+
+{
+  "status": true,
+  "message": "Succeed to get service with instance name of TSC by request type. The size is [3].",
+  "list": [
+    {
+      "serviceName": "ts-verification-code-service",
+      "sinwtscList": [
+        {
+          "instanceName": "ts-verification-code-service-6f597bd7c5-8tskl",
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        },
+        {
+          "instanceName": "ts-verification-code-service-6f597bd7c5-55zzl",
+          "normalTraceCount": 2,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-login-service",
+      "sinwtscList": [
+        {
+          "instanceName": "ts-login-service-587dbd4869-bd69h",
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        },
+        {
+          "instanceName": "ts-login-service-587dbd4869-jmffx",
+          "normalTraceCount": 2,
+          "errorTraceCount": 0
+        }
+      ]
+    },
+    {
+      "serviceName": "ts-sso-service",
+      "sinwtscList": [
+        {
+          "instanceName": "ts-sso-service-7b6556f79-h2z2r",
+          "normalTraceCount": 1,
+          "errorTraceCount": 0
+        },
+        {
+          "instanceName": "ts-sso-service-7b6556f79-qmcfx",
+          "normalTraceCount": 2,
+          "errorTraceCount": 0
+        }
+      ]
+    }
+  ]
+}
