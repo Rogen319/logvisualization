@@ -8,16 +8,9 @@ public class SequenceTypeDetails {
     private List<String> sequence;
     private long failedTime;
     private long successTime;
-    private Set<String> TraceSet = new HashSet<>();
+    private Set<String> traceSet = new HashSet<>();
 
     public SequenceTypeDetails() {
-    }
-
-    public SequenceTypeDetails(List<String> sequence, long failedTime, long successTime, Set<String> traceSet) {
-        this.sequence = sequence;
-        this.failedTime = failedTime;
-        this.successTime = successTime;
-        TraceSet = traceSet;
     }
 
     public List<String> getSequence() {
@@ -45,11 +38,11 @@ public class SequenceTypeDetails {
     }
 
     public Set<String> getTraceSet() {
-        return TraceSet;
+        return traceSet;
     }
 
     public void setTraceSet(Set<String> traceSet) {
-        TraceSet = traceSet;
+        this.traceSet = traceSet;
     }
 
     @Override

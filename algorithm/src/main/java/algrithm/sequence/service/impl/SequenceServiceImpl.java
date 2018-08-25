@@ -32,7 +32,7 @@ public class SequenceServiceImpl implements SequenceService {
 
         Map<String, String> map = sequenceRepository.getTraceIdByRequestTypeAndTimeRange(requestDto);
 
-        Set<String> traceIds = map.keySet();
+        final Set<String> traceIds = map.keySet();
         List<SequenceTypeDetails> sequenceTypeDetailsList = new ArrayList<>();
         List<List<String>> allSequences = new ArrayList<>();
         traceIds.forEach(t -> {
@@ -57,41 +57,39 @@ public class SequenceServiceImpl implements SequenceService {
                         .collect(Collectors.toList());
                 logger.info("tranceId: {}, sequence: {}", t, sequence.toString());
                 allSequences.add(sequence);
-                if (sequenceTypeDetailsList.isEmpty()) {
-                    SequenceTypeDetails details = new SequenceTypeDetails();
+
+                SequenceTypeDetails details = new SequenceTypeDetails();
+                details.setSequence(sequence);
+
+                int index = sequenceTypeDetailsList.indexOf(details);
+                if (sequenceTypeDetailsList.isEmpty() || index == -1) {
                     if ("true".equals(traceStatus)) {
                         details.setSuccessTime(1L);
                     } else {
                         details.setFailedTime(1L);
                     }
-                    details.setSequence(sequence);
                     details.getTraceSet().add(t);
                     sequenceTypeDetailsList.add(details);
                 } else {
-                    sequenceTypeDetailsList.forEach(m -> {
-                        if (m.getSequence().equals(sequence)) {
-                            if ("true".equals(traceStatus)) {
-                                m.setSuccessTime(m.getSuccessTime() + 1);
-                            } else {
-                                m.setFailedTime(m.getFailedTime() + 1);
-                            }
-                            m.getTraceSet().add(t);
-                        } else {
-                            SequenceTypeDetails details = new SequenceTypeDetails();
-                            if ("true".equals(traceStatus)) {
-                                m.setSuccessTime(1L);
-                            } else {
-                                m.setFailedTime(1L);
-                            }
-                            details.setSequence(sequence);
-                            details.getTraceSet().add(t);
-                            sequenceTypeDetailsList.add(details);
-                        }
-                    });
+                    SequenceTypeDetails tem = sequenceTypeDetailsList.get(index);
+                    if ("true".equals(traceStatus)) {
+                        tem.setSuccessTime(tem.getSuccessTime() + 1);
+                    } else {
+                        tem.setFailedTime(tem.getFailedTime() + 1);
+                    }
+                    details.getTraceSet().add(t);
                 }
             }
         });
 
+        if (sequenceTypeDetailsList.isEmpty()) {
+            TraceTypeSequenceDto dto = new TraceTypeSequenceDto();
+            dto.setAsyn(false);
+            dto.setStatus(false);
+            dto.setMessage("No such trace type, contains service:" + requestDto.getServices().toString());
+
+            return dto;
+        }
         List<SequenceInfo> sequenceInfos = new ArrayList<>();
         sequenceTypeDetailsList.forEach(i -> {
             SequenceInfo info = new SequenceInfo(i.getSequence(), i.getTraceSet(), i.getFailedTime() / (i
@@ -112,18 +110,56 @@ public class SequenceServiceImpl implements SequenceService {
     }
 
 
-    private Set<String> analyseAsyn(List<List<String>> allSvcSeqInTraceType,
-                                    Set<String> service) {
-        Set<String> asynService = new HashSet<>();
-        service.forEach(s -> {
-            Set<Integer> set = new HashSet<>();
-            allSvcSeqInTraceType.forEach(e -> {
-                set.add(e.indexOf(s));
-            });
-            if (set.size() != 1) {
-                asynService.add(s);
+    private Set<String> analyseAsyn(final List<List<String>> allSvcSeqInTraceType,
+                                    final Set<String> services) {
+
+        int sequenceSize = allSvcSeqInTraceType.get(0).size();
+        int sequenceCount = allSvcSeqInTraceType.size();
+
+        int[] ret = new int[sequenceSize];
+        List<String> compareSeq = allSvcSeqInTraceType.get(0);
+        for (int i = 0; i < sequenceSize; i++) {
+            for (int j = 0; j < sequenceCount; j++) {
+                if (!allSvcSeqInTraceType.get(j).get(i).equals(compareSeq.get(i))) {
+                    ret[i]++;
+                }
             }
+        }
+
+        Set<Integer> asynIndex = new HashSet<>();
+        Set<String> syncSvc = new HashSet<>();
+        for (int i = 0; i < sequenceSize; i++) {
+            if (0 == ret[i]) {
+                syncSvc.add(compareSeq.get(i));
+            } else {
+                asynIndex.add(i);
+            }
+        }
+
+        Set<String> tempAsyn = new HashSet<>();
+        syncSvc.forEach(s -> {
+            allSvcSeqInTraceType.forEach(l -> {
+                asynIndex.forEach(e -> {
+                    if (s.equals(l.get(e))) {
+                        tempAsyn.add(s);
+                    }
+                });
+            });
         });
-        return asynService;
+        syncSvc.removeAll(tempAsyn);
+//        service.forEach(s -> {
+//            Set<Integer> set = new HashSet<>();
+//            allSvcSeqInTraceType.forEach(e -> {
+//                set.add(e.indexOf(s));
+//            });
+//            if (set.size() != 1) {
+//                asynService.add(s);
+//            }
+//        });
+
+        Set<String> asynSvc = new HashSet<>();
+        asynSvc.addAll(services);
+        asynSvc.removeAll(syncSvc);
+        return asynSvc;
     }
 }

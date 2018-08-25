@@ -12,11 +12,11 @@ public class SequenceInfo implements Serializable {
     private Set<String> traceSet;
     private double errorRate;
 
+
     public SequenceInfo() {
     }
 
-    public SequenceInfo(List<String> serviceSequence, Set<String> traceSet,
-                        double errorRate) {
+    public SequenceInfo(List<String> serviceSequence, Set<String> traceSet, double errorRate) {
         this.serviceSequence = serviceSequence;
         this.traceSet = traceSet;
         this.errorRate = errorRate;
