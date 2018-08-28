@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "es-config-133")
+@ConfigurationProperties(prefix = "es-config-142")
 public class ESConfig {
     private String host;
     private int port;

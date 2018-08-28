@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "zipkin-istio")
+@ConfigurationProperties(prefix = "zipkin-istio-142")
 public class ZipkinConfig {
     private String ip;
     private String port;
