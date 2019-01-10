@@ -11,7 +11,7 @@ public class NodeInfo {
     private String osImage = null;
     private String containerRuntimeVersion = null;
 
-    public NodeInfo(){
+    public NodeInfo() {
 
     }
 

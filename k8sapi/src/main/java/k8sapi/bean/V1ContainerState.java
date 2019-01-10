@@ -5,7 +5,7 @@ public class V1ContainerState {
     private V1ContainerStateTerminated terminated = null;
     private V1ContainerStateWaiting waiting = null;
 
-    public V1ContainerState(){
+    public V1ContainerState() {
 
     }
 

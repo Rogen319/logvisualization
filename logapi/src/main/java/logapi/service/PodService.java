@@ -21,26 +21,26 @@ public class PodService {
     RestTemplate restTemplate;
 
     //Get current pod information
-    public List<PodInfo> getCurrentPodInfo(){
+    public List<PodInfo> getCurrentPodInfo() {
         //Get and add pods information
         GetPodsListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             return result.getPods();
         }
         return null;
     }
 
     //Set the instance information
-    public NodeInfo setInstanceInfo(ServiceInfo serviceInfo, InstanceInfo instanceInfo, String podName, List<PodInfo> currentPods){
+    public NodeInfo setInstanceInfo(ServiceInfo serviceInfo, InstanceInfo instanceInfo, String podName, List<PodInfo> currentPods) {
         String containerName = instanceInfo.getContainer().getName();
         NodeInfo nodeInfo = new NodeInfo();
 
         //Check if pod exist in the current pods
-        if(currentPods != null){
-            for(PodInfo podInfo : currentPods){
-                if(podInfo.getName().equals(podName)){
+        if (currentPods != null) {
+            for (PodInfo podInfo : currentPods) {
+                if (podInfo.getName().equals(podName)) {
                     nodeInfo.setName(podInfo.getNodeName());
                     nodeInfo.setIp(podInfo.getNodeIP());
 
@@ -49,9 +49,9 @@ public class PodService {
                     log.info(String.format("Find [%s] in current pod list", podName));
                     instanceInfo.setStatus(podInfo.getStatus());
                     List<PodContainer> containers = podInfo.getContainers();
-                    if(containers != null){
-                        for(PodContainer container : containers){
-                            if(container.getName().equals(containerName)){
+                    if (containers != null) {
+                        for (PodContainer container : containers) {
+                            if (container.getName().equals(containerName)) {
                                 instanceInfo.getContainer().setImageName(container.getImageName());
                                 instanceInfo.getContainer().setImageVersion(container.getImageVersion());
                                 instanceInfo.getContainer().setPorts(container.getPorts());
@@ -67,17 +67,17 @@ public class PodService {
         QueryPodInfoRes result = restTemplate.getForObject(
                 "http://logvisualization-escore:17319/queryPodInfo/" + podName,
                 QueryPodInfoRes.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             PodInfo podInfo = result.getPodInfo();
-            if(podInfo != null){
+            if (podInfo != null) {
                 serviceInfo.setServiceName(podInfo.getServiceName());
                 nodeInfo.setName(podInfo.getNodeName());
                 nodeInfo.setIp(podInfo.getNodeIP());
                 instanceInfo.setStatus("Dead");
                 List<PodContainer> containers = podInfo.getContainers();
-                if(containers != null){
-                    for(PodContainer container : containers){
-                        if(container.getName().equals(containerName)){
+                if (containers != null) {
+                    for (PodContainer container : containers) {
+                        if (container.getName().equals(containerName)) {
                             instanceInfo.getContainer().setImageName(container.getImageName());
                             instanceInfo.getContainer().setImageVersion(container.getImageVersion());
                             instanceInfo.getContainer().setPorts(container.getPorts());
@@ -98,19 +98,19 @@ public class PodService {
         GetPodsListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
-        if(result.isStatus() && result.getPods() != null){
-            for(PodInfo podInfo : result.getPods()){
-                if(podInfo.getServiceName().equals(serviceName))
+        if (result.isStatus() && result.getPods() != null) {
+            for (PodInfo podInfo : result.getPods()) {
+                if (podInfo.getServiceName().equals(serviceName))
                     res.add(podInfo.getName());
             }
         }
 
         //Get instance names in the elasticsearch
-        if(res.size() == 0){
+        if (res.size() == 0) {
             GetInstanceNamesFromESRes response = restTemplate.getForObject(
                     "http://logvisualization-escore:17319/getInstanceNamesOfSpecifiedService/" + serviceName,
                     GetInstanceNamesFromESRes.class);
-            if(response.isStatus() && response.getInstanceNames() != null)
+            if (response.isStatus() && response.getInstanceNames() != null)
                 res = response.getInstanceNames();
         }
         return res;

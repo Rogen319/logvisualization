@@ -4,7 +4,7 @@ public class V1LoadBalancerIngress {
     private String hostname;
     private String ip;
 
-    public V1LoadBalancerIngress(){
+    public V1LoadBalancerIngress() {
 
     }
 

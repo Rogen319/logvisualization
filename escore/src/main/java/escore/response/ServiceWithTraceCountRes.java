@@ -7,7 +7,7 @@ import java.util.List;
 public class ServiceWithTraceCountRes extends GeneralResponse {
     private List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList;
 
-    public ServiceWithTraceCountRes(){
+    public ServiceWithTraceCountRes() {
 
     }
 

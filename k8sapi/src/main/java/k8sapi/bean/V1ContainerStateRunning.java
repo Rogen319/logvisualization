@@ -3,7 +3,7 @@ package k8sapi.bean;
 public class V1ContainerStateRunning {
     private String startedAt = null;
 
-    public V1ContainerStateRunning(){
+    public V1ContainerStateRunning() {
 
     }
 

@@ -10,7 +10,7 @@ public class ClusterConfig {
     private String token;
     private String apiServer;
 
-    public ClusterConfig(){
+    public ClusterConfig() {
 
     }
 

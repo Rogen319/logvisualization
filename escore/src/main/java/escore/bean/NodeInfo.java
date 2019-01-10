@@ -11,7 +11,7 @@ public class NodeInfo {
     private String osImage = null;
     private String containerRuntimeVersion = null;
 
-    public NodeInfo(){
+    public NodeInfo() {
 
     }
 
@@ -89,10 +89,10 @@ public class NodeInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(obj instanceof NodeInfo){
-            NodeInfo other = (NodeInfo)obj;
-            if(this.getName().equals(other.getName()) && this.getIp().equals(other.getIp()))
+        if (obj == this) return true;
+        if (obj instanceof NodeInfo) {
+            NodeInfo other = (NodeInfo) obj;
+            if (this.getName().equals(other.getName()) && this.getIp().equals(other.getIp()))
                 return true;
             else
                 return false;

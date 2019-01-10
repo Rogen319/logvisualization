@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class KubernetesMeatadataPod {
     private String name;
 
-    public KubernetesMeatadataPod(){
+    public KubernetesMeatadataPod() {
 
     }
 

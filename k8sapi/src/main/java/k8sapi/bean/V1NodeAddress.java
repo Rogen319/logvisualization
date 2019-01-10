@@ -4,7 +4,7 @@ public class V1NodeAddress {
     private String address = null;
     private String type = null;
 
-    public V1NodeAddress(){
+    public V1NodeAddress() {
 
     }
 

@@ -5,7 +5,7 @@ public class V1Taint {
     private String key = null;
     private String value = null;
 
-    public V1Taint(){
+    public V1Taint() {
 
     }
 

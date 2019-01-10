@@ -5,11 +5,11 @@ import escore.bean.ServiceWithTraceStatusCount;
 
 import java.util.List;
 
-public class GetRequestWithTraceIDRes extends GeneralResponse{
+public class GetRequestWithTraceIDRes extends GeneralResponse {
     private List<RequestWithTraceInfo> requestWithTraceInfoList;
     private List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList;
 
-    public GetRequestWithTraceIDRes(){
+    public GetRequestWithTraceIDRes() {
         super();
     }
 

@@ -4,7 +4,7 @@ public class GetLogByInstanceNameAndTraceIdReq {
     private String serviceName;
     private String traceId;
 
-    public GetLogByInstanceNameAndTraceIdReq(){
+    public GetLogByInstanceNameAndTraceIdReq() {
 
     }
 

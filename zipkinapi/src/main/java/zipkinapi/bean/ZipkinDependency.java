@@ -5,11 +5,11 @@ public class ZipkinDependency {
     private String child;
     private long callCount;
 
-    public ZipkinDependency(){
+    public ZipkinDependency() {
 
     }
 
-    public ZipkinDependency(String parent, String child, long callCount){
+    public ZipkinDependency(String parent, String child, long callCount) {
         this.parent = parent;
         this.child = child;
         this.callCount = callCount;
@@ -41,10 +41,10 @@ public class ZipkinDependency {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(obj instanceof ZipkinDependency){
-            ZipkinDependency other = (ZipkinDependency)obj;
-            if(this.getParent().equals(other.getParent()) && this.getChild().equals(other.getChild()))
+        if (obj == this) return true;
+        if (obj instanceof ZipkinDependency) {
+            ZipkinDependency other = (ZipkinDependency) obj;
+            if (this.getParent().equals(other.getParent()) && this.getChild().equals(other.getChild()))
                 return true;
             else
                 return false;

@@ -3,7 +3,7 @@ package algrithm.sequence.domain;
 import java.io.Serializable;
 import java.util.List;
 
-public class TraceType implements Serializable{
+public class TraceType implements Serializable {
 
     private static final long serialVersionUID = 2375469248064886157L;
     private String typeName;

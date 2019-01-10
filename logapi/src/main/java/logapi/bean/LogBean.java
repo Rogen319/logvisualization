@@ -27,7 +27,7 @@ public class LogBean {
 
     private KubernetesMeatadata kubernetes;
 
-    public LogBean(){
+    public LogBean() {
 
     }
 

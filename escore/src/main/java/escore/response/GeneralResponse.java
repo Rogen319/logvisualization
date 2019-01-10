@@ -4,7 +4,7 @@ public class GeneralResponse {
     private boolean status;
     private String message;
 
-    public GeneralResponse(){
+    public GeneralResponse() {
 
     }
 

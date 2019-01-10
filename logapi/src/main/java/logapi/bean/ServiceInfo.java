@@ -5,7 +5,7 @@ public class ServiceInfo {
     private InstanceInfo instanceInfo;
     private NodeInfo node;
 
-    public ServiceInfo(){
+    public ServiceInfo() {
 
     }
 

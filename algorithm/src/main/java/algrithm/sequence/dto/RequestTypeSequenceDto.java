@@ -3,7 +3,7 @@ package algrithm.sequence.dto;
 import java.io.Serializable;
 import java.util.List;
 
-public class RequestTypeSequenceDto implements Serializable{
+public class RequestTypeSequenceDto implements Serializable {
 
     private static final long serialVersionUID = 222159767701965927L;
 

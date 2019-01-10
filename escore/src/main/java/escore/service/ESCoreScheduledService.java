@@ -48,7 +48,7 @@ public class ESCoreScheduledService {
     private String prevTimestamp = "1970-01-01T00:00:00.000Z";
 
     //Update pod info
-    public void updatePodInfo(){
+    public void updatePodInfo() {
         TransportClient client = myConfig.getESClient();
         log.info("===Update the pod info===");
         List<PodInfo> originPods = esUtil.getStoredPods();
@@ -56,28 +56,28 @@ public class ESCoreScheduledService {
         GetPodsListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             ObjectMapper mapper = new ObjectMapper();
             List<PodInfo> currentPods = result.getPods();
-            try{
-                for(PodInfo pod : currentPods){
-                    if(!existInOrginPods(pod, originPods)){
+            try {
+                for (PodInfo pod : currentPods) {
+                    if (!existInOrginPods(pod, originPods)) {
 //                        log.info(String.format("Begin to add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
                         byte[] json = mapper.writeValueAsBytes(pod);
-                        client.prepareIndex(Const.K8S_POD_INDEX,Const.K8S_POD_TYPE).setSource(json, XContentType.JSON).get();
+                        client.prepareIndex(Const.K8S_POD_INDEX, Const.K8S_POD_TYPE).setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the pod [%s] with ip address [%s]", pod.getName(), pod.getPodIP()));
-                    }else{
+                    } else {
 //                        log.info(String.format("The pod [%s] with ip address [%s] already exists!", pod.getName(), pod.getPodIP()));
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
     //Update node info
-    public void updateNodeInfo(){
+    public void updateNodeInfo() {
         TransportClient client = myConfig.getESClient();
         log.info("===Update the node information===");
         List<NodeInfo> originNodes = esUtil.getStoredNodes();
@@ -85,28 +85,28 @@ public class ESCoreScheduledService {
         GetNodesListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getNodesList",
                 GetNodesListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             ObjectMapper mapper = new ObjectMapper();
             List<NodeInfo> currentNodes = result.getNodes();
-            try{
-                for(NodeInfo node : currentNodes){
-                    if(!existInOrginNodes(node, originNodes)){
+            try {
+                for (NodeInfo node : currentNodes) {
+                    if (!existInOrginNodes(node, originNodes)) {
 //                        log.info(String.format("Begin to add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
                         byte[] json = mapper.writeValueAsBytes(node);
-                        client.prepareIndex(Const.K8S_NODE_INDEX,Const.K8S_NODE_TYPE).setSource(json, XContentType.JSON).get();
+                        client.prepareIndex(Const.K8S_NODE_INDEX, Const.K8S_NODE_TYPE).setSource(json, XContentType.JSON).get();
                         log.info(String.format("Add the node [%s] with ip address [%s]", node.getName(), node.getIp()));
-                    }else{
+                    } else {
 //                        log.info(String.format("The node [%s] with ip address [%s] already exists!", node.getName(), node.getIp()));
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
     //Update trace status
-    public void updateTraceStatus(){
+    public void updateTraceStatus() {
         TransportClient client = myConfig.getESClient();
 
         log.info("===Update the trace status===");
@@ -120,14 +120,14 @@ public class ESCoreScheduledService {
                 .addSort("time", SortOrder.ASC)
                 .setScroll(new TimeValue(60000))
                 .setQuery(qb)
-                .setPostFilter(QueryBuilders.rangeQuery("time").from(prevTimestamp,false))
+                .setPostFilter(QueryBuilders.rangeQuery("time").from(prevTimestamp, false))
                 .setSize(100).get(); //max of 100 hits will be returned for each scroll
         //Scroll until no hits are returned
         SearchHit[] hits = new SearchHit[0];
         Map<String, Object> map;
         ObjectMapper mapper = new ObjectMapper();
-        try{
-            while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        try {
+            while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
                 hits = scrollResp.getHits().getHits();
                 log.info(String.format("The length of scroll relation search hits is [%d]", hits.length));
                 String traceId;
@@ -137,19 +137,19 @@ public class ESCoreScheduledService {
                     map = hit.getSourceAsMap();
                     traceId = map.get("TraceId").toString();
                     boolean isExisted = false;
-                    for(TraceStatus status : originStatus){
-                        if(status.getTraceId().equals(traceId)){
+                    for (TraceStatus status : originStatus) {
+                        if (status.getTraceId().equals(traceId)) {
                             isExisted = true;
                             break;
                         }
                     }
-                    if(!isExisted){
+                    if (!isExisted) {
                         traceStatus = new TraceStatus();
                         traceStatus.setTraceId(traceId);
                         traceStatus.setStatus(getStatusOfTrace(traceId));
                         //Store to the elasticsearch
                         byte[] json = mapper.writeValueAsBytes(traceStatus);
-                        client.prepareIndex(Const.TRACE_STATUS_INDEX,Const.TRACE_STATUS_TYPE).setSource(json, XContentType.JSON).get();
+                        client.prepareIndex(Const.TRACE_STATUS_INDEX, Const.TRACE_STATUS_TYPE).setSource(json, XContentType.JSON).get();
                         originStatus.add(traceStatus);
                     }
                 }
@@ -158,13 +158,13 @@ public class ESCoreScheduledService {
             }
 
             //Update the prevTimestamp according to the last record
-            if(hits.length > 0){
+            if (hits.length > 0) {
                 SearchHit last = hits[hits.length - 1];
                 map = last.getSourceAsMap();
                 prevTimestamp = map.get("time").toString();
-                log.info(String.format("Update the preTimestamp to [%s]",map.get("time").toString()));
+                log.info(String.format("Update the preTimestamp to [%s]", map.get("time").toString()));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -198,7 +198,7 @@ public class ESCoreScheduledService {
     }
 
     //Delete the useless span info
-    public void deleteUselessSpanInfo(){
+    public void deleteUselessSpanInfo() {
         TransportClient client = myConfig.getESClient();
 
         DeleteByQueryRequestBuilder deleteBuilder = DeleteByQueryAction.INSTANCE.newRequestBuilder(client);
@@ -213,6 +213,7 @@ public class ESCoreScheduledService {
                         long deleted = response.getDeleted();
                         log.info(String.format("Succeed to delete [%d] useless span record", deleted));
                     }
+
                     @Override
                     public void onFailure(Exception e) {
                         // Handle the exception
@@ -223,18 +224,18 @@ public class ESCoreScheduledService {
     }
 
     //Judge if the given pod exist in the origin pods list
-    private boolean existInOrginPods(PodInfo pod, List<PodInfo> originPods){
-        for(PodInfo originPod : originPods){
-            if(pod.equals(originPod))
+    private boolean existInOrginPods(PodInfo pod, List<PodInfo> originPods) {
+        for (PodInfo originPod : originPods) {
+            if (pod.equals(originPod))
                 return true;
         }
         return false;
     }
 
     //Judge if the given node exist in the origin nodes list
-    private boolean existInOrginNodes(NodeInfo node, List<NodeInfo> originNodes){
-        for(NodeInfo originNode : originNodes){
-            if(node.equals(originNode))
+    private boolean existInOrginNodes(NodeInfo node, List<NodeInfo> originNodes) {
+        for (NodeInfo originNode : originNodes) {
+            if (node.equals(originNode))
                 return true;
         }
         return false;

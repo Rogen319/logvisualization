@@ -14,22 +14,22 @@ public class LogAPIController {
 
     //Get the log corresponding to the trace id
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getLogByTraceId/{traceId}/{flag}", method ={RequestMethod.GET})
-    public LogResponse getLogByTraceId(@PathVariable String traceId, @PathVariable int flag){
+    @RequestMapping(value = "/getLogByTraceId/{traceId}/{flag}", method = {RequestMethod.GET})
+    public LogResponse getLogByTraceId(@PathVariable String traceId, @PathVariable int flag) {
         return service.getLogByTraceId(traceId, flag);
     }
 
     //Get the log corresponding to the instance name(pod)
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getLogByInstanceName/{instanceName}", method ={RequestMethod.GET})
-    public LogResponse getLogByInstanceName(@PathVariable String instanceName){
+    @RequestMapping(value = "/getLogByInstanceName/{instanceName}", method = {RequestMethod.GET})
+    public LogResponse getLogByInstanceName(@PathVariable String instanceName) {
         return service.getLogByInstanceName(instanceName);
     }
 
     //Get the log corresponding to the instance name(pod) and trace id
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getLogByServiceNameAndTraceId", method ={RequestMethod.POST})
-    public GetLogByServiceNameAndTraceIdRes getLogByServiceNameAndTraceId(@RequestBody GetLogByInstanceNameAndTraceIdReq request){
+    @RequestMapping(value = "/getLogByServiceNameAndTraceId", method = {RequestMethod.POST})
+    public GetLogByServiceNameAndTraceIdRes getLogByServiceNameAndTraceId(@RequestBody GetLogByInstanceNameAndTraceIdReq request) {
         return service.getLogByServiceNameAndTraceId(request);
     }
 }

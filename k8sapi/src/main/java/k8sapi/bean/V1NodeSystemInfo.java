@@ -12,7 +12,7 @@ public class V1NodeSystemInfo {
     private String osImage = null;
     private String systemUUID = null;
 
-    public V1NodeSystemInfo(){
+    public V1NodeSystemInfo() {
 
     }
 

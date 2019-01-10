@@ -16,15 +16,15 @@ public class KubernetesAPIController {
 
     //Get the list of all current nodes info
     @CrossOrigin(origins = "*")
-    @RequestMapping(value="/api/getNodesList", method= RequestMethod.GET)
-    public GetNodesListResponse getNodesList(){
+    @RequestMapping(value = "/api/getNodesList", method = RequestMethod.GET)
+    public GetNodesListResponse getNodesList() {
         return service.getNodesList();
     }
 
     //Get the list of all current pods info
     @CrossOrigin(origins = "*")
-    @RequestMapping(value="/api/getPodsList", method= RequestMethod.GET)
-    public GetPodsListResponse getPodsList(){
+    @RequestMapping(value = "/api/getPodsList", method = RequestMethod.GET)
+    public GetPodsListResponse getPodsList() {
         return service.getPodsListAPI();
     }
 

@@ -4,10 +4,10 @@ import escore.bean.ServiceWithInstanceNameOfTraceStatusCount;
 
 import java.util.List;
 
-public class ServiceWithInstanceNameOfTSCRes extends GeneralResponse{
+public class ServiceWithInstanceNameOfTSCRes extends GeneralResponse {
     private List<ServiceWithInstanceNameOfTraceStatusCount> list;
 
-    public ServiceWithInstanceNameOfTSCRes(){
+    public ServiceWithInstanceNameOfTSCRes() {
 
     }
 

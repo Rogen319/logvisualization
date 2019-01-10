@@ -8,7 +8,7 @@ public class GetServiceWithInstanceOfTSCByTraceTypeReq {
     private long lookback;
     private Set<String> services;
 
-    public GetServiceWithInstanceOfTSCByTraceTypeReq(){
+    public GetServiceWithInstanceOfTSCByTraceTypeReq() {
 
     }
 

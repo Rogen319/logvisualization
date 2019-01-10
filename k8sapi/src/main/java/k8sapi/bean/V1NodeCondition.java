@@ -6,7 +6,7 @@ public class V1NodeCondition {
     private String status = null;
     private String type = null;
 
-    public V1NodeCondition(){
+    public V1NodeCondition() {
 
     }
 

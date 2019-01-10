@@ -5,7 +5,7 @@ public class InstanceInfo {
     private String status;
     private PodContainer container;
 
-    public InstanceInfo(){
+    public InstanceInfo() {
 
     }
 

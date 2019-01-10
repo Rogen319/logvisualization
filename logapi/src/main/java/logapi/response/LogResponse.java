@@ -10,7 +10,7 @@ public class LogResponse extends GeneralResponse {
     private int errorCount;
     private int exceptionCount;
 
-    public LogResponse(){
+    public LogResponse() {
 
     }
 

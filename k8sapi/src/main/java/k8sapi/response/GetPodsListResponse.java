@@ -9,7 +9,7 @@ public class GetPodsListResponse {
     private String message;
     private List<PodInfo> pods;
 
-    public GetPodsListResponse(){
+    public GetPodsListResponse() {
 
     }
 

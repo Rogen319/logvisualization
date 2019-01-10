@@ -7,7 +7,7 @@ public class V1ContainerPort {
     private String name = null;
     private String protocol = null;
 
-    public V1ContainerPort(){
+    public V1ContainerPort() {
 
     }
 

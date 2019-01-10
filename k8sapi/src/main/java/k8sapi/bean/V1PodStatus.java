@@ -9,7 +9,7 @@ public class V1PodStatus {
     private String startTime = null;
     private List<V1ContainerStatus> containerStatuses = null;
 
-    public V1PodStatus(){
+    public V1PodStatus() {
 
     }
 

@@ -5,7 +5,7 @@ public class GetServiceWithInstanceOfTSCByRequestTypeReq {
     private long endTime;
     private long lookback;
 
-    public GetServiceWithInstanceOfTSCByRequestTypeReq(){
+    public GetServiceWithInstanceOfTSCByRequestTypeReq() {
 
     }
 

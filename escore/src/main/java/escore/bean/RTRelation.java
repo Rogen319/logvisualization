@@ -4,7 +4,7 @@ public class RTRelation {
     private String requestType;
     private String traceId;
 
-    public RTRelation(){
+    public RTRelation() {
 
     }
 
@@ -26,10 +26,10 @@ public class RTRelation {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(obj instanceof RTRelation){
-            RTRelation other = (RTRelation)obj;
-            if(this.requestType.equals(other.getRequestType()) && this.traceId.equals(other.getTraceId()))
+        if (obj == this) return true;
+        if (obj instanceof RTRelation) {
+            RTRelation other = (RTRelation) obj;
+            if (this.requestType.equals(other.getRequestType()) && this.traceId.equals(other.getTraceId()))
                 return true;
             else
                 return false;

@@ -15,8 +15,8 @@ public class ZipkinAPIController {
 
     //Get the dependencies from all of the stored record
     @CrossOrigin(origins = "*")
-    @RequestMapping(value = "/getDependencies", method ={RequestMethod.GET})
-    public GetDependenciesResponse getDependencies(){
+    @RequestMapping(value = "/getDependencies", method = {RequestMethod.GET})
+    public GetDependenciesResponse getDependencies() {
         return service.getDependencies();
     }
 }

@@ -10,7 +10,7 @@ public class V1ContainerStatus {
     private V1ContainerState state = null;
     private V1ContainerState lastState = null;
 
-    public V1ContainerStatus(){
+    public V1ContainerStatus() {
 
     }
 

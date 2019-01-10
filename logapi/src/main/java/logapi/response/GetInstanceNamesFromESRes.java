@@ -8,7 +8,7 @@ public class GetInstanceNamesFromESRes {
     private String message;
     private List<String> instanceNames;
 
-    public GetInstanceNamesFromESRes(){
+    public GetInstanceNamesFromESRes() {
 
     }
 

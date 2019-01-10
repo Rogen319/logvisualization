@@ -6,7 +6,7 @@ public class ServiceWithCount {
     private int errorCount;
     private int exceptionCount;
 
-    public ServiceWithCount(){
+    public ServiceWithCount() {
 
     }
 

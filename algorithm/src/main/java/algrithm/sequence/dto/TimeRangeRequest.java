@@ -2,7 +2,7 @@ package algrithm.sequence.dto;
 
 import java.io.Serializable;
 
-public class TimeRangeRequest implements Serializable{
+public class TimeRangeRequest implements Serializable {
 
     private static final long serialVersionUID = -3787962260303567126L;
 

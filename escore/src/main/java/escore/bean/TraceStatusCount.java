@@ -4,7 +4,7 @@ public class TraceStatusCount {
     private int normalTraceCount;
     private int errorTraceCount;
 
-    public TraceStatusCount(){
+    public TraceStatusCount() {
         this.normalTraceCount = 0;
         this.errorTraceCount = 0;
     }

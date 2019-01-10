@@ -4,7 +4,7 @@ public class ContainerPort {
     private int containerPort;
     private String protocol;
 
-    public ContainerPort(){
+    public ContainerPort() {
 
     }
 

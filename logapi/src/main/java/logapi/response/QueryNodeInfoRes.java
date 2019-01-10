@@ -5,7 +5,7 @@ import logapi.bean.NodeInfo;
 public class QueryNodeInfoRes extends GeneralResponse {
     private NodeInfo nodeInfo;
 
-    public QueryNodeInfoRes(){
+    public QueryNodeInfoRes() {
 
     }
 

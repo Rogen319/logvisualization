@@ -15,7 +15,7 @@ public class SpectralClusteringController {
     @CrossOrigin(origins = "*")
     @GetMapping()
     public ClusterResult getClusterResult(@RequestParam(required = true) long endTs,
-                                          @RequestParam(required = true) long lookback, @RequestParam(required = true) int k){
-    		return spectralClusteringSerivce.getResult(endTs, lookback, k);
+                                          @RequestParam(required = true) long lookback, @RequestParam(required = true) int k) {
+        return spectralClusteringSerivce.getResult(endTs, lookback, k);
     }
 }

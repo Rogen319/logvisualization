@@ -7,7 +7,7 @@ import java.util.List;
 public class GetDependenciesResponse extends GeneralResponse {
     private List<ZipkinDependency> zipkinDependencyList;
 
-    public GetDependenciesResponse(){
+    public GetDependenciesResponse() {
 
     }
 

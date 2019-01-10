@@ -8,7 +8,7 @@ public class PodContainer {
     private String imageVersion;
     private List<ContainerPort> ports = null;
 
-    public PodContainer(){
+    public PodContainer() {
 
     }
 

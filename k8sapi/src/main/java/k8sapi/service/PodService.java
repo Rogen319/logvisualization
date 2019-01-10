@@ -20,14 +20,14 @@ public class PodService {
     ClusterConfig clusterConfig;
 
     //Get the pods list
-    public V1PodList getPodList(){
+    public V1PodList getPodList() {
         //Get the current pods information and echo to the file
         String filePath = "/app/get_pod_list_result_" + UUID.randomUUID().toString() + ".json";
         V1PodList podList = new V1PodList();
-        String apiUrl = String.format("%s/api/v1/namespaces/%s/pods",clusterConfig.getApiServer(),MyUtil.DEFAULT_NAMESPACE);
+        String apiUrl = String.format("%s/api/v1/namespaces/%s/pods", clusterConfig.getApiServer(), MyUtil.DEFAULT_NAMESPACE);
         log.info(String.format("The constructed api url for getting the pod list is %s", apiUrl));
-        String[] cmds ={
-                "/bin/sh","-c",String.format("curl -X GET %s --header \"Authorization: Bearer %s\" --insecure >> %s",apiUrl,clusterConfig.getToken(),filePath)
+        String[] cmds = {
+                "/bin/sh", "-c", String.format("curl -X GET %s --header \"Authorization: Bearer %s\" --insecure >> %s", apiUrl, clusterConfig.getToken(), filePath)
         };
         ProcessBuilder pb = new ProcessBuilder(cmds);
         pb.redirectErrorStream(true);
@@ -38,10 +38,10 @@ public class PodService {
 
             String json = MyUtil.readWholeFile(filePath);
             //Parse the response to the V1PodList Bean
-            podList = JSON.parseObject(json,V1PodList.class);
+            podList = JSON.parseObject(json, V1PodList.class);
         } catch (IOException e) {
             e.printStackTrace();
-        }catch(InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return podList;

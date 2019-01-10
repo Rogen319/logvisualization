@@ -7,7 +7,7 @@ public class V1NodeMeta {
     private String resourceVersion;
     private String creationTimestamp;
 
-    public V1NodeMeta(){
+    public V1NodeMeta() {
 
     }
 

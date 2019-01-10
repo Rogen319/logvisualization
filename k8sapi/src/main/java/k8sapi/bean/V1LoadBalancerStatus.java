@@ -5,7 +5,7 @@ import java.util.List;
 public class V1LoadBalancerStatus {
     private List<V1LoadBalancerIngress> ingress;
 
-    public V1LoadBalancerStatus(){
+    public V1LoadBalancerStatus() {
 
     }
 

@@ -4,7 +4,7 @@ public class SimpleLog {
     private String serviceName;
     private int isError;
 
-    public SimpleLog(){
+    public SimpleLog() {
 
     }
 

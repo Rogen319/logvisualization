@@ -3,7 +3,7 @@ package k8sapi.bean;
 public class V1ClientIPConfig {
     private Integer timeoutSeconds = null;
 
-    public V1ClientIPConfig(){
+    public V1ClientIPConfig() {
 
     }
 

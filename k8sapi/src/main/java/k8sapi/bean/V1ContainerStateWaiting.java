@@ -4,7 +4,7 @@ public class V1ContainerStateWaiting {
     private String message = null;
     private String reason = null;
 
-    public V1ContainerStateWaiting(){
+    public V1ContainerStateWaiting() {
 
     }
 

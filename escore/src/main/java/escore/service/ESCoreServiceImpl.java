@@ -141,7 +141,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
                 //Set the status of trace
                 String statusString = esUtil.getStatusOfTrace(traceId);
-                if(statusString.equals("true"))
+                if (statusString.equals("true"))
                     traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
                 else
                     traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
@@ -155,13 +155,13 @@ public class ESCoreServiceImpl implements ESCoreService {
             requestWithTraceInfo.setTraceTypeList(traceTypeList);
             //Judge if the trace only contains 1 service
             boolean flag = false;
-            for(TraceType traceType : traceTypeList){
-                if(traceType.getTraceInfoList().get(0).getServiceList().size() > 1){
+            for (TraceType traceType : traceTypeList) {
+                if (traceType.getTraceInfoList().get(0).getServiceList().size() > 1) {
                     flag = true;
                     break;
                 }
             }
-            if(flag){
+            if (flag) {
                 //Count the trace count of service
                 countTrace(traceInfoList, traceStatusCountMap);
 
@@ -198,7 +198,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //Construct the service with trace count
         List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
-        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+        for (Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()) {
             ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
             serviceWithTraceStatusCount.setServiceName(entry.getKey());
             serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
@@ -371,7 +371,7 @@ public class ESCoreServiceImpl implements ESCoreService {
                 log.info("{}-{}: {}", k, traceId, svcSeq.toString());
 
 
-                if (!seqs.contains(svcSeq)){
+                if (!seqs.contains(svcSeq)) {
                     SequenceInfo sequenceInfo = new SequenceInfo();
                     sequenceInfo.setTraceId(traceId);
                     sequenceInfo.setServiceSequence(svcSeq);
@@ -424,7 +424,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
             //Set the status of trace
             String statusString = esUtil.getStatusOfTrace(traceId);
-            if(statusString.equals("true"))
+            if (statusString.equals("true"))
                 traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
             else
                 traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
@@ -437,7 +437,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //Construct the service with trace count
         List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
-        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+        for (Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()) {
             ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
             serviceWithTraceStatusCount.setServiceName(entry.getKey());
             serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
@@ -448,7 +448,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the service with trace count of requestType:[%s]. Size is [%d]. ",
-                requestType, serviceWithTraceStatusCountList.size()) );
+                requestType, serviceWithTraceStatusCountList.size()));
         res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
 
         return res;
@@ -479,10 +479,10 @@ public class ESCoreServiceImpl implements ESCoreService {
         for (String traceId : traceIdSet) {
             TraceInfo traceInfo = getTraceInfoById(traceId);
 
-            if(traceInfo.getServiceList().equals(services)){
+            if (traceInfo.getServiceList().equals(services)) {
                 //Set the status of trace
                 String statusString = esUtil.getStatusOfTrace(traceId);
-                if(statusString.equals("true"))
+                if (statusString.equals("true"))
                     traceInfo.setStatus(Const.NORMAL_TRACE_FLAG);
                 else
                     traceInfo.setStatus(Const.ERROR_TRACE_FLAG);
@@ -497,7 +497,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //Construct the service with trace count
         List<ServiceWithTraceStatusCount> serviceWithTraceStatusCountList = new ArrayList<>();
-        for(Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()){
+        for (Map.Entry<String, TraceStatusCount> entry : traceStatusCountMap.entrySet()) {
             ServiceWithTraceStatusCount serviceWithTraceStatusCount = new ServiceWithTraceStatusCount();
             serviceWithTraceStatusCount.setServiceName(entry.getKey());
             serviceWithTraceStatusCount.setNormalTraceCount(entry.getValue().getNormalTraceCount());
@@ -508,7 +508,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         res.setStatus(true);
         res.setMessage(String.format("Succeed to get the service with trace count of traceType. Size is [%d]. ",
-                serviceWithTraceStatusCountList.size()) );
+                serviceWithTraceStatusCountList.size()));
         res.setServiceWithTraceStatusCountList(serviceWithTraceStatusCountList);
 
         return res;
@@ -561,10 +561,10 @@ public class ESCoreServiceImpl implements ESCoreService {
         Set<String> effectiveTraceIdSet = new HashSet<>();
 
         //Select the trace ids corresponding to the trace type
-        for(String traceId : allTraceIdSet){
+        for (String traceId : allTraceIdSet) {
             TraceInfo traceInfo = getTraceInfoById(traceId);
 
-            if(traceInfo.getServiceList().equals(services)){
+            if (traceInfo.getServiceList().equals(services)) {
                 effectiveTraceIdSet.add(traceId);
             }
         }
@@ -578,7 +578,7 @@ public class ESCoreServiceImpl implements ESCoreService {
     }
 
     @Override
-    public Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request){
+    public Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request) {
         long endTimeValue = request.getEndTime();
         long lookback = request.getLookback();
         String requestType = request.getRequestType();
@@ -592,7 +592,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         Set<String> traceId = getTraceIdSet(beginTime, endTime, "RequestType.keyword", requestType);
 
         Map<String, String> map = new HashMap<>();
-        traceId.forEach(t->{
+        traceId.forEach(t -> {
             map.put(t, esUtil.getStatusOfTrace(t));
         });
         return map;
@@ -645,10 +645,10 @@ public class ESCoreServiceImpl implements ESCoreService {
         Set<String> effectiveTraceIdSet = new HashSet<>();
 
         //Select the trace ids corresponding to the trace type
-        for(String traceId : allTraceIdSet){
+        for (String traceId : allTraceIdSet) {
             TraceInfo traceInfo = getTraceInfoById(traceId);
 
-            if(traceInfo.getServiceList().equals(services)){
+            if (traceInfo.getServiceList().equals(services)) {
                 effectiveTraceIdSet.add(traceId);
             }
         }
@@ -662,25 +662,26 @@ public class ESCoreServiceImpl implements ESCoreService {
     }
 
     //Get the list of service with instance name of trace status count
-    private List<ServiceWithInstanceNameOfTraceStatusCount> getServiceWithInstanceNameOfTraceStatusCount(Set<String> traceIdSet){
+    private List<ServiceWithInstanceNameOfTraceStatusCount> getServiceWithInstanceNameOfTraceStatusCount(Set<String> traceIdSet) {
 
         //Count the instance number of ervery service
         List<PodInfo> currentPods = podService.getCurrentPodInfo();
         Map<String, ServiceWithInstanceNameOfTraceStatusCount> map = new HashMap<>();
-        for(String traceId : traceIdSet){
+        for (String traceId : traceIdSet) {
             String status = esUtil.getStatusOfTrace(traceId);
             List<ServiceWithInstanceName> serviceWithInstanceNameList = getServiceWithInstanceNameByTraceId(traceId, currentPods);
-            String serviceName; String instanceName;
-            for(ServiceWithInstanceName serviceWithInstanceName : serviceWithInstanceNameList){
+            String serviceName;
+            String instanceName;
+            for (ServiceWithInstanceName serviceWithInstanceName : serviceWithInstanceNameList) {
                 serviceName = serviceWithInstanceName.getServiceName();
                 instanceName = serviceWithInstanceName.getInstanceName();
-                if(map.get(serviceName) != null){
+                if (map.get(serviceName) != null) {
                     List<ServiceInstanceNameWithTraceStatusCount> list = map.get(serviceName).getSinwtscList();
                     boolean isExisted = false;
                     //Service with num instance already exists
-                    for(ServiceInstanceNameWithTraceStatusCount instance : list){
-                        if(instance.getInstanceName().equals(instanceName)){
-                            if(status.equals("true"))
+                    for (ServiceInstanceNameWithTraceStatusCount instance : list) {
+                        if (instance.getInstanceName().equals(instanceName)) {
+                            if (status.equals("true"))
                                 instance.setNormalTraceCount(instance.getNormalTraceCount() + 1);
                             else
                                 instance.setErrorTraceCount(instance.getErrorTraceCount() + 1);
@@ -689,10 +690,10 @@ public class ESCoreServiceImpl implements ESCoreService {
                         }
                     }
                     //New a instance
-                    if(!isExisted){
+                    if (!isExisted) {
                         ServiceInstanceNameWithTraceStatusCount newInstance = new ServiceInstanceNameWithTraceStatusCount();
                         newInstance.setInstanceName(instanceName);
-                        if(status.equals("true"))
+                        if (status.equals("true"))
                             newInstance.setNormalTraceCount(1);
                         else
                             newInstance.setErrorTraceCount(1);
@@ -700,14 +701,14 @@ public class ESCoreServiceImpl implements ESCoreService {
                         map.get(serviceName).setSinwtscList(list);
                     }
 
-                }else{
+                } else {
                     ServiceWithInstanceNameOfTraceStatusCount instance = new ServiceWithInstanceNameOfTraceStatusCount();
 
                     instance.setServiceName(serviceName);
 
                     ServiceInstanceNameWithTraceStatusCount instance2 = new ServiceInstanceNameWithTraceStatusCount();
                     instance2.setInstanceName(instanceName);
-                    if(status.equals("true"))
+                    if (status.equals("true"))
                         instance2.setNormalTraceCount(1);
                     else
                         instance2.setErrorTraceCount(1);
@@ -722,7 +723,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         List<ServiceWithInstanceNameOfTraceStatusCount> siwtscList = new ArrayList<>();
-        for(ServiceWithInstanceNameOfTraceStatusCount instance : map.values()){
+        for (ServiceWithInstanceNameOfTraceStatusCount instance : map.values()) {
             siwtscList.add(instance);
         }
 
@@ -730,25 +731,26 @@ public class ESCoreServiceImpl implements ESCoreService {
     }
 
     //Get the list of service with instance of trace status count
-    private List<ServiceWithInstanceOfTraceStatusCount> getServiceWithInstanceOfTraceStatusCount(Set<String> traceIdSet){
+    private List<ServiceWithInstanceOfTraceStatusCount> getServiceWithInstanceOfTraceStatusCount(Set<String> traceIdSet) {
 
         //Count the instance number of ervery service
         List<PodInfo> currentPods = podService.getCurrentPodInfo();
         Map<String, ServiceWithInstanceOfTraceStatusCount> map = new HashMap<>();
-        for(String traceId : traceIdSet){
+        for (String traceId : traceIdSet) {
             String status = esUtil.getStatusOfTrace(traceId);
             List<ServiceWithInstanceNum> serviceWithInstanceNumList = getServiceWithInstanceNumByTraceId(traceId, currentPods);
-            String serviceName; int num;
-            for(ServiceWithInstanceNum serviceWithInstanceNum : serviceWithInstanceNumList){
+            String serviceName;
+            int num;
+            for (ServiceWithInstanceNum serviceWithInstanceNum : serviceWithInstanceNumList) {
                 serviceName = serviceWithInstanceNum.getServiceName();
                 num = serviceWithInstanceNum.getInstanceNum();
-                if(map.get(serviceName) != null){
+                if (map.get(serviceName) != null) {
                     List<ServiceInstanceWithTraceStatusCount> list = map.get(serviceName).getSiwtscList();
                     boolean isExisted = false;
                     //Service with num instance already exists
-                    for(ServiceInstanceWithTraceStatusCount instance : list){
-                        if(instance.getInstanceNum() == num){
-                            if(status.equals("true"))
+                    for (ServiceInstanceWithTraceStatusCount instance : list) {
+                        if (instance.getInstanceNum() == num) {
+                            if (status.equals("true"))
                                 instance.setNormalTraceCount(instance.getNormalTraceCount() + 1);
                             else
                                 instance.setErrorTraceCount(instance.getErrorTraceCount() + 1);
@@ -757,10 +759,10 @@ public class ESCoreServiceImpl implements ESCoreService {
                         }
                     }
                     //New a instance
-                    if(!isExisted){
+                    if (!isExisted) {
                         ServiceInstanceWithTraceStatusCount newInstance = new ServiceInstanceWithTraceStatusCount();
                         newInstance.setInstanceNum(num);
-                        if(status.equals("true"))
+                        if (status.equals("true"))
                             newInstance.setNormalTraceCount(1);
                         else
                             newInstance.setErrorTraceCount(1);
@@ -768,14 +770,14 @@ public class ESCoreServiceImpl implements ESCoreService {
                         map.get(serviceName).setSiwtscList(list);
                     }
 
-                }else{
+                } else {
                     ServiceWithInstanceOfTraceStatusCount instance = new ServiceWithInstanceOfTraceStatusCount();
 
                     instance.setServiceName(serviceName);
 
                     ServiceInstanceWithTraceStatusCount instance2 = new ServiceInstanceWithTraceStatusCount();
                     instance2.setInstanceNum(num);
-                    if(status.equals("true"))
+                    if (status.equals("true"))
                         instance2.setNormalTraceCount(1);
                     else
                         instance2.setErrorTraceCount(1);
@@ -790,7 +792,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         List<ServiceWithInstanceOfTraceStatusCount> siwtscList = new ArrayList<>();
-        for(ServiceWithInstanceOfTraceStatusCount instance : map.values()){
+        for (ServiceWithInstanceOfTraceStatusCount instance : map.values()) {
             siwtscList.add(instance);
         }
 
@@ -805,7 +807,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //1: Get all of the instances name(pods name)
         Set<String> instanceNames = new HashSet<>();
-        QueryBuilder qb = QueryBuilders.termQuery("TraceId",traceId);
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId", traceId);
 
         SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
                 .setScroll(new TimeValue(60000))
@@ -813,13 +815,13 @@ public class ESCoreServiceImpl implements ESCoreService {
                 .setSize(100).get();
         SearchHit[] hits;
 
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
                 try {
                     LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
-                    if(logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null){
+                    if (logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null) {
                         instanceNames.add(logBean.getKubernetes().getPod().getName());
                     }
                 } catch (IOException e) {
@@ -830,7 +832,7 @@ public class ESCoreServiceImpl implements ESCoreService {
         }
 
         String serviceName;
-        for(String instanceName : instanceNames){
+        for (String instanceName : instanceNames) {
             serviceName = podService.getServiceName(instanceName, currentPods);
             ServiceWithInstanceName temp = new ServiceWithInstanceName();
             temp.setServiceName(serviceName);
@@ -849,7 +851,7 @@ public class ESCoreServiceImpl implements ESCoreService {
 
         //1: Get all of the instances name(pods name)
         Set<String> instanceNames = new HashSet<>();
-        QueryBuilder qb = QueryBuilders.termQuery("TraceId",traceId);
+        QueryBuilder qb = QueryBuilders.termQuery("TraceId", traceId);
 
         SearchResponse scrollResp = client.prepareSearch(Const.LOGSTASH_LOG_INDEX).setTypes(Const.LOGSTASH_LOG_TYPE)
                 .setScroll(new TimeValue(60000))
@@ -857,13 +859,13 @@ public class ESCoreServiceImpl implements ESCoreService {
                 .setSize(100).get();
         SearchHit[] hits;
 
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
                 try {
                     LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
-                    if(logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null){
+                    if (logBean.getKubernetes() != null && logBean.getKubernetes().getPod() != null) {
                         instanceNames.add(logBean.getKubernetes().getPod().getName());
                     }
                 } catch (IOException e) {
@@ -875,17 +877,17 @@ public class ESCoreServiceImpl implements ESCoreService {
         //2: Count the service instance number
         Map<String, Integer> serviceWithInstance = new HashMap<>();
         String serviceName;
-        for(String instanceName : instanceNames){
+        for (String instanceName : instanceNames) {
             serviceName = podService.getServiceName(instanceName, currentPods);
-            if(serviceWithInstance.get(serviceName) == null){
+            if (serviceWithInstance.get(serviceName) == null) {
                 serviceWithInstance.put(serviceName, 1);
-            }else{
+            } else {
                 serviceWithInstance.put(serviceName, serviceWithInstance.get(serviceName) + 1);
             }
         }
 
         //Construct the return data
-        for(Map.Entry<String, Integer> entry : serviceWithInstance.entrySet()){
+        for (Map.Entry<String, Integer> entry : serviceWithInstance.entrySet()) {
             ServiceWithInstanceNum temp = new ServiceWithInstanceNum();
             temp.setServiceName(entry.getKey());
             temp.setInstanceNum(entry.getValue());
@@ -896,9 +898,9 @@ public class ESCoreServiceImpl implements ESCoreService {
     }
 
     //Get the trace id set from ES in the specified time range
-    private Set<String> getTraceIdSet(String beginTime, String endTime, String term, String termValue){
+    private Set<String> getTraceIdSet(String beginTime, String endTime, String term, String termValue) {
         TransportClient client = myConfig.getESClient();
-        QueryBuilder qb = QueryBuilders.termQuery(term,termValue);
+        QueryBuilder qb = QueryBuilders.termQuery(term, termValue);
 
         SearchResponse scrollResp = client.prepareSearch("logstash-*").setTypes("beats")
                 .addSort("time", SortOrder.DESC)
@@ -937,21 +939,21 @@ public class ESCoreServiceImpl implements ESCoreService {
     //Count the normal/error trace number of service
     private void countTrace(List<TraceInfo> traceInfoList, Map<String, TraceStatusCount> map) {
         int status;
-        for(TraceInfo traceInfo : traceInfoList){
+        for (TraceInfo traceInfo : traceInfoList) {
             status = traceInfo.getStatus();
             Set<String> services = traceInfo.getServiceList();
-            for(String service : services){
+            for (String service : services) {
                 TraceStatusCount traceStatusCount;
-                if(map.get(service) != null)
+                if (map.get(service) != null)
                     traceStatusCount = map.get(service);
                 else {
                     traceStatusCount = new TraceStatusCount();
                     map.put(service, traceStatusCount);
                 }
 
-                if(status == Const.NORMAL_TRACE_FLAG){
+                if (status == Const.NORMAL_TRACE_FLAG) {
                     traceStatusCount.setNormalTraceCount(traceStatusCount.getNormalTraceCount() + 1);
-                }else{
+                } else {
                     traceStatusCount.setErrorTraceCount(traceStatusCount.getErrorTraceCount() + 1);
                 }
             }
@@ -1042,7 +1044,7 @@ public class ESCoreServiceImpl implements ESCoreService {
                 normalCount += traceInfo.getNormalCount();
                 errorCount += traceInfo.getErrorCount();
                 exceptionCount += traceInfo.getExceptionCount();
-                if(traceInfo.getStatus() == Const.NORMAL_TRACE_FLAG)
+                if (traceInfo.getStatus() == Const.NORMAL_TRACE_FLAG)
                     normalTraceCount++;
                 else
                     errorTraceCount++;

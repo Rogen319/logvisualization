@@ -6,7 +6,7 @@ public class V1ServicePort {
     private Integer port;
     private String protocol;
 
-    public V1ServicePort(){
+    public V1ServicePort() {
 
     }
 

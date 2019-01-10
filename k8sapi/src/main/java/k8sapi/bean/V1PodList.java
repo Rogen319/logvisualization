@@ -9,7 +9,7 @@ public class V1PodList {
     private String kind = null;
     private V1ListMeta metadata = null;
 
-    public V1PodList(){
+    public V1PodList() {
 
     }
 

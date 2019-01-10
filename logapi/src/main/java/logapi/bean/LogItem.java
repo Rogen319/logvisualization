@@ -1,10 +1,10 @@
 package logapi.bean;
 
-public class LogItem extends BasicLogItem{
+public class LogItem extends BasicLogItem {
     private TraceInfo traceInfo;
     private ServiceInfo serviceInfo;
 
-    public LogItem(){
+    public LogItem() {
 
     }
 

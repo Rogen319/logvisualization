@@ -7,7 +7,7 @@ public class V1NodeSpec {
     private String podCIDR = null;
     private List<V1Taint> taints = null;
 
-    public V1NodeSpec(){
+    public V1NodeSpec() {
 
     }
 

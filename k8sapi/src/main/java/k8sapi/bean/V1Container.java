@@ -9,7 +9,7 @@ public class V1Container {
     private List<V1ContainerPort> ports = null;
     private V1ResourceRequirements resources = null;
 
-    public V1Container(){
+    public V1Container() {
 
     }
 

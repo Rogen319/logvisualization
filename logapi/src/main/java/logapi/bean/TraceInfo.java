@@ -5,7 +5,7 @@ public class TraceInfo {
     private String spanId;
     private String parentSpanId;
 
-    public TraceInfo(){
+    public TraceInfo() {
 
     }
 

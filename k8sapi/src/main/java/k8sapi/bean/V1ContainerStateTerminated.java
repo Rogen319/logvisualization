@@ -9,7 +9,7 @@ public class V1ContainerStateTerminated {
     private Integer signal = null;
     private String startedAt = null;
 
-    public V1ContainerStateTerminated(){
+    public V1ContainerStateTerminated() {
 
     }
 

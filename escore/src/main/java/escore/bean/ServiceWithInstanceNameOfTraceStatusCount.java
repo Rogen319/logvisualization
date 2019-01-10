@@ -6,7 +6,7 @@ public class ServiceWithInstanceNameOfTraceStatusCount {
     private String serviceName;
     private List<ServiceInstanceNameWithTraceStatusCount> sinwtscList;
 
-    public ServiceWithInstanceNameOfTraceStatusCount(){
+    public ServiceWithInstanceNameOfTraceStatusCount() {
 
     }
 

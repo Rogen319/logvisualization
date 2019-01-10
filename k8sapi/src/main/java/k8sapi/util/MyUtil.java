@@ -11,7 +11,7 @@ public class MyUtil {
     public static final String DEFAULT_NAMESPACE = "default";
 
     //Read the whole file(Delete after read completion)
-    public static String readWholeFile(String path){
+    public static String readWholeFile(String path) {
         String encoding = "UTF-8";
         File file = new File(path);
         Long filelength = file.length();
@@ -31,13 +31,13 @@ public class MyUtil {
             log.error("The OS does not support " + encoding);
             e.printStackTrace();
             return null;
-        }finally {
+        } finally {
             deleteFile(path);
         }
     }
 
     //Delete the temporary file
-    private static void deleteFile(String filePath){
+    private static void deleteFile(String filePath) {
         try {
             File file = new File(filePath);
             if (file.delete()) {

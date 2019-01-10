@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public class TraceInfo implements Serializable{
+public class TraceInfo implements Serializable {
 
     private static final long serialVersionUID = -3513960001277238014L;
     private String traceId;

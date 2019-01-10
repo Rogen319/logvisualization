@@ -8,7 +8,7 @@ public class GetServiceWithTraceCountByTraceTypeReq {
     private long lookback;
     private Set<String> services;
 
-    public GetServiceWithTraceCountByTraceTypeReq(){
+    public GetServiceWithTraceCountByTraceTypeReq() {
 
     }
 

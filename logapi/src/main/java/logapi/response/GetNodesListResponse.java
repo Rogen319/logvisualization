@@ -9,7 +9,7 @@ public class GetNodesListResponse {
     private String message;
     private List<NodeInfo> nodes;
 
-    public GetNodesListResponse(){
+    public GetNodesListResponse() {
 
     }
 

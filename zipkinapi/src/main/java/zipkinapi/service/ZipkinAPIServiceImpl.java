@@ -39,11 +39,11 @@ public class ZipkinAPIServiceImpl implements ZipkinAPIService {
         //Scroll until no hits are returned
         SearchHit[] hits;
         List<ZipkinDependency> zipkinDependencyList = new ArrayList<>();
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
             log.info(String.format("The length of scroll dependencies search hits is [%d]", hits.length));
             Map<String, Object> map;
-            String parent,child;
+            String parent, child;
             int index;
             long callCount;
             for (SearchHit hit : hits) {
@@ -56,12 +56,12 @@ public class ZipkinAPIServiceImpl implements ZipkinAPIService {
 
                 //Judge if the record exist before
                 index = zipkinDependencyList.indexOf(zipkinDependency);
-                if(index != -1){
+                if (index != -1) {
                     long originCallCount = zipkinDependencyList.get(index).getCallCount();
                     zipkinDependencyList.get(index).setCallCount(originCallCount + callCount);
                     log.info(String.format("The dependency [%s-%s] already exists. Update the callCount from [%d] to [%d].",
                             parent, child, originCallCount, zipkinDependencyList.get(index).getCallCount()));
-                }else{
+                } else {
                     log.info(String.format("Add the dependency [%s-%s-%d]", parent, child, callCount));
                     zipkinDependencyList.add(zipkinDependency);
                 }

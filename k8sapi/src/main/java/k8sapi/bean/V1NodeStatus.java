@@ -10,7 +10,7 @@ public class V1NodeStatus {
     private V1NodeSystemInfo nodeInfo = null;
     private List<V1NodeCondition> conditions = null;
 
-    public V1NodeStatus(){
+    public V1NodeStatus() {
 
     }
 

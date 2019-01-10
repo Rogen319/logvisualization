@@ -12,7 +12,7 @@ public class TraceType {
     private int normalTraceCount;
     private int errorTraceCount;
 
-    public TraceType(){
+    public TraceType() {
 
     }
 

@@ -5,7 +5,7 @@ public class V1Pod {
     private V1PodSpec spec = null;
     private V1PodStatus status = null;
 
-    public V1Pod(){
+    public V1Pod() {
 
     }
 

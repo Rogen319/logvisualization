@@ -11,7 +11,7 @@ public class V1ObjectMeta {
     private String creationTimestamp;
     private Map<String, String> labels;
 
-    public V1ObjectMeta(){
+    public V1ObjectMeta() {
 
     }
 

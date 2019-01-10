@@ -5,7 +5,7 @@ public class ServiceInstanceNameWithTraceStatusCount {
     private int normalTraceCount;
     private int errorTraceCount;
 
-    public ServiceInstanceNameWithTraceStatusCount(){
+    public ServiceInstanceNameWithTraceStatusCount() {
 
     }
 

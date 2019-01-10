@@ -12,7 +12,7 @@ public class V1NodeList {
 
     private V1ListMeta metadata = null;
 
-    public V1NodeList(){
+    public V1NodeList() {
 
     }
 

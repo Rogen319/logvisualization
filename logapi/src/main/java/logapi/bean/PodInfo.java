@@ -14,7 +14,7 @@ public class PodInfo {
     private Map<String, String> labels;
     private List<PodContainer> containers;
 
-    public PodInfo(){
+    public PodInfo() {
 
     }
 
@@ -92,10 +92,10 @@ public class PodInfo {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this) return true;
-        if(obj instanceof PodInfo){
-            PodInfo other = (PodInfo)obj;
-            if(this.getName().equals(other.getName()) && this.getPodIP().equals(other.getPodIP()))
+        if (obj == this) return true;
+        if (obj instanceof PodInfo) {
+            PodInfo other = (PodInfo) obj;
+            if (this.getName().equals(other.getName()) && this.getPodIP().equals(other.getPodIP()))
                 return true;
             else
                 return false;

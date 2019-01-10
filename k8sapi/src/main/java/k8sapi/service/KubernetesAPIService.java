@@ -5,5 +5,6 @@ import k8sapi.response.GetPodsListResponse;
 
 public interface KubernetesAPIService {
     GetNodesListResponse getNodesList();
+
     GetPodsListResponse getPodsListAPI();
 }

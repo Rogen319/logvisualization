@@ -5,7 +5,7 @@ public class GetServiceWithTraceCountByRequestTypeReq {
     private long endTime;
     private long lookback;
 
-    public GetServiceWithTraceCountByRequestTypeReq(){
+    public GetServiceWithTraceCountByRequestTypeReq() {
 
     }
 

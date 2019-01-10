@@ -27,12 +27,12 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
 
         StringBuilder sb = new StringBuilder("http://");
         sb.append(zipkinConfig.getIp())
-        .append(":")
-        .append(zipkinConfig.getPort())
-        .append("/zipkin/api/v2/dependencies?endTs=")
-        .append(endTs)
-        .append("&lookback=")
-        .append(lookback);
+                .append(":")
+                .append(zipkinConfig.getPort())
+                .append("/zipkin/api/v2/dependencies?endTs=")
+                .append(endTs)
+                .append("&lookback=")
+                .append(lookback);
 
         List<SingleDependency> dependencyList = getZipkinDependencies(sb.toString());
         SpectralClustering sc = new SpectralClustering((convCallCount2Proportion(convJson2array(dependencyList))), k);

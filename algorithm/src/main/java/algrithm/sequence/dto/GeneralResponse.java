@@ -2,14 +2,14 @@ package algrithm.sequence.dto;
 
 import java.io.Serializable;
 
-public class GeneralResponse implements Serializable{
+public class GeneralResponse implements Serializable {
 
     private static final long serialVersionUID = -8665058187508372251L;
 
     private boolean status;
     private String message;
 
-    public GeneralResponse(){
+    public GeneralResponse() {
 
     }
 

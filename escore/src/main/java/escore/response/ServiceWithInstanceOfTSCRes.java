@@ -7,7 +7,7 @@ import java.util.List;
 public class ServiceWithInstanceOfTSCRes extends GeneralResponse {
     private List<ServiceWithInstanceOfTraceStatusCount> list;
 
-    public ServiceWithInstanceOfTSCRes(){
+    public ServiceWithInstanceOfTSCRes() {
 
     }
 

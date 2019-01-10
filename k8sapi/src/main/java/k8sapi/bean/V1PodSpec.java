@@ -8,7 +8,7 @@ public class V1PodSpec {
     private String schedulerName = null;
     private List<V1Container> containers = new ArrayList<V1Container>();
 
-    public V1PodSpec(){
+    public V1PodSpec() {
 
     }
 

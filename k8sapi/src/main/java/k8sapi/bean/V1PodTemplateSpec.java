@@ -4,7 +4,7 @@ public class V1PodTemplateSpec {
     private V1ObjectMeta metadata = null;
     private V1PodSpec spec = null;
 
-    public V1PodTemplateSpec(){
+    public V1PodTemplateSpec() {
 
     }
 

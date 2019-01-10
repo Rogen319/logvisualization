@@ -40,7 +40,7 @@ public class InitIndexAndType implements CommandLineRunner {
         log.info(String.format("Indices [%s, %s, %s] exists? %b", Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX, Const.TRACE_STATUS_INDEX, indicesExistsResponse.isExists()));
 
         //If not, create the three indices
-        if(!indicesExistsResponse.isExists()){
+        if (!indicesExistsResponse.isExists()) {
             //Pod index
             CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_POD_INDEX)
                     .execute().actionGet();
@@ -82,7 +82,7 @@ public class InitIndexAndType implements CommandLineRunner {
     }
 
     //Add node type in the node index
-    private void addNodeType(){
+    private void addNodeType() {
         client.admin().indices().preparePutMapping(Const.K8S_NODE_INDEX)
                 .setType("node")
                 .setSource("{\n" +
@@ -117,24 +117,24 @@ public class InitIndexAndType implements CommandLineRunner {
     }
 
     //Insert node data in the node index
-    private void insertNodeData() throws Exception{
+    private void insertNodeData() throws Exception {
         //Get and add nodes information
         GetNodesListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getNodesList",
                 GetNodesListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             ObjectMapper mapper = new ObjectMapper();
-            for(NodeInfo nodeInfo : result.getNodes()){
+            for (NodeInfo nodeInfo : result.getNodes()) {
                 byte[] json = mapper.writeValueAsBytes(nodeInfo);
-                client.prepareIndex(Const.K8S_NODE_INDEX,"node").setSource(json, XContentType.JSON).get();
+                client.prepareIndex(Const.K8S_NODE_INDEX, "node").setSource(json, XContentType.JSON).get();
             }
-        }else{
+        } else {
             log.info("Fail to get the node list information!");
         }
     }
 
     //Add pod type in the pod index
-    private void addPodType(){
+    private void addPodType() {
         client.admin().indices().preparePutMapping(Const.K8S_POD_INDEX)
                 .setType("pod")
                 .setSource("{\n" +
@@ -165,27 +165,27 @@ public class InitIndexAndType implements CommandLineRunner {
                         "      \"dynamic\": true\n" +
                         "    },\n" +
                         "    \"containers\": {\n" +
-                            "  \"properties\": {\n" +
-                            "    \"name\": {\n" +
-                            "      \"type\": \"text\"\n" +
-                            "    },\n" +
-                            "    \"imageName\": {\n" +
-                            "      \"type\": \"text\"\n" +
-                            "    },\n" +
-                            "    \"imageVersion\": {\n" +
-                            "      \"type\": \"text\"\n" +
-                            "    },\n" +
-                            "    \"ports\": {\n" +
-                                "  \"properties\": {\n" +
-                                "    \"containerPort\": {\n" +
-                                "      \"type\": \"float\"\n" +
-                                "    },\n" +
-                                "    \"protocol\": {\n" +
-                                "      \"type\": \"text\"\n" +
-                                "    }\n" +
-                                "  }\n" +
-                            "    }\n" +
-                            "  }\n" +
+                        "  \"properties\": {\n" +
+                        "    \"name\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"imageName\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"imageVersion\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"ports\": {\n" +
+                        "  \"properties\": {\n" +
+                        "    \"containerPort\": {\n" +
+                        "      \"type\": \"float\"\n" +
+                        "    },\n" +
+                        "    \"protocol\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "    }\n" +
+                        "  }\n" +
                         "    }\n" +
                         "  }\n" +
                         "}", XContentType.JSON)
@@ -193,24 +193,24 @@ public class InitIndexAndType implements CommandLineRunner {
     }
 
     //Insert pod data in the pod index
-    private void insertPodData() throws Exception{
+    private void insertPodData() throws Exception {
         //Get and add pods information
         GetPodsListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             ObjectMapper mapper = new ObjectMapper();
-            for(PodInfo podInfo : result.getPods()){
+            for (PodInfo podInfo : result.getPods()) {
                 byte[] json = mapper.writeValueAsBytes(podInfo);
-                client.prepareIndex(Const.K8S_POD_INDEX,"pod").setSource(json, XContentType.JSON).get();
+                client.prepareIndex(Const.K8S_POD_INDEX, "pod").setSource(json, XContentType.JSON).get();
             }
-        }else{
+        } else {
             log.info("Fail to get the pod list information!");
         }
     }
 
     //Add relation type in the trace_status index
-    private void addStatusType(){
+    private void addStatusType() {
         client.admin().indices().preparePutMapping(Const.TRACE_STATUS_INDEX)
                 .setType("status")
                 .setSource("{\n" +

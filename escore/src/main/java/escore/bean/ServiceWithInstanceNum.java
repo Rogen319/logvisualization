@@ -4,7 +4,7 @@ public class ServiceWithInstanceNum {
     private String serviceName;
     private int instanceNum;
 
-    public ServiceWithInstanceNum(){
+    public ServiceWithInstanceNum() {
 
     }
 

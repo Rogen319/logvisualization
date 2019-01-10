@@ -16,23 +16,23 @@ public class PodService {
     RestTemplate restTemplate;
 
     //Get current pod information
-    public List<PodInfo> getCurrentPodInfo(){
+    public List<PodInfo> getCurrentPodInfo() {
         //Get and add pods information
         GetPodsListResponse result = restTemplate.getForObject(
                 "http://logvisualization-k8sapi:18319/api/getPodsList",
                 GetPodsListResponse.class);
-        if(result.isStatus()){
+        if (result.isStatus()) {
             return result.getPods();
         }
         return null;
     }
 
     //Set the instance information
-    public String getServiceName(String podName, List<PodInfo> currentPods){
+    public String getServiceName(String podName, List<PodInfo> currentPods) {
         //Check if pod exist in the current pods
-        if(currentPods != null){
-            for(PodInfo podInfo : currentPods){
-                if(podInfo.getName().equals(podName))
+        if (currentPods != null) {
+            for (PodInfo podInfo : currentPods) {
+                if (podInfo.getName().equals(podName))
                     return podInfo.getServiceName();
             }
         }
@@ -41,7 +41,7 @@ public class PodService {
         QueryPodInfoRes result = restTemplate.getForObject(
                 "http://logvisualization-escore:17319/queryPodInfo/" + podName,
                 QueryPodInfoRes.class);
-        if(result.isStatus() && result.getPodInfo() != null){
+        if (result.isStatus() && result.getPodInfo() != null) {
             PodInfo podInfo = result.getPodInfo();
             return podInfo.getServiceName();
         }

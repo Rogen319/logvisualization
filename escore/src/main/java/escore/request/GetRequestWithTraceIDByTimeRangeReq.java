@@ -4,7 +4,7 @@ public class GetRequestWithTraceIDByTimeRangeReq {
     private long endTime;
     private long lookback;
 
-    public GetRequestWithTraceIDByTimeRangeReq(){
+    public GetRequestWithTraceIDByTimeRangeReq() {
 
     }
 

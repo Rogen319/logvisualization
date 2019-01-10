@@ -11,7 +11,7 @@ public class RequestWithTraceInfo {
     private int normalTraceCount;
     private int errorTraceCount;
 
-    public RequestWithTraceInfo(){
+    public RequestWithTraceInfo() {
 
     }
 

@@ -27,7 +27,7 @@ public class ESUtil {
     private TransportClient client;
 
     //Get the stored pods information
-    public List<PodInfo> getStoredPods(){
+    public List<PodInfo> getStoredPods() {
         List<PodInfo> pods = new ArrayList<>();
 
         SearchResponse response = client.prepareSearch("k8s_*").setTypes("pod").setSize(10000).get();
@@ -36,20 +36,20 @@ public class ESUtil {
         log.info(String.format("The length of pod search hits is [%d]", hits.length));
 
         ObjectMapper mapper = new ObjectMapper();
-        try{
+        try {
             for (SearchHit hit : hits) {
 //                log.info(hit.getSourceAsString());
                 PodInfo pod = mapper.readValue(hit.getSourceAsString(), PodInfo.class);
                 pods.add(pod);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return pods;
     }
 
     //Get the stored nodes information
-    public List<NodeInfo> getStoredNodes(){
+    public List<NodeInfo> getStoredNodes() {
         List<NodeInfo> nodes = new ArrayList<>();
 
         SearchResponse response = client.prepareSearch("k8s_*").setTypes("node").setSize(10000).get();
@@ -58,20 +58,20 @@ public class ESUtil {
         log.info(String.format("The length of node search hits is [%d]", hits.length));
 
         ObjectMapper mapper = new ObjectMapper();
-        try{
+        try {
             for (SearchHit hit : hits) {
 //                log.info(hit.getSourceAsString());
                 NodeInfo node = mapper.readValue(hit.getSourceAsString(), NodeInfo.class);
                 nodes.add(node);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return nodes;
     }
 
     //Get the stored trace status information
-    public List<TraceStatus> getExistedTraceStatus(){
+    public List<TraceStatus> getExistedTraceStatus() {
         List<TraceStatus> res = new ArrayList<>();
 
         QueryBuilder qb = QueryBuilders.matchAllQuery();
@@ -100,7 +100,7 @@ public class ESUtil {
     }
 
     //Get the status of specified trace
-    public String getStatusOfTrace(String traceId){
+    public String getStatusOfTrace(String traceId) {
         //First, check if the trace exist in the trace_status index
         QueryBuilder qb = QueryBuilders.termQuery("traceId", traceId);
         SearchResponse response = client.prepareSearch(Const.TRACE_STATUS_INDEX)
@@ -111,9 +111,9 @@ public class ESUtil {
         SearchHit[] hits = response.getHits().getHits();
         Map<String, Object> map;
 
-        if(hits.length > 0){
+        if (hits.length > 0) {
             map = hits[0].getSourceAsMap();
-            if(map.get("status") != null)
+            if (map.get("status") != null)
                 return map.get("status").toString();
         }
 
@@ -142,9 +142,9 @@ public class ESUtil {
     }
 
     //Convert the time from milliseconds to specified format
-    public String convertTime(long milliseconds){
+    public String convertTime(long milliseconds) {
         Date date = new Date(milliseconds);
-        SimpleDateFormat formatter =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
         return formatter.format(date);
     }

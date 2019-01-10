@@ -2,7 +2,7 @@ package algrithm.spectralclustering.dto;
 
 import java.io.Serializable;
 
-public class SingleDependency implements Serializable{
+public class SingleDependency implements Serializable {
 
     private static final long serialVersionUID = 3710140897196447774L;
 

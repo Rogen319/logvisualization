@@ -18,7 +18,7 @@ public class V1ServiceSpec {
     private V1SessionAffinityConfig sessionAffinityConfig;
     private String type;
 
-    public V1ServiceSpec(){
+    public V1ServiceSpec() {
 
     }
 

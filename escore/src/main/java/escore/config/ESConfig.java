@@ -9,7 +9,7 @@ public class ESConfig {
     private String host;
     private int port;
 
-    public ESConfig(){
+    public ESConfig() {
 
     }
 

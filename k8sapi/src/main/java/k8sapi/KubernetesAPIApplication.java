@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @IntegrationComponentScan
 public class KubernetesAPIApplication {
 
-    public static void main(String[] args){
-        SpringApplication.run(KubernetesAPIApplication.class,args);
+    public static void main(String[] args) {
+        SpringApplication.run(KubernetesAPIApplication.class, args);
     }
 }

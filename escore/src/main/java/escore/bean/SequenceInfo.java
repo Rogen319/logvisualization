@@ -3,7 +3,7 @@ package escore.bean;
 import java.io.Serializable;
 import java.util.List;
 
-public class SequenceInfo implements Serializable{
+public class SequenceInfo implements Serializable {
 
     private static final long serialVersionUID = 8407511809837782187L;
 

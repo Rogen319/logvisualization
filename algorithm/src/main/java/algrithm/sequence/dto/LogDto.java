@@ -1,7 +1,6 @@
 package algrithm.sequence.dto;
 
 
-
 import algrithm.sequence.domain.LogItem;
 
 import java.util.List;

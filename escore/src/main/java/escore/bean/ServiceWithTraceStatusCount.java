@@ -5,7 +5,7 @@ public class ServiceWithTraceStatusCount {
     private int normalTraceCount;
     private int errorTraceCount;
 
-    public ServiceWithTraceStatusCount(){
+    public ServiceWithTraceStatusCount() {
 
     }
 

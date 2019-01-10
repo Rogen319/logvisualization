@@ -5,7 +5,7 @@ import java.util.Set;
 public class GetRequestTypesRes extends GeneralResponse {
     private Set<String> requestTypes;
 
-    public GetRequestTypesRes(){
+    public GetRequestTypesRes() {
         super();
     }
 

@@ -8,7 +8,7 @@ public class BasicLogItem {
     private String uri;
     private int isError;
 
-    public BasicLogItem(){
+    public BasicLogItem() {
 
     }
 

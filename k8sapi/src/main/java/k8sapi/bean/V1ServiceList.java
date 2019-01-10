@@ -9,7 +9,7 @@ public class V1ServiceList {
     private String kind;
     private V1ListMeta metadata;
 
-    public V1ServiceList(){
+    public V1ServiceList() {
 
     }
 

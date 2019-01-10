@@ -16,15 +16,15 @@ public class MyConfig {
     ESConfig esConfig;
 
     @Bean
-    public TransportClient getESClient(){
-        try{
+    public TransportClient getESClient() {
+        try {
             Settings settings = Settings.builder()
-                    .put("cluster.name","docker-cluster")
+                    .put("cluster.name", "docker-cluster")
                     .build();
             TransportClient client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new TransportAddress(InetAddress.getByName(esConfig.getHost()), esConfig.getPort()));
             return client;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

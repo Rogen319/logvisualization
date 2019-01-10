@@ -45,23 +45,22 @@ public class LogAPIServiceImpl implements LogAPIService {
         List<LogItem> logs = getLogItemListByCondition("TraceId", traceId);
 
         //flag:1 represents order by service/uri
-        if(flag == 0){
+        if (flag == 0) {
             res.setLogs(logs);
-        }
-        else{
+        } else {
             //Sort the uri by time
             Set<String> requestUri = new LinkedHashSet<>();
-            for(LogItem log : logs){
-                if(log.getLogType().equals("InvocationRequest")){
+            for (LogItem log : logs) {
+                if (log.getLogType().equals("InvocationRequest")) {
                     requestUri.add(log.getUri());
                 }
             }
 
             List<LogItem> result = new ArrayList<>();
             //Add the log according to the uri
-            for(String uri : requestUri){
-                for(LogItem log : logs){
-                    if(log.getUri().equals(uri)){
+            for (String uri : requestUri) {
+                for (LogItem log : logs) {
+                    if (log.getUri().equals(uri)) {
                         result.add(log);
                     }
                 }
@@ -98,11 +97,11 @@ public class LogAPIServiceImpl implements LogAPIService {
         int normalCount = 0;
         int errorCount = 0;
         int exceptionCount = 0;
-        for(LogItem log : logs){
+        for (LogItem log : logs) {
             int f = log.getIsError();
-            if(f == 0)
+            if (f == 0)
                 normalCount++;
-            else if(f == 1)
+            else if (f == 1)
                 errorCount++;
             else
                 exceptionCount++;
@@ -121,17 +120,17 @@ public class LogAPIServiceImpl implements LogAPIService {
     public LogResponse getLogByInstanceName(String instanceName) {
         LogResponse res = new LogResponse();
 
-        List<LogItem> logs = getLogItemListByCondition("kubernetes.pod.name.keyword",instanceName);
+        List<LogItem> logs = getLogItemListByCondition("kubernetes.pod.name.keyword", instanceName);
 
         //Set the error count
         int normalCount = 0;
         int errorCount = 0;
         int exceptionCount = 0;
-        for(LogItem log : logs){
+        for (LogItem log : logs) {
             int flag = log.getIsError();
-            if(flag == 0)
+            if (flag == 0)
                 normalCount++;
-            else if(flag == 1)
+            else if (flag == 1)
                 errorCount++;
             else
                 exceptionCount++;
@@ -154,9 +153,9 @@ public class LogAPIServiceImpl implements LogAPIService {
         List<InstanceAndTraceIdLog> instanceAndTraceIdLogList = new ArrayList<>();
         //Get all of the instances of the specified service
         List<String> instanceNames = podService.getInstanceOfService(request.getServiceName());
-        for(String instanceName : instanceNames){
+        for (String instanceName : instanceNames) {
             InstanceAndTraceIdLog instanceAndTraceIdLog = getSpecifiedInstanceLog(instanceName, request.getTraceId());
-            if(instanceAndTraceIdLog.getLogs().size() > 0){
+            if (instanceAndTraceIdLog.getLogs().size() > 0) {
                 instanceAndTraceIdLogList.add(instanceAndTraceIdLog);
             }
         }
@@ -169,12 +168,12 @@ public class LogAPIServiceImpl implements LogAPIService {
     }
 
     //Get the log information of specified service instance and trace id
-    private InstanceAndTraceIdLog getSpecifiedInstanceLog(String instanceName, String traceId){
+    private InstanceAndTraceIdLog getSpecifiedInstanceLog(String instanceName, String traceId) {
         InstanceAndTraceIdLog res = new InstanceAndTraceIdLog();
 
         QueryBuilder qb = QueryBuilders.boolQuery()
-                .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword",instanceName))
-                .must(QueryBuilders.termQuery("TraceId",traceId));
+                .must(QueryBuilders.termQuery("kubernetes.pod.name.keyword", instanceName))
+                .must(QueryBuilders.termQuery("TraceId", traceId));
 
         List<BasicLogItem> logs = new ArrayList<>();
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
@@ -186,27 +185,27 @@ public class LogAPIServiceImpl implements LogAPIService {
         SearchHit[] hits = new SearchHit[0];
         Map<String, Object> map;
 
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
                 map = hit.getSourceAsMap();
                 BasicLogItem log = new BasicLogItem();
-                if(map.get("time") != null){
+                if (map.get("time") != null) {
                     String timestamp = map.get("time").toString();
-                    timestamp = timestamp.substring(0,23) + "Z";
+                    timestamp = timestamp.substring(0, 23) + "Z";
                     log.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
                 }
-                if(map.get("LogType") != null){
+                if (map.get("LogType") != null) {
                     String logType = map.get("LogType").toString();
                     log.setLogType(logType);
                     //Set the log information according to the log type
                     setLogInfo(log, logType, map);
                 }
-                if(map.get("RequestType") != null){
+                if (map.get("RequestType") != null) {
                     log.setRequestType(map.get("RequestType").toString());
                 }
-                if(map.get("URI") != null){
+                if (map.get("URI") != null) {
                     log.setUri(map.get("URI").toString());
                 }
                 logs.add(log);
@@ -219,11 +218,11 @@ public class LogAPIServiceImpl implements LogAPIService {
         int normalCount = 0;
         int errorCount = 0;
         int exceptionCount = 0;
-        for(BasicLogItem log : logs){
+        for (BasicLogItem log : logs) {
             int flag = log.getIsError();
-            if(flag == 0)
+            if (flag == 0)
                 normalCount++;
-            else if(flag == 1)
+            else if (flag == 1)
                 errorCount++;
             else
                 exceptionCount++;
@@ -232,7 +231,7 @@ public class LogAPIServiceImpl implements LogAPIService {
         res.setNormalCount(normalCount);
         res.setErrorCount(errorCount);
         res.setExceptionCount(exceptionCount);
-        if(hits.length > 0){
+        if (hits.length > 0) {
             SearchHit hit = hits[hits.length - 1];
             try {
                 LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
@@ -256,8 +255,8 @@ public class LogAPIServiceImpl implements LogAPIService {
                 serviceInfo.setInstanceInfo(instanceInfo);
 
                 //Node information
-                if(nodeInfo != null){
-                    nodeService.setNodeInfo(nodeInfo,currentNodes);
+                if (nodeInfo != null) {
+                    nodeService.setNodeInfo(nodeInfo, currentNodes);
                     serviceInfo.setNode(nodeInfo);
                 }
 
@@ -271,13 +270,13 @@ public class LogAPIServiceImpl implements LogAPIService {
     }
 
     //Get the LogItem list of the specified traceId
-    private List<LogItem> getLogItemListByCondition(String termName, String termValue){
+    private List<LogItem> getLogItemListByCondition(String termName, String termValue) {
         List<PodInfo> currentPods = podService.getCurrentPodInfo();
         List<NodeInfo> currentNodes = nodeService.getCurrentNodeInfo();
 
         List<LogItem> logItemList = new ArrayList<>();
 
-        QueryBuilder qb = QueryBuilders.termQuery(termName,termValue);
+        QueryBuilder qb = QueryBuilders.termQuery(termName, termValue);
 
         SearchResponse scrollResp = client.prepareSearch(LOGSTASH_LOG_INDEX).setTypes(LOGSTASH_LOG_TYPE)
                 .addSort("time", SortOrder.ASC)
@@ -287,7 +286,7 @@ public class LogAPIServiceImpl implements LogAPIService {
         //Scroll until no hits are returned
         SearchHit[] hits;
 
-        while(scrollResp.getHits().getHits().length != 0){ // Zero hits mark the end of the scroll and the while loop
+        while (scrollResp.getHits().getHits().length != 0) { // Zero hits mark the end of the scroll and the while loop
             hits = scrollResp.getHits().getHits();
             for (SearchHit hit : hits) {
                 //Handle the hit
@@ -302,7 +301,7 @@ public class LogAPIServiceImpl implements LogAPIService {
     }
 
     //Compose the LogItem from the SearchHit
-    private LogItem composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods, List<NodeInfo> currentNodes){
+    private LogItem composeLogItemFromHit(SearchHit hit, List<PodInfo> currentPods, List<NodeInfo> currentNodes) {
         LogItem logItem = new LogItem();
 
         //Default, it is not an error
@@ -310,13 +309,13 @@ public class LogAPIServiceImpl implements LogAPIService {
 
         Map<String, Object> map = hit.getSourceAsMap();
         //Set timestamp
-        if(map.get("time") != null){
+        if (map.get("time") != null) {
             String timestamp = map.get("time").toString();
-            timestamp = timestamp.substring(0,23) + "Z";
+            timestamp = timestamp.substring(0, 23) + "Z";
             logItem.setTimestamp(MyUtil.getLocalTimeFromUTCFormat(timestamp));
         }
 
-        try{
+        try {
             LogBean logBean = mapper.readValue(hit.getSourceAsString(), LogBean.class);
 //            logItem.setLogInfo(logBean.getLog());
             String logType = logBean.getLogType();
@@ -353,13 +352,13 @@ public class LogAPIServiceImpl implements LogAPIService {
             serviceInfo.setInstanceInfo(instanceInfo);
 
             //Node information
-            if(nodeInfo != null){
-                nodeService.setNodeInfo(nodeInfo,currentNodes);
+            if (nodeInfo != null) {
+                nodeService.setNodeInfo(nodeInfo, currentNodes);
                 serviceInfo.setNode(nodeInfo);
             }
 
             logItem.setServiceInfo(serviceInfo);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -368,38 +367,38 @@ public class LogAPIServiceImpl implements LogAPIService {
 
     //Set the log information according to the log type
     private void setLogInfo(BasicLogItem log, String logType, Map<String, Object> map) {
-        if(logType.equals("InvocationRequest")){
+        if (logType.equals("InvocationRequest")) {
             String requestPara = "No parameter!";
-            if(map.get("Request") != null)
+            if (map.get("Request") != null)
                 requestPara = map.get("Request").toString();
             log.setLogInfo(String.format("[Request Parameter: %s]", requestPara));
-        }else if(logType.equals("InvocationResponse")){
+        } else if (logType.equals("InvocationResponse")) {
             String response = "No response!";
             String responseCode = "";
             String codeMessage = "";
-            if(map.get("Response") != null)
+            if (map.get("Response") != null)
                 response = map.get("Response").toString();
-            if(map.get("ResponseCode") != null)
+            if (map.get("ResponseCode") != null)
                 responseCode = map.get("ResponseCode").toString();
-            if(map.get("CodeMessage") != null)
+            if (map.get("CodeMessage") != null)
                 codeMessage = map.get("CodeMessage").toString();
             log.setLogInfo(String.format("[Response Code: %s:%s][Response Value: %s]", responseCode, codeMessage, response));
-        }else if(logType.equals("InternalMethod")){
+        } else if (logType.equals("InternalMethod")) {
             //InternalMethod: Normal and Message
-            if(map.get("Content") != null)
+            if (map.get("Content") != null)
                 log.setLogInfo(map.get("Content").toString());
-            else{
+            else {
                 String logInfo = String.format("[ExceptionMessage:%s][ExceptionCause:%s][ExceptionStack:%s]",
-                        map.get("ExceptionMessage") != null?map.get("ExceptionMessage").toString():"",
-                        map.get("ExceptionCause") != null?map.get("ExceptionCause").toString():"",
-                        map.get("ExceptionStack") != null?map.get("ExceptionStack").toString():"");
+                        map.get("ExceptionMessage") != null ? map.get("ExceptionMessage").toString() : "",
+                        map.get("ExceptionCause") != null ? map.get("ExceptionCause").toString() : "",
+                        map.get("ExceptionStack") != null ? map.get("ExceptionStack").toString() : "");
                 log.setLogInfo(logInfo);
                 log.setIsError(2);
-                if(logInfo.contains("error") || logInfo.contains("Error")){
+                if (logInfo.contains("error") || logInfo.contains("Error")) {
                     log.setIsError(1);
                 }
             }
-        }else{
+        } else {
             log.setLogType("SystemLog");
             log.setLogInfo(map.get("log") != null ? map.get("log").toString() : "");
         }

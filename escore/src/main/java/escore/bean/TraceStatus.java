@@ -4,7 +4,7 @@ public class TraceStatus {
     private String traceId;
     private String status;
 
-    public TraceStatus(){
+    public TraceStatus() {
 
     }
 

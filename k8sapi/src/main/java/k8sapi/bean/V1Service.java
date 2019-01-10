@@ -7,7 +7,7 @@ public class V1Service {
     private V1ServiceSpec spec = null;
     private V1ServiceStatus status = null;
 
-    public V1Service(){
+    public V1Service() {
 
     }
 

@@ -9,7 +9,7 @@ public class InstanceAndTraceIdLog {
     private int exceptionCount;
     private ServiceInfo serviceInfo;
 
-    public InstanceAndTraceIdLog(){
+    public InstanceAndTraceIdLog() {
 
     }
 

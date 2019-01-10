@@ -8,7 +8,7 @@ import java.util.TimeZone;
 public class MyUtil {
 
     //Convert the time from utc format to local format
-    public static String getLocalTimeFromUTCFormat(String utcTime){
+    public static String getLocalTimeFromUTCFormat(String utcTime) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {

@@ -2,7 +2,7 @@ package algrithm.sequence.domain;
 
 import java.io.Serializable;
 
-public class ServiceWithCount implements Serializable{
+public class ServiceWithCount implements Serializable {
 
     private static final long serialVersionUID = -2579305877299900014L;
     private String serviceName;

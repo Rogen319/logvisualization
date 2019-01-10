@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class KubernetesMeatadataContainer {
     private String name;
 
-    public KubernetesMeatadataContainer(){
+    public KubernetesMeatadataContainer() {
 
     }
 

@@ -6,7 +6,7 @@ public class V1ResourceRequirements {
     private Map<String, String> limits = null;
     private Map<String, String> requests = null;
 
-    public V1ResourceRequirements(){
+    public V1ResourceRequirements() {
 
     }
 

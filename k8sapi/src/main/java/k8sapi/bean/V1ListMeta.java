@@ -4,7 +4,7 @@ public class V1ListMeta {
     private String resourceVersion = null;
     private String selfLink = null;
 
-    public V1ListMeta(){
+    public V1ListMeta() {
 
     }
 

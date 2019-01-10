@@ -12,16 +12,28 @@ import java.util.Set;
 
 public interface ESCoreService {
     String demo();
+
     GetRequestWithTraceIDRes getRequestWithTraceIDByTimeRange(GetRequestWithTraceIDByTimeRangeReq request);
+
     QueryPodInfoRes queryPodInfo(String podName);
+
     QueryNodeInfoRes queryNodeInfo(NodeInfo nodeInfo);
+
     GetInstanceNamesFromESRes getInstanceNamesOfSpecifiedService(String serviceName);
+
     List<TraceSequenceRes> getSequenceInfo();
+
     ServiceWithTraceCountRes getServiceWithTraceCountByRequestType(GetServiceWithTraceCountByRequestTypeReq request);
+
     ServiceWithTraceCountRes getServiceWithTraceCountByTraceType(GetServiceWithTraceCountByTraceTypeReq request);
+
     ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
-    ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
+
+    ServiceWithInstanceOfTSCRes getServiceWithInstanceOfTSCByTraceType(GetServiceWithInstanceOfTSCByTraceTypeReq request);
+
     Map<String, String> getTraceIdsByRequestType(GetTraceIdsByRequestTypeAndTimeRange request);
+
     ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByRequestType(GetServiceWithInstanceOfTSCByRequestTypeReq request);
-    ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByTraceType( GetServiceWithInstanceOfTSCByTraceTypeReq request);
+
+    ServiceWithInstanceNameOfTSCRes getServiceWithInstanceNameOfTSCByTraceType(GetServiceWithInstanceOfTSCByTraceTypeReq request);
 }

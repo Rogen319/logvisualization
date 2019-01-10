@@ -14,7 +14,7 @@ public class PodInfo {
     private Map<String, String> labels;
     private List<PodContainer> containers;
 
-    public PodInfo(){
+    public PodInfo() {
 
     }
 

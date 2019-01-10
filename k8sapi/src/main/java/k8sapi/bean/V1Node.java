@@ -7,7 +7,7 @@ public class V1Node {
     private V1NodeSpec spec = null;
     private V1NodeStatus status = null;
 
-    public V1Node(){
+    public V1Node() {
 
     }
 

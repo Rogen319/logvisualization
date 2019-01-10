@@ -12,7 +12,7 @@ public class TraceInfo {
     private int errorCount;
     private int exceptionCount;
 
-    public TraceInfo(){
+    public TraceInfo() {
 
     }
 
