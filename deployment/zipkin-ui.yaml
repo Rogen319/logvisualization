@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: zipkin-ui
-        image: lwh319/istio-zipkin-ui
+        image: lwh319/istio-zipkin-ui-175
         imagePullPolicy: Always
         ports:
         - containerPort: 9091

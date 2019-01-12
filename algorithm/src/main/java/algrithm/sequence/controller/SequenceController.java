@@ -65,7 +65,7 @@ public class SequenceController {
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange("https://10.141.212.142:6443", HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange("https://10.141.212.23:6443", HttpMethod.GET, entity, String.class);
 
         JsonParser parser = new JsonParser();
         JsonObject json = parser.parse(responseEntity.getBody()).getAsJsonObject();
