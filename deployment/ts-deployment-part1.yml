@@ -332,7 +332,7 @@ spec:
     spec:
       containers:
       - name: ts-voucher-mysql
-        image: mysql:5.6.35
+        image: mysql:5.7
         imagePullPolicy: IfNotPresent
         env:
         # Use secret in real usage
