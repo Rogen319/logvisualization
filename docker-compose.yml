@@ -56,6 +56,15 @@ services:
       networks:
         - my-network
 
+  logvisualization-analysis:
+      build: analysis
+      image: logvisualization/analysis
+      restart: always
+      ports:
+        - 15319:15319
+      networks:
+        - my-network
+
 networks:
     my-network:
       driver: bridge

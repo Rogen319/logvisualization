@@ -1,6 +1,6 @@
 package algrithm.spectralclustering.enumeration;
 
-public enum ServiceExclude {
+public enum ServiceExcludeEnum {
     ISTIO_TELEMETRY("istio-telemetry"),
     ISTIO_MIXER("istio-mixer"),
     ISTIO_POLICY("istio-policy"),
@@ -8,7 +8,7 @@ public enum ServiceExclude {
 
     private String serviceName;
 
-    ServiceExclude(String serviceName) {
+    ServiceExcludeEnum(String serviceName) {
         this.serviceName = serviceName;
     }
 

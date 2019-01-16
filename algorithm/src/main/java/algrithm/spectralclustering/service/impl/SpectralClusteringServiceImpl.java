@@ -1,7 +1,7 @@
 package algrithm.spectralclustering.service.impl;
 
 import algrithm.spectralclustering.config.ZipkinConfig;
-import algrithm.spectralclustering.enumeration.ServiceExclude;
+import algrithm.spectralclustering.enumeration.ServiceExcludeEnum;
 import algrithm.spectralclustering.dto.ClusterResult;
 import algrithm.spectralclustering.dto.SingleDependency;
 import algrithm.spectralclustering.service.SpectralClusteringSerivce;
@@ -67,14 +67,17 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
         RestTemplate restTemplate = new RestTemplate();
         SingleDependency[] dependencies =
                 restTemplate.getForObject(url, SingleDependency[].class);
-        if (null == dependencies || 0 ==
-                dependencies.length) {
+        if (null == dependencies) {
             throw new RuntimeException("Fail to get dependency data");
         }
 
         final List<String> serviceExclude = new ArrayList<>();
-        for (ServiceExclude se : ServiceExclude.values()) {
+        for (ServiceExcludeEnum se : ServiceExcludeEnum.values()) {
             serviceExclude.add(se.getServiceName());
+        }
+
+        if(dependencies.length == 0) {
+            return new ArrayList<>();
         }
 
         Stream<SingleDependency> dependencyStream = Stream.of(dependencies);

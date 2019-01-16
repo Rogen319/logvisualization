@@ -1,0 +1,11 @@
+server:
+  port: 15319
+
+spring:
+  application:
+    name: analysis
+
+logback:
+  logdir: /opt/log/analysis
+  appname: analysis
+

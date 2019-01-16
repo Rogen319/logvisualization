@@ -15,6 +15,7 @@
         <module>zipkinapi</module>
         <module>logapi</module>
         <module>algorithm</module>
+        <module>analysis</module>
     </modules>
 
     <parent>
