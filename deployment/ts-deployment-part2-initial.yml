@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ts-sso-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ts-sso-service
+    spec:
+      containers:
+      - name: ts-sso-service
+        image: 10.141.211.160:5000/header/ts-sso-service-initial-uers
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 12349
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 1000m
+            memory: 500Mi
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ts-contacts-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ts-contacts-service
+    spec:
+      containers:
+      - name: ts-contacts-service
+        image: 10.141.211.160:5000/header/ts-contacts-service-initial-user
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 12347
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 1000m
+            memory: 500Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-sso-service
+spec:
+  ports:
+  - name: http
+    port: 12349
+  selector:
+    app: ts-sso-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-contacts-service
+spec:
+  ports:
+  - name: http
+    port: 12347
+  selector:
+    app: ts-contacts-service

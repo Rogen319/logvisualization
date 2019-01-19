@@ -32,16 +32,12 @@ public class InitIndexAndType implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         IndicesAdminClient indicesAdminClient = client.admin().indices();
 
-//        indicesAdminClient.prepareDelete(Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX).execute().actionGet();
-
-        //Judge if the k8s and rt indices already exists
-        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX, Const.TRACE_STATUS_INDEX).
+        //Judge if the pod index already exists
+        IndicesExistsResponse indicesExistsResponse = indicesAdminClient.prepareExists(Const.K8S_POD_INDEX).
                 execute().actionGet();
-        log.info(String.format("Indices [%s, %s, %s] exists? %b", Const.K8S_POD_INDEX, Const.K8S_NODE_INDEX, Const.TRACE_STATUS_INDEX, indicesExistsResponse.isExists()));
-
-        //If not, create the three indices
+        log.info(String.format("Indices [%s] exists? %b", Const.K8S_POD_INDEX, indicesExistsResponse.isExists()));
+        //If not, create the pod index
         if (!indicesExistsResponse.isExists()) {
-            //Pod index
             CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_POD_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
@@ -53,9 +49,15 @@ public class InitIndexAndType implements CommandLineRunner {
             } else {
                 log.info(String.format("Fail to create index [%s]!", Const.K8S_POD_INDEX));
             }
+        }
 
-            //Node index
-            createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_NODE_INDEX)
+        //Judge if the node index already exists
+        indicesExistsResponse = indicesAdminClient.prepareExists(Const.K8S_NODE_INDEX).
+                execute().actionGet();
+        log.info(String.format("Indices [%s] exists? %b", Const.K8S_NODE_INDEX, indicesExistsResponse.isExists()));
+        //If not, create the node index
+        if (!indicesExistsResponse.isExists()) {
+            CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(Const.K8S_NODE_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
                 log.info(String.format("Index [%s] has been created successfully!", Const.K8S_NODE_INDEX));
@@ -66,9 +68,16 @@ public class InitIndexAndType implements CommandLineRunner {
             } else {
                 log.info(String.format("Fail to create index [%s]!", Const.K8S_NODE_INDEX));
             }
+        }
 
-            //Request-Trace index
-            createIndexResponse = indicesAdminClient.prepareCreate(Const.TRACE_STATUS_INDEX)
+        //Judge if the trace_status index already exists
+        indicesExistsResponse = indicesAdminClient.prepareExists(Const.TRACE_STATUS_INDEX).
+                execute().actionGet();
+        log.info(String.format("Indices [%s] exists? %b", Const.TRACE_STATUS_INDEX, indicesExistsResponse.isExists()));
+
+        //If not, create the trace_status index
+        if (!indicesExistsResponse.isExists()) {
+            CreateIndexResponse createIndexResponse = indicesAdminClient.prepareCreate(Const.TRACE_STATUS_INDEX)
                     .execute().actionGet();
             if (createIndexResponse.isAcknowledged()) {
                 log.info(String.format("Index [%s] has been created successfully!", Const.TRACE_STATUS_INDEX));
