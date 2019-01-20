@@ -8,3 +8,7 @@ spring:
 zipkin-istio:
   ip: 10.141.212.23
   port: 30005
+
+logback:
+  logdir: /opt/log/analysis
+  appname: analysis

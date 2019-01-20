@@ -33,4 +33,9 @@ public class SingleDependency implements Serializable {
     public void setCallCount(int callCount) {
         this.callCount = callCount;
     }
+
+    @Override
+    public String toString() {
+        return parent + "#" + child + ":" + callCount;
+    }
 }

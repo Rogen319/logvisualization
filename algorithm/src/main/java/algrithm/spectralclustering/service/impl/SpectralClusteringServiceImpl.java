@@ -5,6 +5,8 @@ import algrithm.spectralclustering.enumeration.ServiceExcludeEnum;
 import algrithm.spectralclustering.dto.ClusterResult;
 import algrithm.spectralclustering.dto.SingleDependency;
 import algrithm.spectralclustering.service.SpectralClusteringSerivce;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +21,8 @@ import java.util.stream.Stream;
 
 @Service
 public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private ZipkinConfig zipkinConfig;
 
@@ -35,7 +39,11 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
                 .append(lookback);
 
         List<SingleDependency> dependencyList = getZipkinDependencies(sb.toString());
-        SpectralClustering sc = new SpectralClustering((convCallCount2Proportion(convJson2array(dependencyList))), k);
+//        log.info(String.format("The dependencyList is %s", dependencyList));
+        //打印矩阵
+        double[][] martix = convJson2array(dependencyList);
+//        printMatrix(martix);
+        SpectralClustering sc = new SpectralClustering((convCallCount2Proportion(martix)), k);
         List<String> services = getServices(dependencyList);
 
         ClusterResult clusterResult = new ClusterResult();
@@ -59,6 +67,15 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
         clusterResult.setClusters(clusters);
 
         return clusterResult;
+    }
+
+    private void printMatrix(double[][] martix) {
+        for(int i = 0; i < martix.length; i++) {
+            for(int j = 0; j < martix[0].length; j++) {
+                System.out.print(martix[i][j] + "   ");
+            }
+            System.out.println();
+        }
     }
 
 
@@ -85,11 +102,8 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
     }
 
     private double[][] convJson2array(List<SingleDependency> dependenciesList) {
-
-
         List<String> services = getServices(dependenciesList);
-
-
+//        log.info(String.format("The service list is %s", services));
         double[][] callCountMatrix = new double[services.size()][services.size()];
 
         for (SingleDependency dependency :
@@ -106,9 +120,12 @@ public class SpectralClusteringServiceImpl implements SpectralClusteringSerivce 
             }
             int abscissa = services.indexOf(parent);
             int ordinate = services.indexOf(child);
+            if(abscissa == ordinate){
+                callCountMatrix[abscissa][ordinate] = 0;
+                continue;
+            }
             callCountMatrix[abscissa][ordinate] = dependency.getCallCount();
             callCountMatrix[ordinate][abscissa] = dependency.getCallCount();
-
         }
 
         return callCountMatrix;
